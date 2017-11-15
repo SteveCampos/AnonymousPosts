@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Random Chat</string>
+    <string name="action_settings">Settings</string>
+    <string name="intro_slidewelcome_title">Chat Anónimo</string>
+    <string name="intro_slidewelcome_description">!Bienvenido! Publica post anónimos, y conoce nuevas personas.</string>
+    <string name="intro_slidepost_title">Post Anónimos</string>
+    <string name="intro_slidepost_description">Postea, comenta y conecta con muchas personas.</string>
+    <string name="intro_slideconversation_title">Conversaciones</string>
+    <string name="intro_slideconversation_description">Inicia nuevas conversaciones, te notificaremos cuando tengas un nueve mensaje.</string>
+    <string name="intro_slideconversations_title">¡Inicia conversaciones!</string>
+    <string name="intro_slideconversations_description">Iniciarás nuevas conversaciones con otros usuarios anónimos!</string>
+    <string name="intro_slideanonymous_title">¡Perfiles anónimos!</string>
+    <string name="intro_slideanonymous_description">Fotos de perfil no permitidas. Todos los usuarios tendrán perfiles anónimos.</string>
+    <string name="intro_slidehashtags_title">Hashtags</string>
+    <string name="intro_slidehashtags_description">Podrás filtrar posts por temas que te encanten, usando nuestros hashtags.</string>
+    <string name="intro_slidelocations_title">¡Cerca a ti!</string>
+    <string name="intro_slidelocations_description">Navegarás a través de los posts más destacados de tu ciudad.</string>
+</resources>
