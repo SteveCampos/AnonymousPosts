@@ -94,6 +94,8 @@ public class IntroActivity extends AppIntro2 implements IntroView {
         addSlide(AppIntroFragment.newInstance(slidePost));
         addSlide(AppIntroFragment.newInstance(slideHahstag));
         addSlide(AppIntroFragment.newInstance(slideMessage));
+        addSlide(GenderSlideFragment.newInstance());
+        addSlide(AvatarSlideFragment.newInstance());
         /*
         // Note here that we DO NOT use setContentView();
 

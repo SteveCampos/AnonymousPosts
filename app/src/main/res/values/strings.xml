@@ -15,4 +15,19 @@
     <string name="intro_slidehashtags_description">Podrás filtrar posts por temas que te encanten, usando nuestros hashtags.</string>
     <string name="intro_slidelocations_title">¡Cerca a ti!</string>
     <string name="intro_slidelocations_description">Navegarás a través de los posts más destacados de tu ciudad.</string>
+    <string name="intro_slidegender_title">Elige tu Género</string>
+    <string name="intro_slidegender_description">Tap en la imagen para cambiar</string>
+    <string name="intro_slideavatar_title">Elige tu Avatar</string>
+    <string name="intro_slideavatar_avatar_notselected">No Seleccionado</string>
+
+
+    <string name="global_gender_masculine">Masculino</string>
+    <string name="global_gender_man">Hombre</string>
+    <string name="global_gender_woman">Mujer</string>
+    <string name="global_gender_nonbinary">No-Binario</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>
