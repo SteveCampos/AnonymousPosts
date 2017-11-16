@@ -28,6 +28,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="posts_text_post">Publicar</string>
+    <string name="posts_text_contenthint">Increíble post aquí.</string>
+    <string name="comment_text_hint_message">Escribe un mensaje increíble</string>
 
 
 </resources>
