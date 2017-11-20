@@ -24,13 +24,23 @@
     <string name="global_gender_masculine">Masculino</string>
     <string name="global_gender_man">Hombre</string>
     <string name="global_gender_woman">Mujer</string>
-    <string name="global_gender_nonbinary">No-Binario</string>
+    <string name="global_gender_nonbinary">No Binario</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="posts_text_post">Publicar</string>
     <string name="posts_text_contenthint">Increíble post aquí.</string>
     <string name="comment_text_hint_message">Escribe un mensaje increíble</string>
+    <string name="girl_casual">Chica Casual</string>
+    <string name="girl_cat">Gata</string>
+    <string name="girl_cute">Chica Linda</string>
+    <string name="girl_dark">Oscura</string>
+    <string name="boy_knight">Caballero de la Edad Media</string>
+    <string name="boy_japanese">Chico Japonés</string>
+    <string name="boy_casual">Chico Casual</string>
+    <string name="boy_napoleon">Napoleón</string>
+    <string name="nb_young">Joven</string>
+    <string name="nb_samurai">Samurai</string>
 
 
 </resources>

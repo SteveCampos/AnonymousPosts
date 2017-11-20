@@ -36,12 +36,12 @@
 
     <ImageView
         android:id="@+id/imgSelect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="@+id/imgDrawable"
         app:layout_constraintEnd_toEndOf="@+id/imgDrawable"
-        app:srcCompat="@drawable/ic_done_white" />
+        app:srcCompat="@drawable/ic_select_tool" />
 </android.support.constraint.ConstraintLayout>

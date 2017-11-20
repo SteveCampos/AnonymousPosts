@@ -15,13 +15,18 @@ import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.github.paolorotolo.appintro.model.SliderPage;
 
+import java.util.List;
+
 import apps.steve.fire.randomchat.R;
+import apps.steve.fire.randomchat.intro.entity.AvatarUi;
+import apps.steve.fire.randomchat.intro.listener.AvatarListener;
+import apps.steve.fire.randomchat.intro.listener.GenderListener;
 
 /**
  * Created by Steve on 11/11/2017.
  */
 
-public class IntroActivity extends AppIntro2 implements IntroView {
+public class IntroActivity extends AppIntro2 implements IntroView, GenderListener, AvatarListener {
 
     private SliderPage newSlider(@StringRes int title,
                                  @StringRes int description,
@@ -40,6 +45,11 @@ public class IntroActivity extends AppIntro2 implements IntroView {
         sliderPage.setTitleColor(titleColorResolved);
         sliderPage.setDescColor(descColorResolved);
         return sliderPage;
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return presenter;
     }
 
     @Override
@@ -96,6 +106,9 @@ public class IntroActivity extends AppIntro2 implements IntroView {
         addSlide(AppIntroFragment.newInstance(slideMessage));
         addSlide(GenderSlideFragment.newInstance());
         addSlide(AvatarSlideFragment.newInstance());
+        init();
+
+
         /*
         // Note here that we DO NOT use setContentView();
 
@@ -125,6 +138,22 @@ public class IntroActivity extends AppIntro2 implements IntroView {
         setVibrateIntensity(30);*/
     }
 
+    private IntroPresenter presenter;
+
+    public void init() {
+        presenter = (IntroPresenter) getLastCustomNonConfigurationInstance();
+        if (presenter == null) {
+            presenter = new IntroPresenterImpl(getResources());
+        }
+        setPresenter(presenter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
@@ -141,6 +170,7 @@ public class IntroActivity extends AppIntro2 implements IntroView {
     public void onSlideChanged(@Nullable Fragment oldFragment, @Nullable Fragment newFragment) {
         super.onSlideChanged(oldFragment, newFragment);
         // Do something when the slide changes.
+        //presenter.onSlideChanged(oldFragment, newFragment);
     }
 
     @Override
@@ -149,5 +179,96 @@ public class IntroActivity extends AppIntro2 implements IntroView {
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
+    }
+
+    public @Nullable
+    GenderSlideFragment getGenderSlide() {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment :
+                fragments) {
+            if (fragment instanceof GenderSlideFragment) {
+                return (GenderSlideFragment) fragment;
+            }
+        }
+        return null;
+    }
+
+    public @Nullable
+    AvatarSlideFragment getAvatarSlide() {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment :
+                fragments) {
+            if (fragment instanceof AvatarSlideFragment) {
+                return (AvatarSlideFragment) fragment;
+            }
+        }
+        return null;
+    }
+
+
+    @Override
+    public void showGenderImg(int drawable) {
+        GenderSlideFragment genderSlide = getGenderSlide();
+        if (genderSlide != null) {
+            genderSlide.setImg(drawable);
+        }
+    }
+
+    @Override
+    public void showGenderImgDescr(CharSequence description) {
+        GenderSlideFragment genderSlide = getGenderSlide();
+        if (genderSlide != null) {
+            genderSlide.setImgDescription(description);
+        }
+    }
+
+    @Override
+    public void updateAvatar(AvatarUi avatar) {
+        AvatarSlideFragment avatarSlide = getAvatarSlide();
+        if (avatarSlide != null) {
+            avatarSlide.updateAvatar(avatar);
+        }
+    }
+
+    @Override
+    public void toggleAvatars(AvatarUi old, AvatarUi actual) {
+        AvatarSlideFragment avatarSlide = getAvatarSlide();
+        if (avatarSlide != null) {
+            avatarSlide.toggleAvatars(old, actual);
+        }
+    }
+
+    @Override
+    public void showAvatarList(List<AvatarUi> avatarList) {
+        AvatarSlideFragment avatarSlide = getAvatarSlide();
+        if (avatarSlide != null) {
+            avatarSlide.showAvatarList(avatarList);
+        }
+    }
+
+    @Override
+    public void setPresenter(IntroPresenter presenter) {
+        presenter.attachView(this);
+        presenter.onCreate();
+    }
+
+    @Override
+    public void onNextGender() {
+        presenter.onNextGender();
+    }
+
+    @Override
+    public void onGenderSlideResume() {
+        presenter.onSlideChanged(null, getGenderSlide());
+    }
+
+    @Override
+    public void onAvatarSelected(AvatarUi avatar) {
+        presenter.onAvatarSelected(avatar);
+    }
+
+    @Override
+    public void onAvatarSlideResume() {
+        presenter.onSlideChanged(null, getAvatarSlide());
     }
 }

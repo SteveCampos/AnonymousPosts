@@ -39,8 +39,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtTitle"
         app:layout_constraintVertical_chainStyle="spread_inside"
-        app:layout_constraintVertical_weight="4"
-        app:srcCompat="@drawable/ic_incognito" />
+        app:layout_constraintVertical_weight="4" />
 
     <TextView
         android:id="@+id/txtImgDescription"
@@ -48,7 +47,7 @@
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="@string/global_gender_man"
+        android:textColor="@color/md_grey_500"
         android:textAlignment="center"
         android:textAppearance="@style/AppIntroDefaultText"
         app:layout_constraintBottom_toTopOf="@+id/txtDescription"
