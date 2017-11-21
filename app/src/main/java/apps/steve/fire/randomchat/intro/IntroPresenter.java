@@ -16,4 +16,7 @@ public interface IntroPresenter extends BasePresesenter<IntroView> {
     void onNextGender();
 
     void onAvatarSelected(AvatarUi avatar);
+
+    void signIn();
+    void signOut();
 }

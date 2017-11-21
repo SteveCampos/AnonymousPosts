@@ -164,6 +164,16 @@ public class IntroPresenterImpl implements IntroPresenter {
         }
     }
 
+    @Override
+    public void signIn() {
+
+    }
+
+    @Override
+    public void signOut() {
+
+    }
+
     private List<AvatarUi> avatarUiList = new ArrayList<>();
 
     private void onAvatarSlideFocus() {

@@ -16,6 +16,23 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "default_web_client_id", project.property('DEFAULT_WEB_CLIENT_ID')
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "default_web_client_id", project.property('DEFAULT_WEB_CLIENT_ID')
+        }
+
+        packagingOptions {
+            exclude 'META-INF/DEPENDENCIES'
+            exclude 'META-INF/NOTICE' // will not include NOTICE file
+            exclude 'META-INF/LICENSE' // will not include LICENSE file
+            exclude 'META-INF/notice'
+            exclude 'META-INF/notice.txt'
+            exclude 'META-INF/license'
+            exclude 'META-INF/license.txt'
+            exclude 'protobuf.meta'
         }
     }
 }
@@ -29,11 +46,14 @@ dependencies {
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.google.firebase:firebase-auth:11.6.0'
+    implementation 'com.google.android.gms:play-services-auth:11.6.0'
     implementation 'com.android.support:cardview-v7:26.1.0'
     implementation 'com.github.qiugang:EditTag:v1.2.4-beta2'
     implementation 'com.github.bumptech.glide:glide:4.3.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
+apply plugin: 'com.google.gms.google-services'
