@@ -1,6 +1,11 @@
 package apps.steve.fire.randomchat.intro;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
+
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import apps.steve.fire.randomchat.base.BasePresesenter;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
@@ -19,4 +24,12 @@ public interface IntroPresenter extends BasePresesenter<IntroView> {
 
     void signIn();
     void signOut();
+
+    void onSkipPressed();
+
+    void onDonePressed();
+
+    void onActivityResult(int requestCode, int resultCode, Intent data);
+
+    void onSignInWithCredentialComplete(Task<AuthResult> task, FirebaseAuth mAuth);
 }

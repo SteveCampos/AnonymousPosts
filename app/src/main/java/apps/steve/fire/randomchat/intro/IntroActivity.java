@@ -193,14 +193,14 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
         // Do something when users tap on Skip button.
-        signOut();
+        presenter.onSkipPressed();
     }
 
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
         // Do something when users tap on Done button.
-        signIn();
+        presenter.onDonePressed();
     }
 
     @Override
@@ -309,10 +309,8 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
         presenter.onSlideChanged(null, getAvatarSlide());
     }
 
-
-    private static final int RC_SIGN_IN = 9001;
-
-    private void signIn() {
+    @Override
+    public void startSignInFlow(int RC_SIGN_IN) {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -327,7 +325,7 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         //updateUI(null);
-                        showText("SignOut!");
+                        showError("SignOut!");
                     }
                 });
     }
@@ -335,28 +333,11 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
-                showText("Google sign in failed");
-                // [START_EXCLUDE]
-                //updateUI(null);
-                // [END_EXCLUDE]
-            }
-        }
+        presenter.onActivityResult(requestCode, resultCode, data);
     }
-    // [END onactivityresult]
 
-    // [START auth_with_google]
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    @Override
+    public void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         // [START_EXCLUDE silent]
         //showProgressDialog();
@@ -367,19 +348,7 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            if (user != null) {
-                                showText("Authentication sucess: " + user.getDisplayName());
-                            }
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            showText("Authentication failed!");
-                            //updateUI(null);
-                        }
+                        presenter.onSignInWithCredentialComplete(task, mAuth);
 
                         // [START_EXCLUDE]
                         //hideProgressDialog();
@@ -388,7 +357,7 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
                 });
     }
 
-    private void showText(CharSequence text) {
+    public void showError(CharSequence text) {
         Toast.makeText(IntroActivity.this, text,
                 Toast.LENGTH_SHORT).show();
     }

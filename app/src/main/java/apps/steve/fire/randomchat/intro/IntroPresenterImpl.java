@@ -1,10 +1,19 @@
 package apps.steve.fire.randomchat.intro;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,6 +181,70 @@ public class IntroPresenterImpl implements IntroPresenter {
     @Override
     public void signOut() {
 
+    }
+
+    @Override
+    public void onSkipPressed() {
+
+    }
+
+    @Override
+    public void onDonePressed() {
+        if (view != null) {
+            view.startSignInFlow(RC_SIGN_IN);
+        }
+    }
+
+    private static final int RC_SIGN_IN = 9001;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e);
+                showError("Google sign in failed");
+                // [START_EXCLUDE]
+                //updateUI(null);
+                // [END_EXCLUDE]
+            }
+        }
+    }
+
+    @Override
+    public void onSignInWithCredentialComplete(Task<AuthResult> task, FirebaseAuth mAuth) {
+        if (task.isSuccessful()) {
+            // Sign in success, update UI with the signed-in user's information
+            Log.d(TAG, "signInWithCredential:success");
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user != null) {
+
+            }
+        } else {
+            // If sign in fails, display a message to the user.
+            Log.w(TAG, "signInWithCredential:failure", task.getException());
+            showError("signInWithCredential:failure");
+        }
+    }
+
+
+    private void showError(CharSequence error) {
+        if (view != null) {
+            view.showError(error);
+        }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        if (view != null) {
+            view.firebaseAuthWithGoogle(acct);
+        }
     }
 
     private List<AvatarUi> avatarUiList = new ArrayList<>();
