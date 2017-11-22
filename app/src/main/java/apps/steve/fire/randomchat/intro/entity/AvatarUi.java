@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import apps.steve.fire.randomchat.R;
@@ -18,6 +17,7 @@ public class AvatarUi {
     private @DrawableRes
     int imgDrawable;
     boolean isSelected;
+    private String avatarName;
 
     public AvatarUi(String name, int imgDrawable) {
         this.name = name;
@@ -48,10 +48,14 @@ public class AvatarUi {
         this.imgDrawable = imgDrawable;
     }
 
-    public static List<AvatarUi> getAvatarList() {
-        List<AvatarUi> avatarUiList = new ArrayList<>();
-        return avatarUiList;
+    public String getAvatarName() {
+        return avatarName;
     }
+
+    public void setAvatarName(String avatarName) {
+        this.avatarName = avatarName;
+    }
+
 
     public static List<AvatarUi> getAvatarNonBinaryList(Resources res) {
         List<AvatarUi> avatarUiList = new ArrayList<>();

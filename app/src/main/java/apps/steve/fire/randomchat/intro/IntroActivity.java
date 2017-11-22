@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,22 +23,28 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.List;
 
 import apps.steve.fire.randomchat.BuildConfig;
 import apps.steve.fire.randomchat.R;
+import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
+import apps.steve.fire.randomchat.base.usecase.UseCaseThreadPoolScheduler;
+import apps.steve.fire.randomchat.data.source.UserRepository;
+import apps.steve.fire.randomchat.data.source.local.UserLocalDataSource;
+import apps.steve.fire.randomchat.data.source.remote.UserRemoteDataSource;
+import apps.steve.fire.randomchat.data.source.remote.firebase.FireUser;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.intro.listener.AvatarListener;
 import apps.steve.fire.randomchat.intro.listener.GenderListener;
+import apps.steve.fire.randomchat.intro.usecase.UpdateUser;
+import apps.steve.fire.randomchat.main.MainActivity;
 
 /**
  * Created by Steve on 11/11/2017.
@@ -178,7 +185,13 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
     public void init() {
         presenter = (IntroPresenter) getLastCustomNonConfigurationInstance();
         if (presenter == null) {
-            presenter = new IntroPresenterImpl(getResources());
+            UserLocalDataSource localDataSource = new UserLocalDataSource();
+            UserRemoteDataSource remoteDataSource = new UserRemoteDataSource(new FireUser());
+            UserRepository repository = new UserRepository(localDataSource, remoteDataSource);
+            presenter = new IntroPresenterImpl(
+                    getResources(),
+                    new UseCaseHandler(new UseCaseThreadPoolScheduler()),
+                    new UpdateUser(repository));
         }
         setPresenter(presenter);
     }
@@ -315,7 +328,7 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    private void signOut() {
+    /*private void signOut() {
         // Firebase sign out
         mAuth.signOut();
 
@@ -328,7 +341,7 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
                         showError("SignOut!");
                     }
                 });
-    }
+    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -355,6 +368,35 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
                         // [END_EXCLUDE]
                     }
                 });
+    }
+
+    @Override
+    public void startMain() {
+        MainActivity.startMainActivity(getActivity());
+    }
+
+    private AppCompatActivity getActivity() {
+        return this;
+    }
+
+    @Override
+    public void showProgress() {
+        Log.d(TAG, "showProgress");
+        setSwipeLock(true);
+        AvatarSlideFragment avatarSlideFragment = getAvatarSlide();
+        if (avatarSlideFragment != null) {
+            avatarSlideFragment.showProgress();
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        Log.d(TAG, "hideProgress");
+        setSwipeLock(false);
+        AvatarSlideFragment avatarSlideFragment = getAvatarSlide();
+        if (avatarSlideFragment != null) {
+            avatarSlideFragment.hideProgress();
+        }
     }
 
     public void showError(CharSequence text) {

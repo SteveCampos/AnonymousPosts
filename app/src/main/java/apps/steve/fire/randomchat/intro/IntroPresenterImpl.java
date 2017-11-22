@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import apps.steve.fire.randomchat.R;
+import apps.steve.fire.randomchat.base.usecase.UseCase;
+import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
+import apps.steve.fire.randomchat.intro.usecase.UpdateUser;
 
 /**
  * Created by @stevecampos on 20/11/2017.
@@ -30,9 +33,13 @@ public class IntroPresenterImpl implements IntroPresenter {
     private static final String TAG = IntroPresenterImpl.class.getSimpleName();
     private IntroView view;
     private Resources resources;
+    private UseCaseHandler useCaseHandler;
+    private UpdateUser useCaseUpdateUser;
 
-    public IntroPresenterImpl(Resources resources) {
+    IntroPresenterImpl(Resources resources, UseCaseHandler useCaseHandler, UpdateUser useCaseUpdateUser) {
         this.resources = resources;
+        this.useCaseHandler = useCaseHandler;
+        this.useCaseUpdateUser = useCaseUpdateUser;
     }
 
     @Override
@@ -70,6 +77,10 @@ public class IntroPresenterImpl implements IntroPresenter {
         view = null;
     }
 
+    private static final String GENDER_MAN = "man";
+    private static final String GENDER_WOMAN = "woman";
+    private static final String GENDER_NON_BINARY = "non_binary";
+
     private static final @DrawableRes
     int DRAWABLE_GENDER_MAN = R.drawable.boy_casual;
     private static final @DrawableRes
@@ -85,19 +96,20 @@ public class IntroPresenterImpl implements IntroPresenter {
 
 
     private @StringRes
-    int genderString = 0;
+    int genderResString = 0;
     private @DrawableRes
     int genderDrawable;
+    private String genderString = GENDER_MAN;
 
     private void onGenderSlideFocus() {
         switch (genderString) {
             default:
                 setGenderMan();
                 break;
-            case STRING_GENDER_WOMAN:
+            case GENDER_WOMAN:
                 setGenderWoman();
                 break;
-            case STRING_GENDER_NON_BINARY:
+            case GENDER_NON_BINARY:
                 setGenderNonbinary();
                 break;
         }
@@ -105,24 +117,24 @@ public class IntroPresenterImpl implements IntroPresenter {
     }
 
     private void setGenderMan() {
-        genderString = STRING_GENDER_MAN;
+        genderResString = STRING_GENDER_MAN;
         genderDrawable = DRAWABLE_GENDER_MAN;
     }
 
     private void setGenderWoman() {
-        genderString = STRING_GENDER_WOMAN;
+        genderResString = STRING_GENDER_WOMAN;
         genderDrawable = DRAWABLE_GENDER_WOMAN;
     }
 
     private void setGenderNonbinary() {
-        genderString = STRING_GENDER_NON_BINARY;
+        genderResString = STRING_GENDER_NON_BINARY;
         genderDrawable = DRAWABLE_GENDER_NONBINARY;
     }
 
     private void showGender() {
         if (view != null) {
             view.showGenderImg(genderDrawable);
-            view.showGenderImgDescr(resources.getString(genderString));
+            view.showGenderImgDescr(resources.getString(genderResString));
         }
     }
 
@@ -144,10 +156,10 @@ public class IntroPresenterImpl implements IntroPresenter {
             default:
                 setGenderWoman();
                 break;
-            case STRING_GENDER_WOMAN:
+            case GENDER_WOMAN:
                 setGenderNonbinary();
                 break;
-            case STRING_GENDER_NON_BINARY:
+            case GENDER_NON_BINARY:
                 setGenderMan();
                 break;
         }
@@ -155,32 +167,22 @@ public class IntroPresenterImpl implements IntroPresenter {
         setAvatarList();
     }
 
-    private AvatarUi avatarOldSelected;
+    private AvatarUi avatarSelected;
 
     @Override
-    public void onAvatarSelected(AvatarUi avatarActualSelected) {
-        avatarActualSelected.setSelected(true);
+    public void onAvatarSelected(AvatarUi avatar) {
+        avatar.setSelected(true);
         if (view != null) {
-            if (avatarOldSelected == null) {
-                view.updateAvatar(avatarActualSelected);
-                avatarOldSelected = avatarActualSelected;
+            if (avatarSelected == null) {
+                view.updateAvatar(avatar);
+                avatarSelected = avatar;
             } else {
-                if (avatarOldSelected.equals(avatarActualSelected)) return;
-                avatarOldSelected.setSelected(false);
-                view.toggleAvatars(avatarOldSelected, avatarActualSelected);
-                avatarOldSelected = avatarActualSelected;
+                if (avatarSelected.equals(avatar)) return;
+                avatarSelected.setSelected(false);
+                view.toggleAvatars(avatarSelected, avatar);
+                avatarSelected = avatar;
             }
         }
-    }
-
-    @Override
-    public void signIn() {
-
-    }
-
-    @Override
-    public void signOut() {
-
     }
 
     @Override
@@ -190,6 +192,8 @@ public class IntroPresenterImpl implements IntroPresenter {
 
     @Override
     public void onDonePressed() {
+        if (avatarSelected == null) return;
+
         if (view != null) {
             view.startSignInFlow(RC_SIGN_IN);
         }
@@ -206,6 +210,7 @@ public class IntroPresenterImpl implements IntroPresenter {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
+                showProgress();
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -225,7 +230,9 @@ public class IntroPresenterImpl implements IntroPresenter {
             Log.d(TAG, "signInWithCredential:success");
             FirebaseUser user = mAuth.getCurrentUser();
             if (user != null) {
-
+                updateUser(user);
+            } else {
+                showError("user null!!!");
             }
         } else {
             // If sign in fails, display a message to the user.
@@ -237,6 +244,7 @@ public class IntroPresenterImpl implements IntroPresenter {
 
     private void showError(CharSequence error) {
         if (view != null) {
+            view.hideProgress();
             view.showError(error);
         }
     }
@@ -262,10 +270,10 @@ public class IntroPresenterImpl implements IntroPresenter {
             default:
                 setManAvatars();
                 break;
-            case STRING_GENDER_WOMAN:
+            case GENDER_WOMAN:
                 setWomanAvatars();
                 break;
-            case STRING_GENDER_NON_BINARY:
+            case GENDER_NON_BINARY:
                 setNonBinaryAvatars();
                 break;
         }
@@ -291,5 +299,48 @@ public class IntroPresenterImpl implements IntroPresenter {
     private void setManAvatars() {
         avatarUiList.clear();
         avatarUiList.addAll(AvatarUi.getAvatarManList(resources));
+    }
+
+    private void updateUser(FirebaseUser user) {
+        useCaseHandler.execute(useCaseUpdateUser,
+                new UpdateUser.RequestValues(avatarSelected, genderString, user),
+                new UseCase.UseCaseCallback<UpdateUser.ResponseValue>() {
+                    @Override
+                    public void onSuccess(UpdateUser.ResponseValue response) {
+                        hideProgress();
+
+                        boolean success = response.isSucess();
+                        if (success) {
+                            startMain();
+                        } else {
+                            showError("Login Error! Try Again!");
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                }
+        );
+    }
+
+    private void showProgress() {
+        if (view != null) {
+            view.showProgress();
+        }
+    }
+
+    private void hideProgress() {
+        if (view != null) {
+            view.hideProgress();
+        }
+    }
+
+
+    private void startMain() {
+        if (view != null) {
+            view.startMain();
+        }
     }
 }

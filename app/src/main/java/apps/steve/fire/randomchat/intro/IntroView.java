@@ -31,4 +31,10 @@ public interface IntroView extends BaseView<IntroPresenter> {
     void showError(CharSequence error);
 
     void firebaseAuthWithGoogle(GoogleSignInAccount account);
+
+    void startMain();
+
+    void showProgress();
+
+    void hideProgress();
 }

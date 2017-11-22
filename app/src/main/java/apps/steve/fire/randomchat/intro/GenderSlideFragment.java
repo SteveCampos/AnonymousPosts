@@ -53,7 +53,7 @@ public class GenderSlideFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        Log.d(TAG, "onAttach");
+        Log.d(TAG, "attachView");
         super.onAttach(context);
         if (context instanceof GenderListener) {
             listener = (GenderListener) context;

@@ -1,23 +1,15 @@
 package apps.steve.fire.randomchat.base;
 
 /**
- * Created by Steve on 18/11/2017.
+ * Created by @stevecampos on 20/11/2017.
  */
 
-public interface BasePresenter<T extends BaseView> {
-
-    void onAttach(T view);
-
+public interface BasePresenter<T extends BaseView>{
+    void attachView(T view);
     void onCreate();
-
-    void start();
-
+    void onStart();
     void onResume();
-
     void onPause();
-
     void onStop();
-
     void onDestroy();
-
 }

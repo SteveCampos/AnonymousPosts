@@ -10,8 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import apps.steve.fire.randomchat.R;
@@ -37,6 +39,8 @@ public class AvatarSlideFragment extends Fragment {
     @BindView(R.id.recyclerAvatar)
     RecyclerView recyclerAvatar;
     Unbinder unbinder;
+    @BindView(R.id.progress)
+    ProgressBar progress;
 
 
     public AvatarSlideFragment() {
@@ -81,10 +85,18 @@ public class AvatarSlideFragment extends Fragment {
         setupAdapter();
     }
 
+    public void showProgress(){
+        progress.setVisibility(View.VISIBLE);
+    }
+    public void hideProgress(){
+        progress.setVisibility(View.GONE);
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
-        if (listener != null){
+        if (listener != null) {
             listener.onAvatarSlideResume();
         }
     }
@@ -92,7 +104,7 @@ public class AvatarSlideFragment extends Fragment {
     private AvatarAdapter adapter;
 
     private void setupAdapter() {
-        adapter = new AvatarAdapter(AvatarUi.getAvatarList(), listener);
+        adapter = new AvatarAdapter(new ArrayList<AvatarUi>(), listener);
         recyclerAvatar.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerAvatar.setAdapter(adapter);
     }
@@ -101,7 +113,7 @@ public class AvatarSlideFragment extends Fragment {
         adapter.setAvatarList(avatarList);
     }
 
-    public void updateAvatar(AvatarUi avatarUi){
+    public void updateAvatar(AvatarUi avatarUi) {
         adapter.updateAvatar(avatarUi);
     }
 

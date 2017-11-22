@@ -4,7 +4,7 @@ package apps.steve.fire.randomchat.base;
  * Created by @stevecampos on 20/11/2017.
  */
 
-public interface BaseFragmentPresenter<T extends BaseView> extends BasePresesenter<T> {
+public interface BaseFragmentPresenter<T extends BaseView> extends BasePresenter<T> {
     void onAttach();
     void onCreateView();
     void onViewCreated();
