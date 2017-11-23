@@ -26,8 +26,7 @@
     <string name="global_gender_woman">Mujer</string>
     <string name="global_gender_nonbinary">No Binario</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="posts_text_post">Publicar</string>
     <string name="posts_text_contenthint">Increíble post aquí.</string>
     <string name="comment_text_hint_message">Escribe un mensaje increíble</string>
@@ -41,6 +40,16 @@
     <string name="boy_napoleon">Napoleón</string>
     <string name="nb_young">Joven</string>
     <string name="nb_samurai">Samurai</string>
+
+
+    <string name="fragment_posts_title">Publicaciones</string>
+    <string name="fragment_posts_section_popular">Populares</string>
+    <string name="fragment_posts_section_recent">Recientes</string>
+    <string name="fragment_users_title">Usuarios</string>
+    <string name="fragment_messages_title">Mensajes</string>
+    <string name="menuitem_appinfo_title">App Info</string>
+    <string name="menuitem_logout_title">Cerrar Sesión</string>
+    <string name="fragment_posts_message_empty">No hay publicaciones</string>
 
 
 </resources>

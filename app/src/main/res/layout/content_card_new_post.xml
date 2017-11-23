@@ -34,32 +34,22 @@
             app:layout_constraintTop_toBottomOf="parent" />
 
 
-        <me.originqiu.library.EditTag
-            android:id="@+id/edit_tag_view"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilPost"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            app:delete_mode_bg="@color/colorAccent"
-            app:input_layout="@layout/view_default_input_tag"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtName"
-            app:tag_layout="@layout/view_default_tag" />
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilPost"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
-            app:layout_constraintBottom_toTopOf="@+id/btnPost"
+            android:inputType="textCapSentences|textMultiLine"
+            android:isScrollContainer="true"
+            android:maxLength="2000"
+            android:maxLines="4"
+            android:minHeight="144dp"
+            android:singleLine="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_tag_view">
+            app:layout_constraintTop_toBottomOf="@+id/txtName">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/edtContent"
@@ -68,6 +58,22 @@
                 android:hint="@string/posts_text_contenthint"
                 android:inputType="textMultiLine" />
         </android.support.design.widget.TextInputLayout>
+
+        <me.originqiu.library.EditTag
+            android:id="@+id/edit_tag_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            app:delete_mode_bg="@color/colorAccent"
+            app:input_layout="@layout/view_default_input_tag"
+            app:layout_constraintBottom_toTopOf="@+id/btnPost"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilPost"
+            app:tag_layout="@layout/view_tag" />
 
         <include
             android:id="@+id/btnPost"

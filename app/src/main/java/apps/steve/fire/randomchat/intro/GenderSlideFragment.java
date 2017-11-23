@@ -58,8 +58,8 @@ public class GenderSlideFragment extends Fragment {
         if (context instanceof GenderListener) {
             listener = (GenderListener) context;
         } else {
-            throw new ClassCastException(GenderSlideFragment.class.getSimpleName() + "" +
-                    "must be implement GenderListener!");
+            throw new ClassCastException(context.getClass().getSimpleName() +
+                    " must be implement GenderListener!");
         }
     }
 

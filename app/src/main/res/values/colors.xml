@@ -2,7 +2,7 @@
 <resources>
 
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">#90A4AE</color>
     <color name="colorAccent">#1DE9B6</color>
     <!-- google's material design colours from
     http://www.google.com/design/spec/style/color.html#color-ui-color-palette -->
