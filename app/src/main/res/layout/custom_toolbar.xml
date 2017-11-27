@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/toolbar"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        android:gravity="center"
+        android:text="@string/fragment_posts_title"
+        android:textColor="@color/md_blue_grey_700" />
+
+    <View
+        android:id="@+id/bgIcon"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="36dp"
+        android:background="@drawable/bg_burger_icon"
+        android:elevation="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:elevation="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bgIcon"
+        app:layout_constraintEnd_toEndOf="@+id/bgIcon"
+        app:layout_constraintStart_toStartOf="@+id/bgIcon"
+        app:layout_constraintTop_toTopOf="@+id/bgIcon"
+        app:srcCompat="@drawable/ic_menu_white_24dp" />
+</android.support.constraint.ConstraintLayout>

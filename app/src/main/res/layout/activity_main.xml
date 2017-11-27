@@ -8,6 +8,8 @@
     android:fitsSystemWindows="true"
     tools:context="apps.steve.fire.randomchat.main.MainActivity">
 
+    <include layout="@layout/custom_toolbar" />
+
     <include layout="@layout/content_main" />
 
     <include
@@ -23,5 +25,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_whatshot_white_24dp" />
+
+    <include layout="@layout/splash_screen" />
 
 </android.support.design.widget.CoordinatorLayout>

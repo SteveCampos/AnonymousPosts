@@ -36,8 +36,8 @@ public class PostPagerFragment extends Fragment {
     @BindView(R.id.frameLayout)
     ConstraintLayout frameLayout;
     Unbinder unbinder;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    /*@BindView(R.id.toolbar)
+    Toolbar toolbar;*/
     @BindView(R.id.appbar)
     AppBarLayout appbar;
 

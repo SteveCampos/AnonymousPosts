@@ -15,6 +15,8 @@ import android.support.transition.TransitionManager;
 import android.support.transition.TransitionSet;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +29,17 @@ import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
 import apps.steve.fire.randomchat.R;
+import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
+import apps.steve.fire.randomchat.base.usecase.UseCaseThreadPoolScheduler;
+import apps.steve.fire.randomchat.data.source.UserRepository;
+import apps.steve.fire.randomchat.data.source.local.UserLocalDataSource;
+import apps.steve.fire.randomchat.data.source.remote.UserRemoteDataSource;
+import apps.steve.fire.randomchat.data.source.remote.firebase.FireUser;
 import apps.steve.fire.randomchat.intro.listener.GenderListener;
+import apps.steve.fire.randomchat.main.adapter.ItemAdapter;
+import apps.steve.fire.randomchat.main.listener.ItemListener;
+import apps.steve.fire.randomchat.main.ui.entity.Item;
+import apps.steve.fire.randomchat.main.usecase.PublishPost;
 import apps.steve.fire.randomchat.postpager.PostPagerFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +48,7 @@ import me.originqiu.library.EditTag;
 
 import static android.view.Gravity.TOP;
 
-public class MainActivity extends AppCompatActivity implements GenderListener, MainView {
+public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.fragment_container)
@@ -63,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     FloatingActionButton fab;
     @BindView(R.id.rootView)
     CoordinatorLayout rootView;
+    @BindView(R.id.splashScreen)
+    ConstraintLayout splashScreen;
 
     public static void startMainActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -73,28 +87,101 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     }
 
     private SlidingRootNav navListener;
+    private MainPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        showStatusBarTranslucent();
-
         includeNewPostView.bringToFront();
+        showSplashScreen();
         addPostsFragment(savedInstanceState);
-        setupNav(savedInstanceState);
+        setupNav();
+        initPresenter();
+        hideSplashScreen();
     }
 
-    private void setupNav(Bundle savedInstanceState) {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (presenter != null) {
+            presenter.onStart();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter.onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (presenter != null) {
+            presenter.onPause();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (presenter != null) {
+            presenter.onStop();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        navListener = null;
+        super.onDestroy();
+        if (presenter != null) {
+            presenter.onDestroy();
+        }
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return presenter;
+    }
+
+    private void initPresenter() {
+        presenter = (MainPresenter) getLastCustomNonConfigurationInstance();
+        if (presenter == null) {
+            UserRepository repository = new UserRepository(
+                    new UserLocalDataSource(),
+                    new UserRemoteDataSource(new FireUser())
+            );
+            presenter = new MainPresenterImpl(
+                    getResources(),
+                    new UseCaseHandler(new UseCaseThreadPoolScheduler()),
+                    new PublishPost(repository));
+        }
+        setPresenter(presenter);
+    }
+
+    @OnClick(R.id.bgIcon)
+    public void onBurgerIconClicked() {
+        presenter.onBurgerIconClicked();
+    }
+
+    private void setupNav() {
         navListener = new SlidingRootNavBuilder(this)
                 .withMenuLayout(R.layout.navigation_view)
                 .withMenuOpened(false)
                 .withContentClickableWhenMenuOpened(false)
-                .withSavedState(savedInstanceState)
+                //.withSavedState(savedInstanceState)
                 .inject();
-    }
 
+        RecyclerView recycler = findViewById(R.id.recycler);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        ItemAdapter adapter = new ItemAdapter(Item.getMenuList(getResources()), this);
+        recycler.setAdapter(adapter);
+    }
 
     public static final String TAG_POSTS_FRAGMENT = "posts";
 
@@ -119,12 +206,6 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
                 .add(R.id.fragment_container, postsFragment, TAG_POSTS_FRAGMENT).commitNow();
     }
 
-    public void showStatusBarTranslucent() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            /*Window w = getWindow();
-            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);*/
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -159,17 +240,34 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @Override
     public void setPresenter(MainPresenter presenter) {
+        presenter.attachView(this);
+        presenter.onCreate();
+    }
+
+    @Override
+    public void showName(String name) {
+
+    }
+
+    @Override
+    public void showCity(String city) {
+
+    }
+
+    @Override
+    public void showAvatar(int avatar) {
 
     }
 
     @Override
     public void showSplashScreen() {
-
+        //splashScreen.setVisibility(View.VISIBLE);
+        splashScreen.bringToFront();
     }
 
     @Override
     public void hideSplashScreen() {
-
+        splashScreen.setVisibility(View.GONE);
     }
 
     @Override
@@ -182,23 +280,38 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         toogleNewPostVisibility(false);
     }
 
+    @Override
+    public void openNavigation() {
+        navListener.openMenu(true);
+    }
+
+    @Override
+    public void closeNavigation() {
+        navListener.closeMenu(true);
+    }
+
     @OnClick(R.id.fab)
     public void onFabClicked() {
-        toogleNewPostVisibility(true);
+        presenter.onFabClicked();
     }
 
     @OnClick(R.id.btnPost)
     public void onBtnPostClicked() {
-        toogleNewPostVisibility(false);
+        presenter.onSubmitPost(edtContent.getText().toString(), editTagView.getTagList());
     }
 
     @Override
     public void onBackPressed() {
-        if (visible) {
+        presenter.onBackPressed();
+        /*if (visible) {
             toogleNewPostVisibility(false);
         } else {
             super.onBackPressed();
-        }
+        }*/
+    }
+    @Override
+    public void superOnBackPressed(){
+        super.onBackPressed();
     }
 
     private boolean visible;
@@ -225,5 +338,10 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         includeNewPostView.setVisibility(visibility ? View.VISIBLE : View.GONE);
         boolean focussed = edtContent.requestFocus();
         Log.d(TAG, "focussed: " + focussed);
+    }
+
+    @Override
+    public void onItemSelected(Item item) {
+        presenter.onMenuItemSelected(item);
     }
 }

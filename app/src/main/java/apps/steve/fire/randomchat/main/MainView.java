@@ -1,5 +1,7 @@
 package apps.steve.fire.randomchat.main;
 
+import android.support.annotation.DrawableRes;
+
 import apps.steve.fire.randomchat.base.BaseView;
 
 /**
@@ -7,7 +9,10 @@ import apps.steve.fire.randomchat.base.BaseView;
  */
 
 public interface MainView extends BaseView<MainPresenter> {
-
+    /*Profile Views*/
+    void showName(String name);
+    void showCity(String city);
+    void showAvatar(@DrawableRes int avatar);
     void showSplashScreen();
 
     void hideSplashScreen();
@@ -16,4 +21,9 @@ public interface MainView extends BaseView<MainPresenter> {
 
     void hidePublishDialog();
 
+    void openNavigation();
+    void closeNavigation();
+
+
+    void superOnBackPressed();
 }
