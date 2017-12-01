@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme.TranslucentStatusBar" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimaryDark">@color/md_white_1000</item>
+    <style name="AppTheme.LigthStatusBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@android:color/white</item>
         <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+    <style name="AppTheme.PrimaryColorStatusBar" parent="AppTheme.LigthStatusBar">
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
 </resources>

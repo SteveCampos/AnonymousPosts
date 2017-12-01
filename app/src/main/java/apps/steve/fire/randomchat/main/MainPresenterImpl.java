@@ -3,10 +3,12 @@ package apps.steve.fire.randomchat.main;
 import android.content.res.Resources;
 import android.util.Log;
 
+import java.util.Date;
 import java.util.List;
 
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
+import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
 
 /**
@@ -85,21 +87,51 @@ public class MainPresenterImpl implements MainPresenter {
         }
     }
 
+    private boolean kingPostSelected;
+
     @Override
     public void onSubmitPost(String content, List<String> tagList) {
         Log.d(TAG, "onSubmitPost");
+        Post post = new Post();
+        post.setContentText(content);
+        post.setHashtags(tagList);
+        post.setTimestamp(new Date().getTime());
+        post.setPopular(kingPostSelected);
+
+        addPost(post);
         hidePublishDialog();
     }
 
+    private void addPost(Post post) {
+        if (view != null) {
+            view.addPost(post);
+        }
+    }
+
+    private boolean isFabExtrasVisible;
     private boolean isPublishDialogVisible;
 
     @Override
     public void onFabClicked() {
-        if (!isPublishDialogVisible) {
-            showPublishDialog();
+        if (!isFabExtrasVisible) {
+            showFabs();
         } else {
-            hidePublishDialog();
+            hideFabs();
         }
+    }
+
+    private void showFabs() {
+        if (view != null) {
+            view.showFabExtras();
+        }
+        isFabExtrasVisible = true;
+    }
+
+    private void hideFabs() {
+        if (view != null) {
+            view.hideFabExtras();
+        }
+        isFabExtrasVisible = false;
     }
 
     private void showPublishDialog() {
@@ -126,8 +158,47 @@ public class MainPresenterImpl implements MainPresenter {
         }
     }
 
+    private Item itemSelected;
+
     @Override
     public void onMenuItemSelected(Item item) {
-        closeNav();
+        toogleItems(itemSelected, item);
+        //closeNav();
+        startChat();
+    }
+
+    private void startChat() {
+        if (view != null) {
+            view.startChat();
+        }
+    }
+
+    @Override
+    public void onFabProClicked() {
+        hideFabs();
+        tooglePostDialog();
+    }
+
+    private void tooglePostDialog() {
+        if (!isPublishDialogVisible) {
+            showPublishDialog();
+        } else {
+            hidePublishDialog();
+        }
+    }
+
+    @Override
+    public void onFabRegularClicked() {
+        hideFabs();
+        tooglePostDialog();
+    }
+
+    private void toogleItems(Item old, Item selected) {
+        if (old != null) old.setSelected(false);
+        selected.setSelected(true);
+        if (view != null) {
+            view.toogleMenuItems(old, selected);
+        }
+        itemSelected = selected;
     }
 }

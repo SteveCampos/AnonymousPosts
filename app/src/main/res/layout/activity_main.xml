@@ -18,7 +18,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <include layout="@layout/container_fab" />
+    <include
+        android:id="@+id/includeFab"
+        layout="@layout/content_fab"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
     <include layout="@layout/splash_screen" />
 

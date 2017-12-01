@@ -16,4 +16,8 @@ public interface MainPresenter extends BasePresenter<MainView> {
     void onBackPressed();
 
     void onMenuItemSelected(Item item);
+
+    void onFabProClicked();
+
+    void onFabRegularClicked();
 }

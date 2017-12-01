@@ -3,36 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:elevation="8dp"
-    android:visibility="gone">
+    android:layout_height="wrap_content"
+    tools:layout_editor_absoluteY="81dp">
 
     <ImageView
         android:id="@+id/imgProfile"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:contentDescription="@null"
-        android:elevation="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/includeContent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/includeContent"
-        app:srcCompat="@drawable/boy_heisenberg" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/boy_casual" />
 
     <include
-        android:id="@+id/includeContent"
-        layout="@layout/content_card_new_post"
-        android:layout_width="0dp"
+        android:id="@+id/include"
+        layout="@layout/content_message"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imgProfile"
         app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

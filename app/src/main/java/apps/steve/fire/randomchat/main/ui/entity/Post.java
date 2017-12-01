@@ -18,6 +18,9 @@ public class Post {
     private long commentCount;
     private boolean popular;
 
+    public Post() {
+    }
+
     public Post(String id, List<String> hashtags, String content, String location, User user, long timestamp, long favoriteCount, long dislikeCount, long commentCount) {
         this.id = id;
         this.hashtags = hashtags;

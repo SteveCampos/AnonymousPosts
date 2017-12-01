@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_blue_grey_50"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="apps.steve.fire.randomchat.chat.ChatActivity"
+    tools:showIn="@layout/activity_chat">
+
+    <View
+        android:id="@+id/bgBottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_corner_white"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/editText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editText" />
+
+    <ImageView
+        android:id="@+id/imgEmoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/editText"
+        app:layout_constraintStart_toStartOf="@+id/bgBottom"
+        app:layout_constraintTop_toTopOf="@+id/editText"
+        app:srcCompat="@drawable/ic_sign" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="56dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:elevation="4dp"
+        android:ems="10"
+        android:hint="Write Something Cool"
+        android:inputType="textMultiLine|textCapSentences"
+        android:maxHeight="144dp"
+        android:textColor="@color/md_blue_grey_700"
+        android:textColorHint="@color/md_grey_400"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imgSend"
+        app:layout_constraintStart_toEndOf="@+id/imgEmoji" />
+
+    <ImageView
+        android:id="@+id/imgSend"
+        android:background="?attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@null"
+        android:elevation="4dp"
+        android:tint="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="@+id/editText"
+        app:layout_constraintEnd_toEndOf="@+id/bgBottom"
+        app:layout_constraintTop_toTopOf="@+id/editText"
+        app:srcCompat="@android:drawable/ic_menu_send" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/bgBottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/chat_item_emisor_message" />
+</android.support.constraint.ConstraintLayout>

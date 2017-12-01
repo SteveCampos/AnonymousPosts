@@ -3,6 +3,9 @@ package apps.steve.fire.randomchat.main;
 import android.support.annotation.DrawableRes;
 
 import apps.steve.fire.randomchat.base.BaseView;
+import apps.steve.fire.randomchat.main.ui.entity.Item;
+import apps.steve.fire.randomchat.main.ui.entity.Post;
+import apps.steve.fire.randomchat.posts.PostView;
 
 /**
  * Created by Steve on 11/11/2017.
@@ -26,4 +29,13 @@ public interface MainView extends BaseView<MainPresenter> {
 
 
     void superOnBackPressed();
+
+    void toogleMenuItems(Item old, Item selected);
+
+    void showFabExtras();
+    void hideFabExtras();
+
+    void addPost(Post post);
+
+    void startChat();
 }

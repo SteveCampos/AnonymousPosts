@@ -10,12 +10,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="@null"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@+id/guidelineThirdQuarter"
         app:layout_constraintStart_toStartOf="@+id/guidelineOneQuarter"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/boy_casual"
-        android:contentDescription="@null" />
+        app:srcCompat="@drawable/boy_casual" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guidelineOneQuarter"
@@ -73,45 +73,45 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabLove"
-        app:fabSize="normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:focusable="true"
         app:backgroundTint="@color/cardview_light_background"
+        app:fabSize="normal"
         app:layout_constraintEnd_toStartOf="@+id/fabComments"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/fabPosts"
         app:layout_constraintTop_toBottomOf="@+id/txtLocalization"
-        app:srcCompat="@drawable/ic_favorite_red_24dp" />
+        app:srcCompat="@drawable/ic_favorite_primarydark_24dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabPosts"
-        app:fabSize="normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:focusable="true"
         app:backgroundTint="@color/cardview_light_background"
+        app:fabSize="normal"
         app:layout_constraintEnd_toStartOf="@+id/fabLove"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/fabLove"
-        app:srcCompat="@drawable/ic_favorite_red_24dp" />
+        app:srcCompat="@drawable/ic_favorite_primarydark_24dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabComments"
-        app:fabSize="normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:focusable="true"
         app:backgroundTint="@color/cardview_light_background"
+        app:fabSize="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/fabLove"
         app:layout_constraintTop_toTopOf="@+id/fabLove"
-        app:srcCompat="@drawable/ic_favorite_red_24dp" />
+        app:srcCompat="@drawable/ic_favorite_primarydark_24dp" />
 
     <TextView
         android:id="@+id/txtFabPost"
@@ -152,8 +152,8 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:text="Un par de palabras sobre ti, qué música escuchas, cuáles son tus libros favoritos, qué tipos de películas ves."
-        android:textColor="@color/md_grey_500"
         android:textAlignment="center"
+        android:textColor="@color/md_grey_500"
         app:layout_constraintBottom_toTopOf="@+id/includeBtnSendMessage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -166,9 +166,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:drawableEnd="@drawable/ic_coin_tinder"
+        android:layout_marginTop="8dp"
+        android:drawableEnd="@drawable/ic_crown_1"
+        android:drawablePadding="8dp"
         android:gravity="bottom"
         android:text="178"
+        android:textColor="@color/md_blue_grey_500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineThirdQuarter"
         app:layout_constraintTop_toTopOf="@+id/imgProfile" />

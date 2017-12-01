@@ -84,7 +84,7 @@ public class IntroPresenterImpl implements IntroPresenter {
     private static final @DrawableRes
     int DRAWABLE_GENDER_MAN = R.drawable.boy_casual;
     private static final @DrawableRes
-    int DRAWABLE_GENDER_WOMAN = R.drawable.gir_hipster;
+    int DRAWABLE_GENDER_WOMAN = R.drawable.girl_hipster;
     private static final @DrawableRes
     int DRAWABLE_GENDER_NONBINARY = R.drawable.nb_young;
     private static final @StringRes

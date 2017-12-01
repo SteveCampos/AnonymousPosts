@@ -2,17 +2,24 @@ package apps.steve.fire.randomchat.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.graphics.ColorFilter;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Group;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.transition.ChangeBounds;
+import android.support.transition.ChangeTransform;
+import android.support.transition.Explode;
+import android.support.transition.Fade;
 import android.support.transition.Slide;
 import android.support.transition.TransitionManager;
 import android.support.transition.TransitionSet;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +28,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,9 +36,12 @@ import android.widget.TextView;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
+import java.util.List;
+
 import apps.steve.fire.randomchat.R;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.base.usecase.UseCaseThreadPoolScheduler;
+import apps.steve.fire.randomchat.chat.ChatActivity;
 import apps.steve.fire.randomchat.data.source.UserRepository;
 import apps.steve.fire.randomchat.data.source.local.UserLocalDataSource;
 import apps.steve.fire.randomchat.data.source.remote.UserRemoteDataSource;
@@ -39,13 +50,18 @@ import apps.steve.fire.randomchat.intro.listener.GenderListener;
 import apps.steve.fire.randomchat.main.adapter.ItemAdapter;
 import apps.steve.fire.randomchat.main.listener.ItemListener;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
+import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
 import apps.steve.fire.randomchat.postpager.PostPagerFragment;
+import apps.steve.fire.randomchat.posts.PostsFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.originqiu.library.EditTag;
 
+import static android.view.Gravity.BOTTOM;
+import static android.view.Gravity.LEFT;
+import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
 
 public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener {
@@ -77,6 +93,11 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     CoordinatorLayout rootView;
     @BindView(R.id.splashScreen)
     ConstraintLayout splashScreen;
+    @BindView(R.id.btnPro)
+    Group fabPro;
+    @BindView(R.id.btnRegular)
+    Group fabRegular;
+
 
     public static void startMainActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -169,6 +190,8 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         presenter.onBurgerIconClicked();
     }
 
+    private ItemAdapter itemAdapter;
+
     private void setupNav() {
         navListener = new SlidingRootNavBuilder(this)
                 .withMenuLayout(R.layout.navigation_view)
@@ -179,8 +202,8 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
         RecyclerView recycler = findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(this));
-        ItemAdapter adapter = new ItemAdapter(Item.getMenuList(getResources()), this);
-        recycler.setAdapter(adapter);
+        itemAdapter = new ItemAdapter(Item.getMenuList(getResources()), this);
+        recycler.setAdapter(itemAdapter);
     }
 
     public static final String TAG_POSTS_FRAGMENT = "posts";
@@ -272,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @Override
     public void showPublishDialog() {
-
+        toogleNewPostVisibility(true);
     }
 
     @Override
@@ -295,6 +318,17 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         presenter.onFabClicked();
     }
 
+    @OnClick(R.id.bgBtnPro)
+    public void onFabProClicked() {
+        presenter.onFabProClicked();
+    }
+
+    @OnClick(R.id.bgBtnRegular)
+    public void onFabRegularClicked() {
+        presenter.onFabRegularClicked();
+    }
+
+
     @OnClick(R.id.btnPost)
     public void onBtnPostClicked() {
         presenter.onSubmitPost(edtContent.getText().toString(), editTagView.getTagList());
@@ -309,15 +343,70 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
             super.onBackPressed();
         }*/
     }
+
     @Override
-    public void superOnBackPressed(){
+    public void superOnBackPressed() {
         super.onBackPressed();
     }
 
-    private boolean visible;
+    @Override
+    public void toogleMenuItems(Item old, Item selected) {
+        itemAdapter.toogleItem(old, selected);
+    }
+
+    @Override
+    public void showFabExtras() {
+        TransitionManager.beginDelayedTransition(rootView,
+                new TransitionSet()
+                        .addTransition(new ChangeBounds())
+                        .addTransition(new Slide(TOP).setDuration(200).setInterpolator(new FastOutSlowInInterpolator()).setStartDelay(200))
+                        .addTransition(new ChangeBounds()));
+        fabPro.setVisibility(View.VISIBLE);
+        fabRegular.setVisibility(View.VISIBLE);
+        @DrawableRes int drawableRes = R.drawable.ic_close_grey_24dp;
+        fab.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+        fab.setImageResource(drawableRes);
+    }
+
+    @Override
+    public void hideFabExtras() {
+        @DrawableRes int drawableRes = R.drawable.ic_whatshot_white_24dp;
+        fab.setImageResource(drawableRes);
+        fabPro.setVisibility(View.GONE);
+        fabRegular.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void addPost(Post post) {
+        Log.d(TAG, "addPost");
+        PostsFragment fragment = getPostFragment();
+        if (fragment != null) {
+            fragment.addPost(post);
+        }
+    }
+
+    @OnClick(R.id.imgProfile)
+    public void onProfileClicked() {
+        startChat();
+    }
+
+    @Override
+    public void startChat() {
+        ChatActivity.startChatActivity(this);
+    }
+
+    private PostsFragment getPostFragment() {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof PostsFragment) {
+                return (PostsFragment) fragment;
+            }
+        }
+        return null;
+    }
+
 
     private void toogleNewPostVisibility(boolean visibility) {
-        visible = visibility;
         float alpha = 1f;
         if (visibility) {
             alpha = 0.5f;

@@ -1,5 +1,8 @@
 package apps.steve.fire.randomchat.main.adapter;
 
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +47,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         return items.size();
     }
 
+    public void changeItem(Item item) {
+        int position = items.indexOf(item);
+        if (position != -1) {
+            items.set(position, item);
+            notifyItemChanged(position);
+        }
+    }
+
+    public void toogleItem(Item old, Item selected) {
+        changeItem(old);
+        changeItem(selected);
+    }
+
     public static final class ItemViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txtItem)
         TextView txtItem;
@@ -62,6 +78,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     listener.onItemSelected(item);
                 }
             });
+            @ColorRes int textColor = R.color.md_grey_500;
+            if (item.isSelected()) {
+                textColor = R.color.colorAccent;
+            }
+            txtItem.setTextColor(ContextCompat.getColor(itemView.getContext(), textColor));
         }
     }
 }

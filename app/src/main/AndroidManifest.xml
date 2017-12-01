@@ -13,15 +13,25 @@
         <activity
             android:name=".main.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.TranslucentStatusBar">
+            android:theme="@style/AppTheme.LigthStatusBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".intro.IntroActivity"
-            android:theme="@style/AppTheme.TranslucentStatusBar" />
+            android:theme="@style/AppTheme.LigthStatusBar" />
+        <activity
+            android:name=".chat.ChatActivity"
+            android:label="@string/title_activity_chat"
+            android:parentActivityName=".main.MainActivity"
+            android:theme="@style/AppTheme.PrimaryColorStatusBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="apps.steve.fire.randomchat.main.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

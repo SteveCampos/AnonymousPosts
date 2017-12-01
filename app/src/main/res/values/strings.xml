@@ -50,6 +50,7 @@
     <string name="menuitem_appinfo_title">App Info</string>
     <string name="menuitem_logout_title">Cerrar Sesión</string>
     <string name="fragment_posts_message_empty">No hay publicaciones</string>
+    <string name="title_activity_chat">ChatActivity</string>
 
 
 </resources>
