@@ -1,6 +1,8 @@
 package apps.steve.fire.randomchat.data.source.remote.firebase;
 
 import apps.steve.fire.randomchat.data.source.remote.callback.Callback;
+import apps.steve.fire.randomchat.data.source.remote.entity.Comment;
+import apps.steve.fire.randomchat.data.source.remote.entity.Post;
 import apps.steve.fire.randomchat.data.source.remote.entity.User;
 
 /**
@@ -10,4 +12,11 @@ import apps.steve.fire.randomchat.data.source.remote.entity.User;
 public interface FireUserContract {
 
     void updateUser(User user, Callback<User> callback);
+
+    void publishPost(Post post, Callback<Post> callback);
+
+    void commentPost(Comment comment, Callback<Comment> callback);
+
+    void likeComment(User user, Comment comment, Callback<Comment> callback);
+
 }

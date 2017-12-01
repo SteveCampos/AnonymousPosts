@@ -17,10 +17,9 @@ public class User {
     public String gender;
     public String description;
     public String avatar;
-    public int popularity;
     public int coins;
-    public String urlAvatar;
-    public String urlPortada;
+    public long postCount;
+    public long commentCount;
 
     public User() {
     }
@@ -65,14 +64,6 @@ public class User {
         this.avatar = avatar;
     }
 
-    public int getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(int popularity) {
-        this.popularity = popularity;
-    }
-
     public int getCoins() {
         return coins;
     }
@@ -81,20 +72,20 @@ public class User {
         this.coins = coins;
     }
 
-    public String getUrlAvatar() {
-        return urlAvatar;
+    public long getPostCount() {
+        return postCount;
     }
 
-    public void setUrlAvatar(String urlAvatar) {
-        this.urlAvatar = urlAvatar;
+    public void setPostCount(long postCount) {
+        this.postCount = postCount;
     }
 
-    public String getUrlPortada() {
-        return urlPortada;
+   public long getCommentCount() {
+        return commentCount;
     }
 
-    public void setUrlPortada(String urlPortada) {
-        this.urlPortada = urlPortada;
+    public void setCommentCount(long commentCount) {
+        this.commentCount = commentCount;
     }
 
     @Exclude
@@ -105,8 +96,9 @@ public class User {
         result.put("gender", gender);
         result.put("description", description);
         result.put("avatar", avatar);
-        result.put("popularity", popularity);
         result.put("coins", coins);
+        result.put("postCount", postCount);
+        result.put("commentCount", commentCount);
         return result;
     }
 }

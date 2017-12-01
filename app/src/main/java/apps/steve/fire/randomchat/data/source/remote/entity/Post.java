@@ -1,29 +1,39 @@
-package apps.steve.fire.randomchat.main.ui.entity;
+package apps.steve.fire.randomchat.data.source.remote.entity;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 /**
- * Created by Steve on 26/11/2017.
+ * Created by Steve on 30/11/2017.
  */
-
+@IgnoreExtraProperties
 public class Post {
     private String id;
-    private List<String> hashtags;
+    private List<String> hashtags = new ArrayList<>();
     private String contentText;
     private String location;
-    private User user;
+    private String userId;
     private long timestamp;
     private long favoriteCount;
     private long dislikeCount;
     private long commentCount;
     private boolean popular;
 
-    public Post(String id, List<String> hashtags, String content, String location, User user, long timestamp, long favoriteCount, long dislikeCount, long commentCount) {
+    public Post() {
+    }
+
+    public Post(String id, List<String> hashtags, String contentText, String location, String userId, long timestamp, long favoriteCount, long dislikeCount, long commentCount) {
         this.id = id;
         this.hashtags = hashtags;
-        this.contentText = content;
+        this.contentText = contentText;
         this.location = location;
-        this.user = user;
+        this.userId = userId;
         this.timestamp = timestamp;
         this.favoriteCount = favoriteCount;
         this.dislikeCount = dislikeCount;
@@ -62,12 +72,12 @@ public class Post {
         this.location = location;
     }
 
-    public User getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public long getTimestamp() {
@@ -108,5 +118,26 @@ public class Post {
 
     public void setPopular(boolean popular) {
         this.popular = popular;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("contentText", contentText);
+        result.put("location", location);
+        result.put("userId", userId);
+        result.put("timestamp", timestamp);
+        result.put("favoriteCount", favoriteCount);
+        result.put("dislikeCount", dislikeCount);
+        result.put("commentCount", commentCount);
+        result.put("popular", popular);
+        if (!hashtags.isEmpty()) {
+            for (String hashtag :
+                    hashtags) {
+                result.put("hashtag/" + hashtag, true);
+            }
+        }
+        return result;
     }
 }
