@@ -12,6 +12,8 @@ import apps.steve.fire.randomchat.posts.PostView;
  */
 
 public interface MainView extends BaseView<MainPresenter> {
+    /**/
+    boolean checkPlayServicesAvaliability();
     /*Profile Views*/
     void showName(String name);
     void showCity(String city);
@@ -38,4 +40,10 @@ public interface MainView extends BaseView<MainPresenter> {
     void addPost(Post post);
 
     void startChat();
+
+    void startIntro();
+
+    void logout();
+
+    void showError(String error);
 }

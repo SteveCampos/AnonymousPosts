@@ -1,14 +1,20 @@
 package apps.steve.fire.randomchat.main;
 
 import android.content.res.Resources;
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Date;
 import java.util.List;
 
+import apps.steve.fire.randomchat.R;
+import apps.steve.fire.randomchat.base.usecase.UseCase;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
+import apps.steve.fire.randomchat.main.usecase.GetPopularPosts;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
 
 /**
@@ -20,14 +26,18 @@ public class MainPresenterImpl implements MainPresenter {
     private Resources res;
     private UseCaseHandler handler;
     private PublishPost useCasePublishPost;
+    private FirebaseUser currentUser;
+    private GetPopularPosts useCaseGetPopularPosts;
 
-    public MainPresenterImpl(Resources res, UseCaseHandler handler, PublishPost publishPost) {
+    private MainView view;
+
+    public MainPresenterImpl(FirebaseUser currentUser, Resources res, UseCaseHandler handler, PublishPost publishPost, GetPopularPosts popularPosts) {
+        this.currentUser = currentUser;
         this.res = res;
         this.handler = handler;
         this.useCasePublishPost = publishPost;
+        this.useCaseGetPopularPosts = popularPosts;
     }
-
-    private MainView view;
 
     @Override
     public void attachView(MainView view) {
@@ -38,6 +48,7 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate");
+        getPopularPosts();
     }
 
     @Override
@@ -48,6 +59,8 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onResume() {
         Log.d(TAG, "onResume");
+        showName();
+        checkCurrentUser();
     }
 
     @Override
@@ -72,6 +85,39 @@ public class MainPresenterImpl implements MainPresenter {
         openNav();
     }
 
+    private void getPopularPosts() {
+        handler.execute(
+                useCaseGetPopularPosts,
+                new GetPopularPosts.RequestValues(),
+                new UseCase.UseCaseCallback<GetPopularPosts.ResponseValue>() {
+                    @Override
+                    public void onSuccess(GetPopularPosts.ResponseValue response) {
+                        Post post = response.getPost();
+                        if (post != null) {
+                            addPost(post);
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                }
+        );
+    }
+
+    private void checkCurrentUser() {
+        if (currentUser == null) {
+            view.startIntro();
+        }
+    }
+
+    private void showName() {
+        if (view != null && currentUser != null) {
+            view.showName(currentUser.getDisplayName());
+        }
+    }
+
     private boolean isNavOpen;
 
     private void openNav() {
@@ -92,14 +138,44 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onSubmitPost(String content, List<String> tagList) {
         Log.d(TAG, "onSubmitPost");
+        if (TextUtils.isEmpty(content)) {
+            return;
+        }
         Post post = new Post();
         post.setContentText(content);
         post.setHashtags(tagList);
         post.setTimestamp(new Date().getTime());
         post.setPopular(kingPostSelected);
 
-        addPost(post);
         hidePublishDialog();
+        publishPost(post);
+        //addPost(post);
+    }
+
+    private void publishPost(Post post) {
+        Log.d(TAG, "publishPost");
+        handler.execute(
+                useCasePublishPost,
+                new PublishPost.RequestValues(post),
+                new UseCase.UseCaseCallback<PublishPost.ResponseValue>() {
+                    @Override
+                    public void onSuccess(PublishPost.ResponseValue response) {
+                        addPost(response.getPost());
+                    }
+
+                    @Override
+                    public void onError() {
+                        String error = res.getString(R.string.error_publish);
+                        showError(error);
+                    }
+                }
+        );
+    }
+
+    private void showError(String error) {
+        if (view != null) {
+            view.showError(error);
+        }
     }
 
     private void addPost(Post post) {
@@ -158,13 +234,30 @@ public class MainPresenterImpl implements MainPresenter {
         }
     }
 
+    private static final String MENU_LOGOUT = "Cerrar Sesión";
+    private static final String MENU_APPINFO = "App Info";
+    private static final String MENU_MESSAGES = "Mensajes";
+    private static final String MENU_USERS = "Usuarios";
+    private static final String MENU_POSTS = "Publicaciones";
+    private static final String MENU_PROFILE = "Mi perfil";
     private Item itemSelected;
 
     @Override
     public void onMenuItemSelected(Item item) {
         toogleItems(itemSelected, item);
-        //closeNav();
-        startChat();
+        closeNav();
+        switch (item.getName()) {
+            case MENU_LOGOUT:
+                logout();
+                break;
+        }
+    }
+
+    private void logout() {
+        if (view != null) {
+            view.logout();
+            view.startIntro();
+        }
     }
 
     private void startChat() {
@@ -175,6 +268,7 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void onFabProClicked() {
+        kingPostSelected = true;
         hideFabs();
         tooglePostDialog();
     }
@@ -189,6 +283,7 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void onFabRegularClicked() {
+        kingPostSelected = false;
         hideFabs();
         tooglePostDialog();
     }

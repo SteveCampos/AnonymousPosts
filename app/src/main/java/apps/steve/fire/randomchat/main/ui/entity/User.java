@@ -18,6 +18,9 @@ public class User {
     private long postCount;
     private long commentCount;
 
+    public User() {
+    }
+
     public User(String id, String name, int genderDrawable, String description, int avatarDrawable, long coins, long postCount, long commentCount) {
         this.id = id;
         this.name = name;
@@ -59,5 +62,37 @@ public class User {
 
     public long getCommentCount() {
         return commentCount;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setGenderDrawable(int genderDrawable) {
+        this.genderDrawable = genderDrawable;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setAvatarDrawable(int avatarDrawable) {
+        this.avatarDrawable = avatarDrawable;
+    }
+
+    public void setCoins(long coins) {
+        this.coins = coins;
+    }
+
+    public void setPostCount(long postCount) {
+        this.postCount = postCount;
+    }
+
+    public void setCommentCount(long commentCount) {
+        this.commentCount = commentCount;
     }
 }

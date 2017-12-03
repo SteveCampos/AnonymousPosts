@@ -2,9 +2,14 @@ package apps.steve.fire.randomchat.data.source.remote.firebase;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +37,7 @@ public class FireUser extends Fire implements FireUserContract {
     public static final String PATH_LOCATION_POST = "/location-post/";
     public static final String PATH_POST_POPULAR = "/post-popular/";
     public static final String PATH_HASHTAG_POST = "/hashtag-post/";
+    private static final String TAG = FireUser.class.getSimpleName();
 
     public FireUser() {
         super();
@@ -42,11 +48,12 @@ public class FireUser extends Fire implements FireUserContract {
 
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
-        String key = user.getId();
+        String userId = user.getId();
+        Log.d(TAG, "updateUser: " + userId);
         Map<String, Object> userValues = user.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(PATH_USER + key, userValues);
+        childUpdates.put(PATH_USER + userId, userValues);
         //childUpdates.put("/user-posts/" + userId + "/" + key, userValues);
 
         mDatabase
@@ -154,5 +161,61 @@ public class FireUser extends Fire implements FireUserContract {
                         }
                     }
                 });
+    }
+
+    public void getUser(String userId, final FirePostsCallback<User> userCallback) {
+        mDatabase.child(PATH_USER + userId).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d("FireUser", "dataSnapshot: " + dataSnapshot);
+                        User user = dataSnapshot.getValue(User.class);
+                        userCallback.onSuccess(user);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        userCallback.onSuccess(null);
+                    }
+                }
+        );
+    }
+
+    public void getPopularPost(final FirePostsCallback<Post> callback) {
+        mDatabase.child(PATH_POST_POPULAR).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildAdded dataSnapshot");
+                parsePost(dataSnapshot, callback);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildChanged dataSnapshot");
+                parsePost(dataSnapshot, callback);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void parsePost(DataSnapshot dataSnapshot, FirePostsCallback<Post> callback) {
+        Post post = dataSnapshot.getValue(Post.class);
+        if (post != null) {
+            callback.onSuccess(post);
+        }
     }
 }

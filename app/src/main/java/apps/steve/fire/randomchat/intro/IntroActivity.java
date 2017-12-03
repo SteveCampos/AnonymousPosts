@@ -1,5 +1,6 @@
 package apps.steve.fire.randomchat.intro;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,6 +54,14 @@ import apps.steve.fire.randomchat.main.MainActivity;
 public class IntroActivity extends AppIntro2 implements IntroView, GenderListener, AvatarListener {
 
     private static final String TAG = IntroActivity.class.getSimpleName();
+
+    public static void startIntroActivity(Context context) {
+        Intent intent = new Intent(context, IntroActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
 
     private SliderPage newSlider(@StringRes int title,
                                  @StringRes int description,
@@ -186,7 +195,7 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
         presenter = (IntroPresenter) getLastCustomNonConfigurationInstance();
         if (presenter == null) {
             UserLocalDataSource localDataSource = new UserLocalDataSource();
-            UserRemoteDataSource remoteDataSource = new UserRemoteDataSource(new FireUser());
+            UserRemoteDataSource remoteDataSource = new UserRemoteDataSource(new FireUser(), null);
             UserRepository repository = new UserRepository(localDataSource, remoteDataSource);
             presenter = new IntroPresenterImpl(
                     getResources(),
@@ -403,4 +412,5 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
         Toast.makeText(IntroActivity.this, text,
                 Toast.LENGTH_SHORT).show();
     }
+
 }

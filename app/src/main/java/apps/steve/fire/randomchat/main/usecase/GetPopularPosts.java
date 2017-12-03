@@ -6,41 +6,32 @@ import apps.steve.fire.randomchat.data.source.UserRepository;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 
 /**
- * Created by Steve on 26/11/2017.
+ * Created by Steve on 3/12/2017.
  */
 
-public class PublishPost extends UseCase<PublishPost.RequestValues, PublishPost.ResponseValue> {
+public class GetPopularPosts extends UseCase<GetPopularPosts.RequestValues, GetPopularPosts.ResponseValue> {
 
     private UserRepository repository;
 
-    public PublishPost(UserRepository repository) {
+    public GetPopularPosts(UserRepository repository) {
         this.repository = repository;
     }
 
     @Override
     protected void executeUseCase(RequestValues requestValues) {
-        repository.publishPost(requestValues.getPost(), new UserDataSource.Callback<Post>() {
+        repository.getPopularPosts(new UserDataSource.Callback<Post>() {
             @Override
             public void onSucess(Post post) {
                 if (post != null) {
                     getUseCaseCallback().onSuccess(new ResponseValue(post));
-                } else {
-                    getUseCaseCallback().onError();
                 }
             }
         });
     }
 
+
     public static final class RequestValues implements UseCase.RequestValues {
-        private final Post post;
 
-        public RequestValues(Post post) {
-            this.post = post;
-        }
-
-        public Post getPost() {
-            return post;
-        }
     }
 
     public static final class ResponseValue implements UseCase.ResponseValue {

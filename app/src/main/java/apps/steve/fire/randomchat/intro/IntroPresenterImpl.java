@@ -117,16 +117,19 @@ public class IntroPresenterImpl implements IntroPresenter {
     }
 
     private void setGenderMan() {
+        genderString = GENDER_MAN;
         genderResString = STRING_GENDER_MAN;
         genderDrawable = DRAWABLE_GENDER_MAN;
     }
 
     private void setGenderWoman() {
+        genderString = GENDER_WOMAN;
         genderResString = STRING_GENDER_WOMAN;
         genderDrawable = DRAWABLE_GENDER_WOMAN;
     }
 
     private void setGenderNonbinary() {
+        genderString = GENDER_NON_BINARY;
         genderResString = STRING_GENDER_NON_BINARY;
         genderDrawable = DRAWABLE_GENDER_NONBINARY;
     }

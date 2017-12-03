@@ -2,19 +2,16 @@ package apps.steve.fire.randomchat.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.ColorFilter;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.transition.ChangeBounds;
-import android.support.transition.ChangeTransform;
-import android.support.transition.Explode;
-import android.support.transition.Fade;
 import android.support.transition.Slide;
 import android.support.transition.TransitionManager;
 import android.support.transition.TransitionSet;
@@ -28,16 +25,23 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
 import java.util.List;
 
+import apps.steve.fire.randomchat.BuildConfig;
 import apps.steve.fire.randomchat.R;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.base.usecase.UseCaseThreadPoolScheduler;
@@ -46,11 +50,13 @@ import apps.steve.fire.randomchat.data.source.UserRepository;
 import apps.steve.fire.randomchat.data.source.local.UserLocalDataSource;
 import apps.steve.fire.randomchat.data.source.remote.UserRemoteDataSource;
 import apps.steve.fire.randomchat.data.source.remote.firebase.FireUser;
+import apps.steve.fire.randomchat.intro.IntroActivity;
 import apps.steve.fire.randomchat.intro.listener.GenderListener;
 import apps.steve.fire.randomchat.main.adapter.ItemAdapter;
 import apps.steve.fire.randomchat.main.listener.ItemListener;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
+import apps.steve.fire.randomchat.main.usecase.GetPopularPosts;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
 import apps.steve.fire.randomchat.postpager.PostPagerFragment;
 import apps.steve.fire.randomchat.posts.PostsFragment;
@@ -59,9 +65,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.originqiu.library.EditTag;
 
-import static android.view.Gravity.BOTTOM;
-import static android.view.Gravity.LEFT;
-import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
 
 public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener {
@@ -98,6 +101,9 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     @BindView(R.id.btnRegular)
     Group fabRegular;
 
+    /*Auth*/
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
 
     public static void startMainActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -116,12 +122,29 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        includeNewPostView.bringToFront();
         showSplashScreen();
+        if (!checkPlayServicesAvaliability()) {
+            return;
+        }
+        includeNewPostView.bringToFront();
         addPostsFragment(savedInstanceState);
         setupNav();
+        initAuth();
         initPresenter();
         hideSplashScreen();
+    }
+
+    private void initAuth() {
+        mAuth = FirebaseAuth.getInstance();
+        String googleClientId = BuildConfig.default_web_client_id;
+        // [START config_signin]
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(googleClientId)
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
     @Override
@@ -173,14 +196,17 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     private void initPresenter() {
         presenter = (MainPresenter) getLastCustomNonConfigurationInstance();
         if (presenter == null) {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
             UserRepository repository = new UserRepository(
                     new UserLocalDataSource(),
-                    new UserRemoteDataSource(new FireUser())
+                    new UserRemoteDataSource(new FireUser(), currentUser)
             );
             presenter = new MainPresenterImpl(
+                    currentUser,
                     getResources(),
                     new UseCaseHandler(new UseCaseThreadPoolScheduler()),
-                    new PublishPost(repository));
+                    new PublishPost(repository),
+                    new GetPopularPosts(repository));
         }
         setPresenter(presenter);
     }
@@ -268,8 +294,27 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     }
 
     @Override
-    public void showName(String name) {
+    public boolean checkPlayServicesAvaliability() {
+        boolean avaliability = false;
+        final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int resultCode = api.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (api.isUserResolvableError(resultCode))
+                api.getErrorDialog((this), resultCode, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            else {
+                GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
+            }
+        } else {
+            avaliability = true;
+        }
 
+        return avaliability;
+    }
+
+    @Override
+    public void showName(String name) {
+        txtName.setText(name);
     }
 
     @Override
@@ -393,6 +438,22 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     @Override
     public void startChat() {
         ChatActivity.startChatActivity(this);
+    }
+
+    @Override
+    public void startIntro() {
+        IntroActivity.startIntroActivity(this);
+    }
+
+    @Override
+    public void logout() {
+        mAuth.signOut();
+        mGoogleSignInClient.signOut();
+    }
+
+    @Override
+    public void showError(String error) {
+        Snackbar.make(rootView, error, Snackbar.LENGTH_LONG).show();
     }
 
     private PostsFragment getPostFragment() {

@@ -1,6 +1,6 @@
 package apps.steve.fire.randomchat.posts.holder;
 
-import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import apps.steve.fire.randomchat.R;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
+import apps.steve.fire.randomchat.main.ui.entity.User;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -44,6 +45,21 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Post post) {
-        txtContent.setText(post.getContentText());
+        String contentText = post.getContentText();
+        User user = post.getUser();
+        if (user != null) {
+            txtName.setText(user.getName());
+            imgProfile.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), user.getAvatarDrawable()));
+        }
+        txtContent.setText(contentText);
+        long favoriteCount = post.getFavoriteCount();
+        long commentCount = post.getCommentCount();
+        txtLikesCount.setText(String.valueOf(favoriteCount));
+        txtCommentsCount.setText(String.valueOf(commentCount));
+        if (post.isPopular()) {
+            imgMoreHorizontal.setVisibility(View.VISIBLE);
+        } else {
+            imgMoreHorizontal.setVisibility(View.GONE);
+        }
     }
 }

@@ -30,6 +30,7 @@
     <string name="posts_text_post">Publicar</string>
     <string name="posts_text_contenthint">Increíble post aquí.</string>
     <string name="comment_text_hint_message">Escribe un mensaje increíble</string>
+
     <string name="girl_casual">Chica Casual</string>
     <string name="girl_cat">Gata</string>
     <string name="girl_cute">Chica Linda</string>
@@ -46,11 +47,13 @@
     <string name="fragment_posts_section_popular">Populares</string>
     <string name="fragment_posts_section_recent">Recientes</string>
     <string name="fragment_users_title">Usuarios</string>
+    <string name="fragment_profile_title">Mi perfil</string>
     <string name="fragment_messages_title">Mensajes</string>
     <string name="menuitem_appinfo_title">App Info</string>
     <string name="menuitem_logout_title">Cerrar Sesión</string>
     <string name="fragment_posts_message_empty">No hay publicaciones</string>
     <string name="title_activity_chat">ChatActivity</string>
+    <string name="error_publish">Error publicando.</string>
 
 
 </resources>
