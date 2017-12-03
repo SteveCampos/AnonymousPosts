@@ -7,9 +7,13 @@ package apps.steve.fire.randomchat.main.ui.entity;
 public class Comment {
     private String id;
     private User user;
+    private String postId;
     private String commentText;
     private long favoriteCount;
     private long dislikeCount;
+
+    public Comment() {
+    }
 
     public Comment(String id, User user, String commentText, long favoriteCount, long dislikeCount) {
         this.id = id;
@@ -37,5 +41,33 @@ public class Comment {
 
     public long getDislikeCount() {
         return dislikeCount;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
+    }
+
+    public void setFavoriteCount(long favoriteCount) {
+        this.favoriteCount = favoriteCount;
+    }
+
+    public void setDislikeCount(long dislikeCount) {
+        this.dislikeCount = dislikeCount;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 }

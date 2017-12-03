@@ -77,7 +77,7 @@ public class AvatarAdapter extends RecyclerView.Adapter<AvatarAdapter.AvatarHold
 
     public static final class AvatarHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.imgDrawable)
+        @BindView(R.id.avatarDrawable)
         ImageView imgDrawable;
         @BindView(R.id.txtName)
         TextView txtName;
@@ -90,8 +90,8 @@ public class AvatarAdapter extends RecyclerView.Adapter<AvatarAdapter.AvatarHold
         }
 
         public void bind(final AvatarUi avatar, final AvatarListener listener) {
-            imgDrawable.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), avatar.getImgDrawable()));
-            txtName.setText(avatar.getName());
+            imgDrawable.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), avatar.getAvatarDrawable()));
+            txtName.setText(avatar.getAvatarName(itemView.getResources()));
             int visibility = View.GONE;
             if (avatar.isSelected()) {
                 visibility = VISIBLE;

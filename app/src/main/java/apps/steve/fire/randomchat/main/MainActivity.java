@@ -58,8 +58,11 @@ import apps.steve.fire.randomchat.main.ui.entity.Item;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.usecase.GetPopularPosts;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
+import apps.steve.fire.randomchat.postDetail.PostDetailFragment;
 import apps.steve.fire.randomchat.postpager.PostPagerFragment;
+import apps.steve.fire.randomchat.posts.PostListener;
 import apps.steve.fire.randomchat.posts.PostsFragment;
+import apps.steve.fire.randomchat.profile.ProfileFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -67,7 +70,7 @@ import me.originqiu.library.EditTag;
 
 import static android.view.Gravity.TOP;
 
-public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener {
+public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.fragment_container)
@@ -255,6 +258,23 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
                 .add(R.id.fragment_container, postsFragment, TAG_POSTS_FRAGMENT).commitNow();
     }
 
+    private void showPostDetailFragment() {
+        PostDetailFragment postDetailFragment = new PostDetailFragment();
+        replaceFragment(postDetailFragment, "post-detail-fragment");
+    }
+
+    private void showProfileFragment() {
+        ProfileFragment profileFragment = new ProfileFragment();
+        replaceFragment(profileFragment, "profile-fragment");
+    }
+
+
+    private void replaceFragment(Fragment fragment, String tag) {
+        // Add the fragment to the 'fragment_container' FrameLayout
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment, tag)
+                .commitNow();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -493,5 +513,10 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     @Override
     public void onItemSelected(Item item) {
         presenter.onMenuItemSelected(item);
+    }
+
+    @Override
+    public void onPostSelected(Post post) {
+        showPostDetailFragment();
     }
 }

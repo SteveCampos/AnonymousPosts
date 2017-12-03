@@ -1,5 +1,7 @@
 package apps.steve.fire.randomchat.data.source.remote.entity;
 
+import android.text.TextUtils;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -80,7 +82,7 @@ public class User {
         this.postCount = postCount;
     }
 
-   public long getCommentCount() {
+    public long getCommentCount() {
         return commentCount;
     }
 
@@ -92,13 +94,21 @@ public class User {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("id", id);
-        result.put("name", name);
-        result.put("gender", gender);
-        result.put("description", description);
-        result.put("avatar", avatar);
-        result.put("coins", coins);
-        result.put("postCount", postCount);
-        result.put("commentCount", commentCount);
+        if (!TextUtils.isEmpty(name)) {
+            result.put("name", name);
+        }
+        if (!TextUtils.isEmpty(gender)) {
+            result.put("gender", gender);
+        }
+        if (!TextUtils.isEmpty(description)) {
+            result.put("description", description);
+        }
+        if (!TextUtils.isEmpty(avatar)) {
+            result.put("avatar", avatar);
+        }
+        //result.put("coins", coins);
+        //result.put("postCount", postCount);
+        //result.put("commentCount", commentCount);
         return result;
     }
 }

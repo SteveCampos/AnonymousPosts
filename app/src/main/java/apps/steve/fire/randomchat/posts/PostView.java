@@ -10,6 +10,11 @@ import apps.steve.fire.randomchat.main.ui.entity.Post;
  */
 
 public interface PostView extends BaseView {
+    void showProgress();
+    void hideProgress();
+    void showEmptyView();
+    void hideEmptyView();
+
     void addPost(Post post);
     void changePost(Post post);
     void deletePost(Post post);

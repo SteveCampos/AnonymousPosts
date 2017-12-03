@@ -5,7 +5,9 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.List;
 
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
+import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
+import apps.steve.fire.randomchat.main.ui.entity.User;
 
 /**
  * Created by @stevecampos on 22/11/2017.
@@ -17,6 +19,18 @@ public interface UserDataSource {
     }
 
     void updateUser(FirebaseUser user, AvatarUi avatar, String gender, Callback<Boolean> callback);
+
     void publishPost(Post post, Callback<Post> callback);
+
     void getPopularPosts(Callback<Post> callback);
+
+    void getRecentPosts(Callback<Post> callback);
+
+    void publishComment(Comment comment, Callback<Comment> callback);
+
+    void getPostComments(Post post, Callback<Comment> callback);
+
+    void getUser(String id, Callback<User> callback);
+
+    void updateUser(User user, Callback<User> callback);
 }

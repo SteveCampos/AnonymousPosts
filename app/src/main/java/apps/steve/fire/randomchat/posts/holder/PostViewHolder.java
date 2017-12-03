@@ -9,8 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import apps.steve.fire.randomchat.R;
+import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
+import apps.steve.fire.randomchat.posts.PostListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -44,11 +46,20 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void bind(Post post) {
+    private String getName(String name) {
+        //if the name is by-default the avatar id, get and convert into a readeable name
+        int resName = new AvatarUi(name).getNameId();
+        if (resName != 0) {
+            name = itemView.getResources().getString(resName);
+        }
+        return name;
+    }
+
+    public void bind(final Post post, final PostListener listener) {
         String contentText = post.getContentText();
         User user = post.getUser();
         if (user != null) {
-            txtName.setText(user.getName());
+            txtName.setText(getName(user.getName()));
             imgProfile.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), user.getAvatarDrawable()));
         }
         txtContent.setText(contentText);
@@ -61,5 +72,13 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         } else {
             imgMoreHorizontal.setVisibility(View.GONE);
         }
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (listener != null) {
+                    listener.onPostSelected(post);
+                }
+            }
+        });
     }
 }

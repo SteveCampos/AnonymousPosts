@@ -29,13 +29,14 @@ public class FireUser extends Fire implements FireUserContract {
     public static final String PATH_USER = "/users/";
     public static final String PATH_POST = "/posts/";
     public static final String PATH_COMMENT = "/comments/";
-    public static final String PATH_COMMENT_POST = "/comment-post/";
+    public static final String PATH_POST_COMMENTS = "/post-comments/";
     public static final String PATH_COMMENT_LIKE = "/comment-like/";
     public static final String PATH_USER_LIKE = "/user-like/";
     public static final String PATH_USER_COMMENT = "/user-comment/";
     public static final String PATH_USER_POST = "/user-post/";
     public static final String PATH_LOCATION_POST = "/location-post/";
     public static final String PATH_POST_POPULAR = "/post-popular/";
+    public static final String PATH_POST_RECENTS = "/post-recents/";
     public static final String PATH_HASHTAG_POST = "/hashtag-post/";
     private static final String TAG = FireUser.class.getSimpleName();
 
@@ -80,6 +81,8 @@ public class FireUser extends Fire implements FireUserContract {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put(PATH_POST + key, postValues);
         childUpdates.put(PATH_USER_POST + key, postValues);
+        childUpdates.put(PATH_POST_RECENTS + key, postValues);
+
         if (post.isPopular()) {
             childUpdates.put(PATH_POST_POPULAR + key, postValues);
         }
@@ -120,7 +123,7 @@ public class FireUser extends Fire implements FireUserContract {
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put(PATH_COMMENT + key, commentValues);
-        childUpdates.put(PATH_COMMENT_POST + postId + "/" + key, commentValues);
+        childUpdates.put(PATH_POST_COMMENTS + postId + "/" + key, commentValues);
         childUpdates.put(PATH_USER_COMMENT + userId + "/" + key, commentValues);
 
 
@@ -181,8 +184,17 @@ public class FireUser extends Fire implements FireUserContract {
         );
     }
 
-    public void getPopularPost(final FirePostsCallback<Post> callback) {
-        mDatabase.child(PATH_POST_POPULAR).addChildEventListener(new ChildEventListener() {
+
+    public void getPopularPost(FirePostsCallback<Post> callback) {
+        getPosts(PATH_POST_POPULAR, callback);
+    }
+
+    public void getRecentPosts(FirePostsCallback<Post> callback) {
+        getPosts(PATH_POST_RECENTS, callback);
+    }
+
+    private void getPosts(String path, final FirePostsCallback<Post> callback) {
+        mDatabase.child(path).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildAdded dataSnapshot");
@@ -218,4 +230,41 @@ public class FireUser extends Fire implements FireUserContract {
             callback.onSuccess(post);
         }
     }
+
+    public void getPostComments(String postId, final FirePostsCallback<Comment> callback) {
+        mDatabase.child(PATH_POST_COMMENTS + postId).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                parseComment(dataSnapshot, callback);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                parseComment(dataSnapshot, callback);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void parseComment(DataSnapshot dataSnapshot, FirePostsCallback<Comment> callback) {
+        Comment comment = dataSnapshot.getValue(Comment.class);
+        if (comment != null) {
+            callback.onSuccess(comment);
+        }
+    }
+
 }

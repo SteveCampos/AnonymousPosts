@@ -11,7 +11,7 @@ public class Avatar {
     public static final String GIRL_DARK = "girl-dark";
     public static final String BOY_KNIGHT = "boy-knight";
     public static final String BOY_JAPANESE = "boy-japanese";
-    public static final String NB_CASUAL = "nb-casual";
+    public static final String NB_YOUNG = "nb-young";
     public static final String NB_SAMURAI = "nb-samurai";
     public static final String BOY_CASUAL = "boy-casual";
     public static final String BOY_NAPOLEON = "boy-napoleon";

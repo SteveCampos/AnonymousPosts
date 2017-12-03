@@ -9,6 +9,7 @@ import java.util.List;
 
 import apps.steve.fire.randomchat.R;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
+import apps.steve.fire.randomchat.posts.PostListener;
 import apps.steve.fire.randomchat.posts.holder.PostViewHolder;
 
 /**
@@ -18,9 +19,11 @@ import apps.steve.fire.randomchat.posts.holder.PostViewHolder;
 public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     private List<Post> postList;
     private RecyclerView recycler;
+    private PostListener listener;
 
-    public PostAdapter(List<Post> postList) {
+    public PostAdapter(List<Post> postList, PostListener listener) {
         this.postList = postList;
+        this.listener = listener;
     }
 
     public void setRecycler(RecyclerView recycler) {
@@ -35,7 +38,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
     @Override
     public void onBindViewHolder(PostViewHolder holder, int position) {
-        holder.bind(postList.get(position));
+        holder.bind(postList.get(position), listener);
     }
 
     @Override
@@ -50,10 +53,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     }
 
     public void addPost(Post post) {
-        int position = 0;
-        postList.add(position, post);
-        notifyItemInserted(position);
-        scrollTo(position);
+        boolean contains = postList.contains(post);
+        if (!contains) {
+            int position = 0;
+            postList.add(position, post);
+            notifyItemInserted(position);
+            scrollTo(position);
+        }
     }
 
     public void changePost(Post post) {

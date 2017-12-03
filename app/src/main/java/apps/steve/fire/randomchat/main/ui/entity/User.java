@@ -9,9 +9,11 @@ import android.support.annotation.DrawableRes;
 public class User {
     private String id;
     private String name;
+    private String gender;
     private @DrawableRes
     int genderDrawable;
     private String description;
+    private String avatar;
     private @DrawableRes
     int avatarDrawable;
     private long coins;
@@ -30,6 +32,22 @@ public class User {
         this.coins = coins;
         this.postCount = postCount;
         this.commentCount = commentCount;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getId() {

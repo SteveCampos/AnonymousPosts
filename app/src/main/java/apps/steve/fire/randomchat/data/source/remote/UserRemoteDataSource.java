@@ -11,6 +11,7 @@ import apps.steve.fire.randomchat.data.source.remote.entity.User;
 import apps.steve.fire.randomchat.data.source.remote.firebase.FirePostsCallback;
 import apps.steve.fire.randomchat.data.source.remote.firebase.FireUser;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
+import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 
 import static apps.steve.fire.randomchat.main.ui.entity.Avatar.*;
@@ -34,9 +35,8 @@ public class UserRemoteDataSource implements UserDataSource {
     public void updateUser(FirebaseUser firebaseUser, AvatarUi avatar, String gender, final Callback<Boolean> callback) {
 
         User user = new User();
-        user.setName(avatar.getName());
-        user.setAvatar(avatar.getAvatarName());
-        user.setCoins(0);
+        user.setName(avatar.getAvatarId());
+        user.setAvatar(avatar.getAvatarId());
         user.setGender(gender);
         user.setDescription("");
         user.setId(firebaseUser.getUid());
@@ -51,12 +51,11 @@ public class UserRemoteDataSource implements UserDataSource {
     }
 
     @Override
-    public void publishPost(final Post post, final Callback<Post> callback) {
+    public void publishPost(Post post, final Callback<Post> callback) {
         fireUser.publishPost(convertPost(post), new apps.steve.fire.randomchat.data.source.remote.callback.Callback<apps.steve.fire.randomchat.data.source.remote.entity.Post>() {
             @Override
             public void onSucess(apps.steve.fire.randomchat.data.source.remote.entity.Post remotePost) {
                 if (remotePost != null) {
-                    post.setId(remotePost.getId());
                     getUserByPost(remotePost, callback);
                 } else {
                     callback.onSucess(null);
@@ -79,6 +78,74 @@ public class UserRemoteDataSource implements UserDataSource {
         });
     }
 
+    @Override
+    public void getRecentPosts(final Callback<Post> callback) {
+        Log.d(TAG, "getRecentPosts");
+        fireUser.getRecentPosts(new FirePostsCallback<apps.steve.fire.randomchat.data.source.remote.entity.Post>() {
+
+            @Override
+            public void onSuccess(apps.steve.fire.randomchat.data.source.remote.entity.Post post) {
+                if (post != null) {
+                    getUserByPost(post, callback);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void publishComment(Comment comment, final Callback<Comment> callback) {
+        fireUser.commentPost(convertComment(comment), new apps.steve.fire.randomchat.data.source.remote.callback.Callback<apps.steve.fire.randomchat.data.source.remote.entity.Comment>() {
+            @Override
+            public void onSucess(apps.steve.fire.randomchat.data.source.remote.entity.Comment remoteComment) {
+                if (remoteComment != null) {
+                    getUserByComment(remoteComment, callback);
+                } else {
+                    callback.onSucess(null);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getPostComments(Post post, final Callback<Comment> callback) {
+        fireUser.getPostComments(post.getId(), new FirePostsCallback<apps.steve.fire.randomchat.data.source.remote.entity.Comment>() {
+            @Override
+            public void onSuccess(apps.steve.fire.randomchat.data.source.remote.entity.Comment remoteComment) {
+                if (remoteComment != null) {
+                    getUserByComment(remoteComment, callback);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getUser(String id, final Callback<apps.steve.fire.randomchat.main.ui.entity.User> callback) {
+        fireUser.getUser(id, new FirePostsCallback<User>() {
+            @Override
+            public void onSuccess(User remoteUser) {
+                if (remoteUser != null) {
+                    callback.onSucess(convertUser(remoteUser));
+                } else {
+                    callback.onSucess(null);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void updateUser(apps.steve.fire.randomchat.main.ui.entity.User user, final Callback<apps.steve.fire.randomchat.main.ui.entity.User> callback) {
+        fireUser.updateUser(convertUser(user), new apps.steve.fire.randomchat.data.source.remote.callback.Callback<User>() {
+            @Override
+            public void onSucess(User remoteUser) {
+                if (remoteUser != null) {
+                    callback.onSucess(convertUser(remoteUser));
+                } else {
+                    callback.onSucess(null);
+                }
+            }
+        });
+    }
+
     private void getUserByPost(final apps.steve.fire.randomchat.data.source.remote.entity.Post post, final Callback<Post> callback) {
         fireUser.getUser(post.getUserId(), new FirePostsCallback<User>() {
             @Override
@@ -94,6 +161,21 @@ public class UserRemoteDataSource implements UserDataSource {
         });
     }
 
+    private void getUserByComment(final apps.steve.fire.randomchat.data.source.remote.entity.Comment remoteComment, final Callback<Comment> callback) {
+        fireUser.getUser(remoteComment.getUserId(), new FirePostsCallback<User>() {
+            @Override
+            public void onSuccess(User user) {
+                if (user != null) {
+                    Comment uiComment = convertComment(remoteComment);
+                    uiComment.setUser(convertUser(user));
+                    callback.onSucess(uiComment);
+                } else {
+                    callback.onSucess(null);
+                }
+            }
+        });
+    }
+
     private apps.steve.fire.randomchat.main.ui.entity.User convertUser(User user) {
         apps.steve.fire.randomchat.main.ui.entity.User userUi = new apps.steve.fire.randomchat.main.ui.entity.User();
         userUi.setId(user.getId());
@@ -101,7 +183,7 @@ public class UserRemoteDataSource implements UserDataSource {
 
         String avatar = user.getAvatar();
         String gender = user.getGender();
-        @DrawableRes int avatarDrawable = getAvatarDrawable(avatar);
+        @DrawableRes int avatarDrawable = new AvatarUi(avatar).getAvatarDrawable();
         @DrawableRes int genderDrawable = getGenderDrawable(gender);
 
         userUi.setAvatarDrawable(avatarDrawable);
@@ -110,6 +192,16 @@ public class UserRemoteDataSource implements UserDataSource {
         userUi.setCommentCount(user.getCommentCount());
         userUi.setPostCount(user.getPostCount());
         return userUi;
+    }
+
+    private User convertUser(apps.steve.fire.randomchat.main.ui.entity.User uiUser) {
+        User remoteUser = new User();
+        remoteUser.setId(uiUser.getId());
+        remoteUser.setName(uiUser.getName());
+        remoteUser.setDescription(uiUser.getDescription());
+        remoteUser.setGender(uiUser.getGender());
+        remoteUser.setAvatar(uiUser.getAvatar());
+        return remoteUser;
     }
 
     private int getGenderDrawable(String gender) {
@@ -144,7 +236,7 @@ public class UserRemoteDataSource implements UserDataSource {
             case BOY_JAPANESE:
                 avatarDrawable = R.drawable.boy_japanese;
                 break;
-            case NB_CASUAL:
+            case NB_YOUNG:
                 avatarDrawable = R.drawable.nb_young;
                 break;
             case NB_SAMURAI:
@@ -175,5 +267,26 @@ public class UserRemoteDataSource implements UserDataSource {
         post.setPopular(remotePost.isPopular());
         post.setTimestamp(remotePost.getTimestamp());
         return post;
+    }
+
+    private apps.steve.fire.randomchat.data.source.remote.entity.Comment convertComment(Comment comment) {
+        apps.steve.fire.randomchat.data.source.remote.entity.Comment remoteComment = new apps.steve.fire.randomchat.data.source.remote.entity.Comment();
+        remoteComment.setId(comment.getId());
+        remoteComment.setCommentText(comment.getCommentText());
+        remoteComment.setPostId(comment.getPostId());
+        remoteComment.setUserId(comment.getUser().getId());
+        remoteComment.setDislikeCount(comment.getDislikeCount());
+        remoteComment.setFavoriteCount(comment.getFavoriteCount());
+        return remoteComment;
+    }
+
+    private Comment convertComment(apps.steve.fire.randomchat.data.source.remote.entity.Comment comment) {
+        Comment uiComment = new Comment();
+        uiComment.setId(comment.getId());
+        uiComment.setCommentText(comment.getCommentText());
+        uiComment.setPostId(comment.getPostId());
+        uiComment.setDislikeCount(comment.getDislikeCount());
+        uiComment.setFavoriteCount(comment.getFavoriteCount());
+        return uiComment;
     }
 }
