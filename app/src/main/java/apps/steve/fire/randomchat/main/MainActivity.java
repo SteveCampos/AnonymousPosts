@@ -56,13 +56,16 @@ import apps.steve.fire.randomchat.main.adapter.ItemAdapter;
 import apps.steve.fire.randomchat.main.listener.ItemListener;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
+import apps.steve.fire.randomchat.main.ui.entity.User;
 import apps.steve.fire.randomchat.main.usecase.GetPopularPosts;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
 import apps.steve.fire.randomchat.postDetail.PostDetailFragment;
+import apps.steve.fire.randomchat.postDetail.PostDetailListener;
 import apps.steve.fire.randomchat.postpager.PostPagerFragment;
 import apps.steve.fire.randomchat.posts.PostListener;
 import apps.steve.fire.randomchat.posts.PostsFragment;
 import apps.steve.fire.randomchat.profile.ProfileFragment;
+import apps.steve.fire.randomchat.profile.ProfileListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -70,7 +73,7 @@ import me.originqiu.library.EditTag;
 
 import static android.view.Gravity.TOP;
 
-public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener {
+public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener, PostDetailListener, ProfileListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.fragment_container)
@@ -255,16 +258,18 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
         // Add the fragment to the 'fragment_container' FrameLayout
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, postsFragment, TAG_POSTS_FRAGMENT).commitNow();
+                .add(R.id.fragment_container, postsFragment, TAG_POSTS_FRAGMENT)
+                .addToBackStack(null)
+                .commit();
     }
 
-    private void showPostDetailFragment() {
-        PostDetailFragment postDetailFragment = new PostDetailFragment();
+    private void showPostDetailFragment(Post post) {
+        PostDetailFragment postDetailFragment = PostDetailFragment.newInstance(post);
         replaceFragment(postDetailFragment, "post-detail-fragment");
     }
 
-    private void showProfileFragment() {
-        ProfileFragment profileFragment = new ProfileFragment();
+    private void showProfileFragment(User user) {
+        ProfileFragment profileFragment = ProfileFragment.newInstance(user);
         replaceFragment(profileFragment, "profile-fragment");
     }
 
@@ -272,8 +277,10 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     private void replaceFragment(Fragment fragment, String tag) {
         // Add the fragment to the 'fragment_container' FrameLayout
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment, tag)
-                .commitNow();
+                .setCustomAnimations(R.anim.slide_in_start, 0)
+                .add(R.id.fragment_container, fragment, tag)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -410,8 +417,8 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     }
 
     @Override
-    public void superOnBackPressed() {
-        super.onBackPressed();
+    public void close() {
+        finish();
     }
 
     @Override
@@ -476,6 +483,16 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         Snackbar.make(rootView, error, Snackbar.LENGTH_LONG).show();
     }
 
+    @Override
+    public int getBackStackEntryCount() {
+        return getSupportFragmentManager().getBackStackEntryCount();
+    }
+
+    @Override
+    public void popBackStack() {
+        getSupportFragmentManager().popBackStackImmediate();
+    }
+
     private PostsFragment getPostFragment() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
@@ -517,6 +534,20 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @Override
     public void onPostSelected(Post post) {
-        showPostDetailFragment();
+        Log.d(TAG, "onPostSelected");
+        if (post != null) {
+            Log.d(TAG, "post id: " + post.getId());
+        }
+        showPostDetailFragment(post);
+    }
+
+    @Override
+    public void onUserSelected(User user) {
+        showProfileFragment(user);
+    }
+
+    @Override
+    public void onBtnMessageClicked(User user) {
+        Log.d(TAG, "onBtnMessageClicked");
     }
 }

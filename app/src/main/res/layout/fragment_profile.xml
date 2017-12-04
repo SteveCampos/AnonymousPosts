@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <ImageView
         android:id="@+id/imgProfile"
@@ -66,10 +67,26 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="Android Developer, Uber Inc."
+        android:text="@string/user_default_location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtName" />
+
+    <TextView
+        android:id="@+id/txtCoins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:drawableEnd="@drawable/ic_crown_1"
+        android:drawablePadding="8dp"
+        android:gravity="bottom"
+        android:text="178"
+        android:textColor="@color/md_blue_grey_500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guidelineThirdQuarter"
+        app:layout_constraintTop_toTopOf="@+id/imgProfile" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabLove"
@@ -151,7 +168,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
-        android:text="Un par de palabras sobre ti, qué música escuchas, cuáles son tus libros favoritos, qué tipos de películas ves."
+        android:text="@string/user_default_description"
         android:textAlignment="center"
         android:textColor="@color/md_grey_500"
         app:layout_constraintBottom_toTopOf="@+id/includeBtnSendMessage"
@@ -160,19 +177,4 @@
         app:layout_constraintTop_toBottomOf="@+id/txtFabLove"
         app:layout_constraintVertical_bias="0.78" />
 
-    <TextView
-        android:id="@+id/txtCoins"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:drawableEnd="@drawable/ic_crown_1"
-        android:drawablePadding="8dp"
-        android:gravity="bottom"
-        android:text="178"
-        android:textColor="@color/md_blue_grey_500"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guidelineThirdQuarter"
-        app:layout_constraintTop_toTopOf="@+id/imgProfile" />
 </android.support.constraint.ConstraintLayout>

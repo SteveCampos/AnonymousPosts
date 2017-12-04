@@ -229,9 +229,15 @@ public class MainPresenterImpl implements MainPresenter {
     public void onBackPressed() {
         if (isPublishDialogVisible) {
             hidePublishDialog();
-        } else {
-            view.superOnBackPressed();
+            return;
         }
+        int backStackCount = view.getBackStackEntryCount();
+        Log.d(TAG, "backStackCount: " + backStackCount);
+        if (backStackCount > 1) {
+            view.popBackStack();
+            return;
+        }
+        view.close();
     }
 
     private static final String MENU_LOGOUT = "Cerrar Sesión";

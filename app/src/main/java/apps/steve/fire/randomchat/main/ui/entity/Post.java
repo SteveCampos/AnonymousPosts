@@ -1,22 +1,24 @@
 package apps.steve.fire.randomchat.main.ui.entity;
 
+import org.parceler.Parcel;
+
 import java.util.List;
 
 /**
  * Created by Steve on 26/11/2017.
  */
-
+@Parcel
 public class Post {
-    private String id;
-    private List<String> hashtags;
-    private String contentText;
-    private String location;
-    private User user;
-    private long timestamp;
-    private long favoriteCount;
-    private long dislikeCount;
-    private long commentCount;
-    private boolean popular;
+    String id;
+    List<String> hashtags;
+    String contentText;
+    String location;
+    User user;
+    long timestamp;
+    long favoriteCount;
+    long dislikeCount;
+    long commentCount;
+    boolean popular;
 
     public Post() {
     }

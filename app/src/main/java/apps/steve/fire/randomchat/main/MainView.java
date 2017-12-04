@@ -30,7 +30,7 @@ public interface MainView extends BaseView<MainPresenter> {
     void closeNavigation();
 
 
-    void superOnBackPressed();
+    void close();
 
     void toogleMenuItems(Item old, Item selected);
 
@@ -46,4 +46,8 @@ public interface MainView extends BaseView<MainPresenter> {
     void logout();
 
     void showError(String error);
+
+    int getBackStackEntryCount();
+
+    void popBackStack();
 }

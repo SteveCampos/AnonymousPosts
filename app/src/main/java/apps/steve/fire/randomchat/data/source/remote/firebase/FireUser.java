@@ -75,26 +75,27 @@ public class FireUser extends Fire implements FireUserContract {
     public void publishPost(final Post post, final Callback<Post> callback) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
-        String key = mDatabase.child(PATH_POST).push().getKey();
+        String postId = mDatabase.child(PATH_POST).push().getKey();
+        post.setId(postId);
         Map<String, Object> postValues = post.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(PATH_POST + key, postValues);
-        childUpdates.put(PATH_USER_POST + key, postValues);
-        childUpdates.put(PATH_POST_RECENTS + key, postValues);
+        childUpdates.put(PATH_POST + postId, postValues);
+        childUpdates.put(PATH_USER_POST + postId, postValues);
+        childUpdates.put(PATH_POST_RECENTS + postId, postValues);
 
         if (post.isPopular()) {
-            childUpdates.put(PATH_POST_POPULAR + key, postValues);
+            childUpdates.put(PATH_POST_POPULAR + postId, postValues);
         }
         String location = post.getLocation();
         if (!TextUtils.isEmpty(location)) {
-            childUpdates.put(PATH_LOCATION_POST + location + "/" + key, postValues);
+            childUpdates.put(PATH_LOCATION_POST + location + "/" + postId, postValues);
         }
         List<String> hashtags = post.getHashtags();
         if (!hashtags.isEmpty()) {
             for (String hashtag :
                     hashtags) {
-                childUpdates.put(PATH_HASHTAG_POST + hashtag + "/" + key, postValues);
+                childUpdates.put(PATH_HASHTAG_POST + hashtag + "/" + postId, postValues);
             }
         }
 

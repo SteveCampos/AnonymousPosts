@@ -1,24 +1,30 @@
 package apps.steve.fire.randomchat.main.ui.entity;
 
+import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
+
+import org.parceler.Parcel;
+
+import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 
 /**
  * Created by Steve on 30/11/2017.
  */
-
+@Parcel
 public class User {
-    private String id;
-    private String name;
-    private String gender;
-    private @DrawableRes
+    String id;
+    String name;
+    String gender;
+    @DrawableRes
     int genderDrawable;
-    private String description;
-    private String avatar;
-    private @DrawableRes
+    String location;
+    String description;
+    String avatar;
+    @DrawableRes
     int avatarDrawable;
-    private long coins;
-    private long postCount;
-    private long commentCount;
+    long coins;
+    long postCount;
+    long commentCount;
 
     public User() {
     }
@@ -55,6 +61,15 @@ public class User {
     }
 
     public String getName() {
+        return name;
+    }
+
+    public String getReadableName(Resources res) {
+        //if the name is by-default the avatar id, get and convert into a readeable name
+        int resName = new AvatarUi(name).getNameId();
+        if (resName != 0) {
+            name = res.getString(resName);
+        }
         return name;
     }
 
@@ -112,5 +127,13 @@ public class User {
 
     public void setCommentCount(long commentCount) {
         this.commentCount = commentCount;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

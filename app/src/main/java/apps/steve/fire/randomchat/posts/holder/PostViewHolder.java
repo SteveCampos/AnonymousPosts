@@ -46,20 +46,12 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    private String getName(String name) {
-        //if the name is by-default the avatar id, get and convert into a readeable name
-        int resName = new AvatarUi(name).getNameId();
-        if (resName != 0) {
-            name = itemView.getResources().getString(resName);
-        }
-        return name;
-    }
 
     public void bind(final Post post, final PostListener listener) {
         String contentText = post.getContentText();
         User user = post.getUser();
         if (user != null) {
-            txtName.setText(getName(user.getName()));
+            txtName.setText(user.getReadableName(itemView.getResources()));
             imgProfile.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), user.getAvatarDrawable()));
         }
         txtContent.setText(contentText);
