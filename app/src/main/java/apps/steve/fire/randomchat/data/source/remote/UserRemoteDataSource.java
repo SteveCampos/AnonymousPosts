@@ -119,6 +119,11 @@ public class UserRemoteDataSource implements UserDataSource {
     }
 
     @Override
+    public void removePostCommentsListener(Post post) {
+        fireUser.removePostCommentsListener(post.getId());
+    }
+
+    @Override
     public void getUser(String id, final Callback<apps.steve.fire.randomchat.main.ui.entity.User> callback) {
         fireUser.getUser(id, new FirePostsCallback<User>() {
             @Override

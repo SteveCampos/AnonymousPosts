@@ -30,6 +30,8 @@ public interface UserDataSource {
 
     void getPostComments(Post post, Callback<Comment> callback);
 
+    void removePostCommentsListener(Post post);
+
     void getUser(String id, Callback<User> callback);
 
     void updateUser(User user, Callback<User> callback);

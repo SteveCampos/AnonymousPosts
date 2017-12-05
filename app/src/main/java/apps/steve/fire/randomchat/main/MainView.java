@@ -5,6 +5,7 @@ import android.support.annotation.DrawableRes;
 import apps.steve.fire.randomchat.base.BaseView;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
+import apps.steve.fire.randomchat.main.ui.entity.User;
 import apps.steve.fire.randomchat.posts.PostView;
 
 /**
@@ -14,10 +15,14 @@ import apps.steve.fire.randomchat.posts.PostView;
 public interface MainView extends BaseView<MainPresenter> {
     /**/
     boolean checkPlayServicesAvaliability();
+
     /*Profile Views*/
     void showName(String name);
+
     void showCity(String city);
+
     void showAvatar(@DrawableRes int avatar);
+
     void showSplashScreen();
 
     void hideSplashScreen();
@@ -27,6 +32,7 @@ public interface MainView extends BaseView<MainPresenter> {
     void hidePublishDialog();
 
     void openNavigation();
+
     void closeNavigation();
 
 
@@ -34,12 +40,19 @@ public interface MainView extends BaseView<MainPresenter> {
 
     void toogleMenuItems(Item old, Item selected);
 
+    void showFab();
+
+    void hideFab();
+
+    void changeTitle(String title);
+
     void showFabExtras();
+
     void hideFabExtras();
 
     void addPost(Post post);
 
-    void startChat();
+    void startChat(String userId, String receptorId);
 
     void startIntro();
 
@@ -50,4 +63,8 @@ public interface MainView extends BaseView<MainPresenter> {
     int getBackStackEntryCount();
 
     void popBackStack();
+
+    void showProfile(User user, boolean editable);
+
+    void showPostDetail(Post post);
 }

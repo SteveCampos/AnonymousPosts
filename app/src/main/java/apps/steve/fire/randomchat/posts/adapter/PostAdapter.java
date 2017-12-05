@@ -55,10 +55,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     public void addPost(Post post) {
         boolean contains = postList.contains(post);
         if (!contains) {
-            int position = 0;
+            int position = getItemCount();
             postList.add(position, post);
             notifyItemInserted(position);
-            scrollTo(position);
+            //scrollTo(position);
         }
     }
 

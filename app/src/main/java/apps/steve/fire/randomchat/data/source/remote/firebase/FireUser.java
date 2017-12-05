@@ -114,27 +114,30 @@ public class FireUser extends Fire implements FireUserContract {
     }
 
     @Override
-    public void commentPost(final Comment comment, final Callback<Comment> callback) {
+    public void commentPost(Comment comment, final Callback<Comment> callback) {
         // Create new comment by post
-        String key = mDatabase.child(PATH_COMMENT).push().getKey();
+        String commentId = mDatabase.child(PATH_COMMENT).push().getKey();
+        comment.setId(commentId);
+
         Map<String, Object> commentValues = comment.toMap();
 
         String userId = comment.getUserId();
         String postId = comment.getPostId();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(PATH_COMMENT + key, commentValues);
-        childUpdates.put(PATH_POST_COMMENTS + postId + "/" + key, commentValues);
-        childUpdates.put(PATH_USER_COMMENT + userId + "/" + key, commentValues);
+        childUpdates.put(PATH_COMMENT + commentId, commentValues);
+        childUpdates.put(PATH_POST_COMMENTS + postId + "/" + commentId, commentValues);
+        childUpdates.put(PATH_USER_COMMENT + userId + "/" + commentId, commentValues);
 
 
+        final Comment comment1 = comment;
         mDatabase
                 .updateChildren(childUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            callback.onSucess(comment);
+                            callback.onSucess(comment1);
                         } else {
                             callback.onSucess(null);
                         }
@@ -232,36 +235,51 @@ public class FireUser extends Fire implements FireUserContract {
         }
     }
 
-    public void getPostComments(String postId, final FirePostsCallback<Comment> callback) {
-        mDatabase.child(PATH_POST_COMMENTS + postId).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                parseComment(dataSnapshot, callback);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                parseComment(dataSnapshot, callback);
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+    public void getPostComments(String postId, final FirePostsCallback<Comment> commentsCallback) {
+        Log.d(TAG, "getPostComments");
+        this.commentsCallback = commentsCallback;
+        mDatabase.child(PATH_POST_COMMENTS + postId)
+                .addChildEventListener(postCommentsListener);
     }
 
+    public void removePostCommentsListener(String postId) {
+        Log.d(TAG, "removePostCommentsListener");
+        commentsCallback = null;
+        mDatabase.child(PATH_POST_COMMENTS + postId)
+                .removeEventListener(postCommentsListener);
+        postCommentsListener = null;
+    }
+
+    private FirePostsCallback<Comment> commentsCallback;
+    private ChildEventListener postCommentsListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            parseComment(dataSnapshot, commentsCallback);
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            parseComment(dataSnapshot, commentsCallback);
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
     private void parseComment(DataSnapshot dataSnapshot, FirePostsCallback<Comment> callback) {
+        Log.d(TAG, "parseComment dataSnapshot: " + dataSnapshot);
         Comment comment = dataSnapshot.getValue(Comment.class);
         if (comment != null) {
             callback.onSuccess(comment);

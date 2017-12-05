@@ -13,8 +13,14 @@ import apps.steve.fire.randomchat.R;
 
 public class ChatActivity extends AppCompatActivity {
 
-    public static void startChatActivity(Context context) {
+    private static final String ARG_USER_ID = "ARG_USER_ID";
+    private static final String ARG_RECEPTOR_ID = "ARG_RECEPTOR_ID";
+
+    public static void startChatActivity(Context context, String userId, String receptorId) {
         Intent intent = new Intent(context, ChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_USER_ID, userId);
+        bundle.putString(ARG_RECEPTOR_ID, receptorId);
         context.startActivity(intent);
     }
 
@@ -22,7 +28,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 

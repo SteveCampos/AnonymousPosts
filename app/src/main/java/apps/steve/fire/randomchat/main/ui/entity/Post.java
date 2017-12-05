@@ -114,4 +114,21 @@ public class Post {
     public void setPopular(boolean popular) {
         this.popular = popular;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean success = false;
+        if (obj instanceof Post) {
+            Post post = (Post) obj;
+            if (post.getId() != null && post.getId().equals(id)) {
+                success = true;
+            }
+        }
+        return success;
+    }
+
+    @Override
+    public int hashCode() {
+        return id == null ? 0 : id.hashCode();
+    }
 }

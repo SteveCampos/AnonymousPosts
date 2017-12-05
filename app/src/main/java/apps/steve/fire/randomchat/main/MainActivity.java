@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.transition.ChangeBounds;
+import android.support.transition.ChangeTransform;
 import android.support.transition.Slide;
 import android.support.transition.TransitionManager;
 import android.support.transition.TransitionSet;
@@ -54,10 +55,12 @@ import apps.steve.fire.randomchat.intro.IntroActivity;
 import apps.steve.fire.randomchat.intro.listener.GenderListener;
 import apps.steve.fire.randomchat.main.adapter.ItemAdapter;
 import apps.steve.fire.randomchat.main.listener.ItemListener;
+import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
 import apps.steve.fire.randomchat.main.usecase.GetPopularPosts;
+import apps.steve.fire.randomchat.main.usecase.GetUser;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
 import apps.steve.fire.randomchat.postDetail.PostDetailFragment;
 import apps.steve.fire.randomchat.postDetail.PostDetailListener;
@@ -96,8 +99,6 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     @BindView(R.id.txtButton)
     TextView txtButton;
     /*End New Post Views*/
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
     @BindView(R.id.rootView)
     CoordinatorLayout rootView;
     @BindView(R.id.splashScreen)
@@ -106,6 +107,12 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     Group fabPro;
     @BindView(R.id.btnRegular)
     Group fabRegular;
+    @BindView(R.id.toolbar)
+    TextView txtTitle;
+    @BindView(R.id.icon)
+    ImageView imgIconToolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     /*Auth*/
     private FirebaseAuth mAuth;
@@ -212,7 +219,9 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
                     getResources(),
                     new UseCaseHandler(new UseCaseThreadPoolScheduler()),
                     new PublishPost(repository),
-                    new GetPopularPosts(repository));
+                    new GetPopularPosts(repository),
+                    new GetUser(repository)
+            );
         }
         setPresenter(presenter);
     }
@@ -263,13 +272,15 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
                 .commit();
     }
 
-    private void showPostDetailFragment(Post post) {
+    @Override
+    public void showPostDetail(Post post) {
         PostDetailFragment postDetailFragment = PostDetailFragment.newInstance(post);
         replaceFragment(postDetailFragment, "post-detail-fragment");
     }
 
-    private void showProfileFragment(User user) {
-        ProfileFragment profileFragment = ProfileFragment.newInstance(user);
+    @Override
+    public void showProfile(User user, boolean editable) {
+        ProfileFragment profileFragment = ProfileFragment.newInstance(user, editable);
         replaceFragment(profileFragment, "profile-fragment");
     }
 
@@ -351,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @Override
     public void showAvatar(int avatar) {
-
+        imgProfile.setImageDrawable(ContextCompat.getDrawable(this, avatar));
     }
 
     @Override
@@ -427,6 +438,27 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     }
 
     @Override
+    public void showFab() {
+        TransitionManager.beginDelayedTransition(rootView);
+        fab.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideFab() {
+        TransitionManager.beginDelayedTransition(rootView);
+        fab.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void changeTitle(String title) {
+        TransitionManager.beginDelayedTransition(rootView,
+                new TransitionSet()
+                        .addTransition(new ChangeTransform().setDuration(200).setInterpolator(new FastOutSlowInInterpolator()).setStartDelay(200)));
+        txtTitle.setRotationX(360f);
+        txtTitle.setText(title);
+    }
+
+    @Override
     public void showFabExtras() {
         TransitionManager.beginDelayedTransition(rootView,
                 new TransitionSet()
@@ -459,12 +491,14 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @OnClick(R.id.imgProfile)
     public void onProfileClicked() {
-        startChat();
     }
 
     @Override
-    public void startChat() {
-        ChatActivity.startChatActivity(this);
+    public void startChat(String userId, String receptorId) {
+        ChatActivity.startChatActivity(
+                this,
+                userId,
+                receptorId);
     }
 
     @Override
@@ -505,11 +539,6 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
 
     private void toogleNewPostVisibility(boolean visibility) {
-        float alpha = 1f;
-        if (visibility) {
-            alpha = 0.5f;
-        }
-//        fragmentContainer.setAlpha(alpha);
         TransitionManager.beginDelayedTransition(
                 rootView,
                 new TransitionSet()
@@ -535,19 +564,28 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     @Override
     public void onPostSelected(Post post) {
         Log.d(TAG, "onPostSelected");
-        if (post != null) {
-            Log.d(TAG, "post id: " + post.getId());
-        }
-        showPostDetailFragment(post);
+        presenter.onPostSelected(post);
+        /*
+        hideFab();
+        changeTitle(post.getUser().getReadableName(getResources()));
+        showPostDetailFragment(post);*/
     }
 
     @Override
     public void onUserSelected(User user) {
-        showProfileFragment(user);
+        presenter.onUserSelected(user);
+        //showProfileFragment(user);
+    }
+
+    @Override
+    public void onCommentSelected(Comment comment) {
+        Log.d(TAG, "onCommentSelected");
+        presenter.onCommentSelected(comment);
     }
 
     @Override
     public void onBtnMessageClicked(User user) {
         Log.d(TAG, "onBtnMessageClicked");
+        presenter.onSendMessageClicked(user);
     }
 }

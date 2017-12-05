@@ -8,6 +8,9 @@
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@android:color/white"
     app:cardElevation="2dp">
 
@@ -36,8 +39,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Icarus Sagan"
-            android:textStyle="bold"
             android:textColor="@color/md_blue_grey_700"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgAvatar"
             app:layout_constraintTop_toTopOf="parent" />

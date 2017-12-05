@@ -1,5 +1,6 @@
 package apps.steve.fire.randomchat.postDetail;
 
+import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.User;
 
 /**
@@ -8,4 +9,5 @@ import apps.steve.fire.randomchat.main.ui.entity.User;
 
 public interface PostDetailListener {
     void onUserSelected(User user);
+    void onCommentSelected(Comment comment);
 }

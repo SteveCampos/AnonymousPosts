@@ -1,6 +1,7 @@
 package apps.steve.fire.randomchat.main;
 
 import android.content.res.Resources;
+import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -12,9 +13,12 @@ import java.util.List;
 import apps.steve.fire.randomchat.R;
 import apps.steve.fire.randomchat.base.usecase.UseCase;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
+import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
+import apps.steve.fire.randomchat.main.ui.entity.User;
 import apps.steve.fire.randomchat.main.usecase.GetPopularPosts;
+import apps.steve.fire.randomchat.main.usecase.GetUser;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
 
 /**
@@ -26,17 +30,19 @@ public class MainPresenterImpl implements MainPresenter {
     private Resources res;
     private UseCaseHandler handler;
     private PublishPost useCasePublishPost;
-    private FirebaseUser currentUser;
+    private FirebaseUser firebaseUser;
     private GetPopularPosts useCaseGetPopularPosts;
+    private GetUser useCaseGetUser;
 
     private MainView view;
 
-    public MainPresenterImpl(FirebaseUser currentUser, Resources res, UseCaseHandler handler, PublishPost publishPost, GetPopularPosts popularPosts) {
-        this.currentUser = currentUser;
+    public MainPresenterImpl(FirebaseUser firebaseUser, Resources res, UseCaseHandler handler, PublishPost publishPost, GetPopularPosts popularPosts, GetUser useCaseGetUser) {
+        this.firebaseUser = firebaseUser;
         this.res = res;
         this.handler = handler;
         this.useCasePublishPost = publishPost;
         this.useCaseGetPopularPosts = popularPosts;
+        this.useCaseGetUser = useCaseGetUser;
     }
 
     @Override
@@ -49,6 +55,31 @@ public class MainPresenterImpl implements MainPresenter {
     public void onCreate() {
         Log.d(TAG, "onCreate");
         getPopularPosts();
+        getUser();
+    }
+
+    private User currentUser;
+
+    private void getUser() {
+        handler.execute(
+                useCaseGetUser,
+                new GetUser.RequestValues(firebaseUser.getUid()),
+                new UseCase.UseCaseCallback<GetUser.ResponseValue>() {
+                    @Override
+                    public void onSuccess(GetUser.ResponseValue response) {
+                        currentUser = response.getUser();
+                        if (currentUser != null) {
+                            showName(currentUser.getReadableName(res));
+                            showAvatarDrawable(currentUser.getAvatarDrawable());
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+                        showError("Error Getting User!");
+                    }
+                }
+        );
     }
 
     @Override
@@ -59,7 +90,6 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onResume() {
         Log.d(TAG, "onResume");
-        showName();
         checkCurrentUser();
     }
 
@@ -107,14 +137,20 @@ public class MainPresenterImpl implements MainPresenter {
     }
 
     private void checkCurrentUser() {
-        if (currentUser == null) {
+        if (firebaseUser == null) {
             view.startIntro();
         }
     }
 
-    private void showName() {
-        if (view != null && currentUser != null) {
-            view.showName(currentUser.getDisplayName());
+    private void showAvatarDrawable(@DrawableRes int avatarDrawable) {
+        if (view != null) {
+            view.showAvatar(avatarDrawable);
+        }
+    }
+
+    private void showName(String name) {
+        if (view != null) {
+            view.showName(name);
         }
     }
 
@@ -266,9 +302,9 @@ public class MainPresenterImpl implements MainPresenter {
         }
     }
 
-    private void startChat() {
+    private void startChat(String userId, String receptorId) {
         if (view != null) {
-            view.startChat();
+            view.startChat(userId, receptorId);
         }
     }
 
@@ -292,6 +328,54 @@ public class MainPresenterImpl implements MainPresenter {
         kingPostSelected = false;
         hideFabs();
         tooglePostDialog();
+    }
+
+    @Override
+    public void onPostSelected(Post post) {
+        changeTitle(post.getUser().getReadableName(res));
+        hideFab();
+        showPostDetail(post);
+    }
+
+
+    @Override
+    public void onUserSelected(User user) {
+        changeTitle(res.getString(R.string.fragment_profile_title));
+        showProfile(user, false);
+    }
+
+    @Override
+    public void onCommentSelected(Comment comment) {
+
+    }
+
+    @Override
+    public void onSendMessageClicked(User user) {
+        startChat(currentUser.getId(), user.getId());
+    }
+
+    private void hideFab() {
+        if (view != null) {
+            view.hideFab();
+        }
+    }
+
+    private void changeTitle(String title) {
+        if (view != null) {
+            view.changeTitle(title);
+        }
+    }
+
+    private void showProfile(User user, boolean editable) {
+        if (view != null) {
+            view.showProfile(user, editable);
+        }
+    }
+
+    private void showPostDetail(Post post) {
+        if (view != null) {
+            view.showPostDetail(post);
+        }
     }
 
     private void toogleItems(Item old, Item selected) {

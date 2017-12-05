@@ -47,6 +47,11 @@ public class UserLocalDataSource implements UserDataSource {
     }
 
     @Override
+    public void removePostCommentsListener(Post post) {
+
+    }
+
+    @Override
     public void getUser(String id, Callback<User> callback) {
 
     }

@@ -47,16 +47,16 @@
     <string name="fragment_posts_section_popular">Populares</string>
     <string name="fragment_posts_section_recent">Recientes</string>
     <string name="fragment_users_title">Usuarios</string>
-    <string name="fragment_profile_title">Mi perfil</string>
     <string name="fragment_messages_title">Mensajes</string>
+    <string name="menuitem_myprofile_title">Mi perfil</string>
     <string name="menuitem_appinfo_title">App Info</string>
     <string name="menuitem_logout_title">Cerrar Sesión</string>
     <string name="fragment_posts_message_empty">No hay publicaciones</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="error_publish">Error publicando.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fragment_profile_title">Usuario</string>
+
     <string name="user_default_description">Un par de palabras sobre ti, qué música escuchas, cuáles son tus libros favoritos, qué tipos de películas ves.</string>
     <string name="user_default_location">Android Developer, Uber Inc.</string>
     <string name="profile_text_sendmessage">Enviar Mensaje</string>

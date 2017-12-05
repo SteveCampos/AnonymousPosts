@@ -62,6 +62,12 @@ public class UserRepository implements UserDataSource {
     }
 
     @Override
+    public void removePostCommentsListener(Post post) {
+        localDataSource.removePostCommentsListener(post);
+        remoteDataSource.removePostCommentsListener(post);
+    }
+
+    @Override
     public void getUser(String id, Callback<User> callback) {
         localDataSource.getUser(id, callback);
         remoteDataSource.getUser(id, callback);

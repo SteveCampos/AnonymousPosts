@@ -70,4 +70,34 @@ public class Comment {
     public void setPostId(String postId) {
         this.postId = postId;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean success = false;
+        if (obj instanceof Comment) {
+            Comment comment = (Comment) obj;
+            if (comment.getId() != null && comment.getId().equals(id)) {
+                success = true;
+            }
+        }
+        return success;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return id == null ? 0 : id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id='" + id + '\'' +
+                ", user=" + user +
+                ", postId='" + postId + '\'' +
+                ", commentText='" + commentText + '\'' +
+                ", favoriteCount=" + favoriteCount +
+                ", dislikeCount=" + dislikeCount +
+                '}';
+    }
 }

@@ -21,6 +21,7 @@ import apps.steve.fire.randomchat.R;
 import apps.steve.fire.randomchat.main.ui.entity.User;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -31,6 +32,7 @@ public class ProfileFragment extends Fragment implements ProfileView {
 
     public static final String TAG = ProfileFragment.class.getSimpleName();
     public static final String ARG_USER = "user";
+    private static final String ARG_USER_EDITABLE = "user_editable";
     @BindView(R.id.imgProfile)
     ImageView imgProfile;
     @BindView(R.id.txtName)
@@ -51,10 +53,11 @@ public class ProfileFragment extends Fragment implements ProfileView {
         // Required empty public constructor
     }
 
-    public static ProfileFragment newInstance(User user) {
+    public static ProfileFragment newInstance(User user, boolean editable) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_USER, Parcels.wrap(user));
+        bundle.putBoolean(ARG_USER_EDITABLE, editable);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -201,6 +204,11 @@ public class ProfileFragment extends Fragment implements ProfileView {
     @Override
     public void showDescription(String description) {
         txtDescription.setText(description);
+    }
+
+    @OnClick(R.id.includeBtnSendMessage)
+    public void btnSendMessageClicked() {
+        listener.onBtnMessageClicked(user);
     }
 
 }
