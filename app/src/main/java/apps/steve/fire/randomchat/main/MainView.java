@@ -64,6 +64,8 @@ public interface MainView extends BaseView<MainPresenter> {
 
     void popBackStack();
 
+    void showPostPager();
+
     void showProfile(User user, boolean editable);
 
     void showPostDetail(Post post);

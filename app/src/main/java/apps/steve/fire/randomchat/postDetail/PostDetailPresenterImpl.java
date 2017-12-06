@@ -77,7 +77,7 @@ public class PostDetailPresenterImpl implements PostDetailPresenter {
     }
 
     private void getPostComments() {
-        getComments(true);
+        getComments(false);
     }
 
     private void getComments(boolean stop) {
@@ -103,7 +103,7 @@ public class PostDetailPresenterImpl implements PostDetailPresenter {
     }
 
     private void stopCommentsListener() {
-        getComments(false);
+        getComments(true);
     }
 
 

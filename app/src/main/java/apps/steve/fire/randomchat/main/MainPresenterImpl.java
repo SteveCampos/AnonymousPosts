@@ -21,6 +21,8 @@ import apps.steve.fire.randomchat.main.usecase.GetPopularPosts;
 import apps.steve.fire.randomchat.main.usecase.GetUser;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
 
+import static apps.steve.fire.randomchat.main.ui.entity.Item.*;
+
 /**
  * Created by Steve on 25/11/2017.
  */
@@ -54,6 +56,9 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate");
+        if (!isUserAuth()) {
+            return;
+        }
         getPopularPosts();
         getUser();
     }
@@ -90,7 +95,6 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onResume() {
         Log.d(TAG, "onResume");
-        checkCurrentUser();
     }
 
     @Override
@@ -136,10 +140,12 @@ public class MainPresenterImpl implements MainPresenter {
         );
     }
 
-    private void checkCurrentUser() {
+    private boolean isUserAuth() {
         if (firebaseUser == null) {
             view.startIntro();
+            return false;
         }
+        return true;
     }
 
     private void showAvatarDrawable(@DrawableRes int avatarDrawable) {
@@ -185,7 +191,6 @@ public class MainPresenterImpl implements MainPresenter {
 
         hidePublishDialog();
         publishPost(post);
-        //addPost(post);
     }
 
     private void publishPost(Post post) {
@@ -270,28 +275,51 @@ public class MainPresenterImpl implements MainPresenter {
         int backStackCount = view.getBackStackEntryCount();
         Log.d(TAG, "backStackCount: " + backStackCount);
         if (backStackCount > 1) {
+            if (backStackCount == 2) {
+                showFab();
+            }
             view.popBackStack();
             return;
         }
+
         view.close();
     }
 
-    private static final String MENU_LOGOUT = "Cerrar Sesión";
-    private static final String MENU_APPINFO = "App Info";
-    private static final String MENU_MESSAGES = "Mensajes";
-    private static final String MENU_USERS = "Usuarios";
-    private static final String MENU_POSTS = "Publicaciones";
-    private static final String MENU_PROFILE = "Mi perfil";
+    private void showFab() {
+        if (view != null) {
+            view.showFab();
+        }
+    }
+
+
     private Item itemSelected;
 
     @Override
     public void onMenuItemSelected(Item item) {
         toogleItems(itemSelected, item);
-        closeNav();
-        switch (item.getName()) {
+        switch (item.getId()) {
+            case MENU_POSTS:
+                showPostPager();
+                break;
+            case MENU_PROFILE:
+                showProfile(currentUser, true);
+                break;
+            case MENU_USERS:
+                break;
+            case MENU_MESSAGES:
+                break;
+            case MENU_APPINFO:
+                break;
             case MENU_LOGOUT:
                 logout();
                 break;
+        }
+        closeNav();
+    }
+
+    private void showPostPager() {
+        if (view != null) {
+            view.showPostPager();
         }
     }
 

@@ -8,5 +8,4 @@
     android:layout_marginTop="?attr/actionBarSize"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="apps.steve.fire.randomchat.main.MainActivity"
-    tools:showIn="@layout/activity_main">
-</FrameLayout>
+    tools:showIn="@layout/activity_main" />

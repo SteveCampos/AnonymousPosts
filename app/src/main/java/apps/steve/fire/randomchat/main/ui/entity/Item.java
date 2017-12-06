@@ -14,7 +14,8 @@ import apps.steve.fire.randomchat.R;
 
 public class Item {
     private int id;
-    private @DrawableRes int icon;
+    private @DrawableRes
+    int icon;
     private String name;
     private boolean selected;
 
@@ -57,13 +58,21 @@ public class Item {
         this.selected = selected;
     }
 
+    public static final int MENU_POSTS = 1;
+    public static final int MENU_PROFILE = 2;
+    public static final int MENU_USERS = 3;
+    public static final int MENU_MESSAGES = 4;
+    public static final int MENU_APPINFO = 5;
+    public static final int MENU_LOGOUT = 6;
+
     public static List<Item> getMenuList(Resources res) {
         List<Item> items = new ArrayList<>();
-        items.add(new Item(1, R.drawable.ic_whatshot_accent_24dp, res.getString(R.string.fragment_posts_title), false));
-        items.add(new Item(1, R.drawable.ic_people_orange_24dp, res.getString(R.string.fragment_users_title), false));
-        items.add(new Item(1, R.drawable.ic_chat_teal_24dp, res.getString(R.string.fragment_messages_title), false));
-        items.add(new Item(1, R.drawable.ic_info_teal_24dp, res.getString(R.string.menuitem_appinfo_title), false));
-        items.add(new Item(1, R.drawable.ic_close_grey_24dp, res.getString(R.string.menuitem_logout_title), false));
+        items.add(new Item(MENU_POSTS, R.drawable.ic_whatshot_accent_24dp, res.getString(R.string.fragment_posts_title), false));
+        items.add(new Item(MENU_PROFILE, R.drawable.ic_person_red_24dp, res.getString(R.string.menuitem_myprofile_title), false));
+        items.add(new Item(MENU_USERS, R.drawable.ic_people_orange_24dp, res.getString(R.string.fragment_users_title), false));
+        items.add(new Item(MENU_MESSAGES, R.drawable.ic_chat_teal_24dp, res.getString(R.string.fragment_messages_title), false));
+        items.add(new Item(MENU_APPINFO, R.drawable.ic_info_teal_24dp, res.getString(R.string.menuitem_appinfo_title), false));
+        items.add(new Item(MENU_LOGOUT, R.drawable.ic_close_grey_24dp, res.getString(R.string.menuitem_logout_title), false));
         return items;
     }
 }

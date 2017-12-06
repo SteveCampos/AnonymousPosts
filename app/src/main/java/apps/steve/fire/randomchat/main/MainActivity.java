@@ -257,41 +257,57 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         if (savedInstanceState != null) {
             return;
         }
-
-        // Create a new Fragment to be placed in the activity layout
-        PostPagerFragment postsFragment = new PostPagerFragment();
-
-        // In case this activity was started with special instructions from an
-        // Intent, pass the Intent's extras to the fragment as arguments
-        postsFragment.setArguments(getIntent().getExtras());
-
+        showPostPager();
         // Add the fragment to the 'fragment_container' FrameLayout
-        getSupportFragmentManager().beginTransaction()
+        /*getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, postsFragment, TAG_POSTS_FRAGMENT)
                 .addToBackStack(null)
-                .commit();
+                .commit();*/
+    }
+
+
+    @Override
+    public void showPostPager() {
+        PostPagerFragment postsFragment = new PostPagerFragment();
+        showOrAddFragment(postsFragment, TAG_POSTS_FRAGMENT);
     }
 
     @Override
     public void showPostDetail(Post post) {
         PostDetailFragment postDetailFragment = PostDetailFragment.newInstance(post);
-        replaceFragment(postDetailFragment, "post-detail-fragment");
+        showOrAddFragment(postDetailFragment, "post-detail-fragment");
     }
 
     @Override
     public void showProfile(User user, boolean editable) {
         ProfileFragment profileFragment = ProfileFragment.newInstance(user, editable);
-        replaceFragment(profileFragment, "profile-fragment");
+        showOrAddFragment(profileFragment, "profile-fragment");
     }
 
 
-    private void replaceFragment(Fragment fragment, String tag) {
-        // Add the fragment to the 'fragment_container' FrameLayout
+    private void showOrAddFragment(Fragment fragment, String tag) {
+
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_start, 0)
                 .add(R.id.fragment_container, fragment, tag)
                 .addToBackStack(null)
                 .commit();
+        /*Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragmentByTag != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_start, 0)
+                    .show(fragmentByTag)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            // Add the fragment to the 'fragment_container' FrameLayout
+            getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_start, 0)
+                    .add(R.id.fragment_container, fragment, tag)
+                    .addToBackStack(null)
+                    .commit();
+        }*/
+
     }
 
     @Override
@@ -526,6 +542,7 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     public void popBackStack() {
         getSupportFragmentManager().popBackStackImmediate();
     }
+
 
     private PostsFragment getPostFragment() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
