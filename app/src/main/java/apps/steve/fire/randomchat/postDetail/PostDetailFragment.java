@@ -87,6 +87,12 @@ public class PostDetailFragment extends Fragment implements PostDetailView {
         return fragment;
     }
 
+    public static Bundle getBungle(Post post) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_POST, Parcels.wrap(post));
+        return bundle;
+    }
+
     private Post post;
     private PostDetailListener listener;
     private PostDetailPresenter presenter;
@@ -200,20 +206,11 @@ public class PostDetailFragment extends Fragment implements PostDetailView {
     @Override
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView");
+        unbinder.unbind();
         if (presenter != null) {
             presenter.onDestroyView();
         }
         super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "onDestroy");
-        if (presenter != null) {
-            presenter.onDestroy();
-        }
-        super.onDestroy();
     }
 
     @Override
@@ -224,6 +221,16 @@ public class PostDetailFragment extends Fragment implements PostDetailView {
             presenter.onDetach();
         }
         super.onDetach();
+    }
+
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onDestroy");
+        if (presenter != null) {
+            presenter.onDestroy();
+        }
+        super.onDestroy();
     }
 
 

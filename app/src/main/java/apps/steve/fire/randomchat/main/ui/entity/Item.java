@@ -69,7 +69,7 @@ public class Item {
         List<Item> items = new ArrayList<>();
         items.add(new Item(MENU_POSTS, R.drawable.ic_whatshot_accent_24dp, res.getString(R.string.fragment_posts_title), false));
         items.add(new Item(MENU_PROFILE, R.drawable.ic_person_red_24dp, res.getString(R.string.menuitem_myprofile_title), false));
-        items.add(new Item(MENU_USERS, R.drawable.ic_people_orange_24dp, res.getString(R.string.fragment_users_title), false));
+        //items.add(new Item(MENU_USERS, R.drawable.ic_people_orange_24dp, res.getString(R.string.fragment_users_title), false));
         items.add(new Item(MENU_MESSAGES, R.drawable.ic_chat_teal_24dp, res.getString(R.string.fragment_messages_title), false));
         items.add(new Item(MENU_APPINFO, R.drawable.ic_info_teal_24dp, res.getString(R.string.menuitem_appinfo_title), false));
         items.add(new Item(MENU_LOGOUT, R.drawable.ic_close_grey_24dp, res.getString(R.string.menuitem_logout_title), false));

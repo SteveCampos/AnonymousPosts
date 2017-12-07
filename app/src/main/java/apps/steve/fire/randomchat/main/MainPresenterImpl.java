@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -173,6 +174,7 @@ public class MainPresenterImpl implements MainPresenter {
         if (view != null) {
             view.closeNavigation();
         }
+        isNavOpen = false;
     }
 
     private boolean kingPostSelected;
@@ -268,10 +270,23 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void onBackPressed() {
+        if (isNavOpen) {
+            closeNav();
+            return;
+        }
+
+
         if (isPublishDialogVisible) {
             hidePublishDialog();
             return;
         }
+        if (popBackStackIfNeeded()) {
+            return;
+        }
+        view.close();
+    }
+
+    private boolean popBackStackIfNeeded() {
         int backStackCount = view.getBackStackEntryCount();
         Log.d(TAG, "backStackCount: " + backStackCount);
         if (backStackCount > 1) {
@@ -279,10 +294,9 @@ public class MainPresenterImpl implements MainPresenter {
                 showFab();
             }
             view.popBackStack();
-            return;
+            return true;
         }
-
-        view.close();
+        return false;
     }
 
     private void showFab() {
@@ -299,7 +313,15 @@ public class MainPresenterImpl implements MainPresenter {
         toogleItems(itemSelected, item);
         switch (item.getId()) {
             case MENU_POSTS:
-                showPostPager();
+                int backStackCount = view.getBackStackEntryCount();
+                if (backStackCount > 1) {
+                    for (int i = 0; i < backStackCount - 1; i++) {
+                        view.popBackStack();
+                        if (i == (backStackCount - 2)) {
+                            showFab();
+                        }
+                    }
+                }
                 break;
             case MENU_PROFILE:
                 showProfile(currentUser, true);
@@ -307,8 +329,10 @@ public class MainPresenterImpl implements MainPresenter {
             case MENU_USERS:
                 break;
             case MENU_MESSAGES:
+                showMessages();
                 break;
             case MENU_APPINFO:
+                showAppInfo();
                 break;
             case MENU_LOGOUT:
                 logout();
@@ -320,6 +344,18 @@ public class MainPresenterImpl implements MainPresenter {
     private void showPostPager() {
         if (view != null) {
             view.showPostPager();
+        }
+    }
+
+    private void showMessages() {
+        if (view != null) {
+            view.showMessages();
+        }
+    }
+
+    private void showAppInfo() {
+        if (view != null) {
+            view.showAppInfo();
         }
     }
 

@@ -55,11 +55,15 @@ public class ProfileFragment extends Fragment implements ProfileView {
 
     public static ProfileFragment newInstance(User user, boolean editable) {
         ProfileFragment fragment = new ProfileFragment();
+        fragment.setArguments(getBundle(user, editable));
+        return fragment;
+    }
+
+    public static Bundle getBundle(User user, boolean editable) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_USER, Parcels.wrap(user));
         bundle.putBoolean(ARG_USER_EDITABLE, editable);
-        fragment.setArguments(bundle);
-        return fragment;
+        return bundle;
     }
 
     private User user;
@@ -157,8 +161,8 @@ public class ProfileFragment extends Fragment implements ProfileView {
     @Override
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView");
-        super.onDestroyView();
         unbinder.unbind();
+        super.onDestroyView();
     }
 
     @Override
@@ -210,5 +214,4 @@ public class ProfileFragment extends Fragment implements ProfileView {
     public void btnSendMessageClicked() {
         listener.onBtnMessageClicked(user);
     }
-
 }

@@ -40,10 +40,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import apps.steve.fire.randomchat.BuildConfig;
 import apps.steve.fire.randomchat.R;
+import apps.steve.fire.randomchat.appinfo.AppinfoFragment;
+import apps.steve.fire.randomchat.base.navigation.BackStrategy;
+import apps.steve.fire.randomchat.base.navigation.NavigationState;
+import apps.steve.fire.randomchat.base.navigation.Navigator;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.base.usecase.UseCaseThreadPoolScheduler;
 import apps.steve.fire.randomchat.chat.ChatActivity;
@@ -62,6 +68,7 @@ import apps.steve.fire.randomchat.main.ui.entity.User;
 import apps.steve.fire.randomchat.main.usecase.GetPopularPosts;
 import apps.steve.fire.randomchat.main.usecase.GetUser;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
+import apps.steve.fire.randomchat.messages.MessagesFragment;
 import apps.steve.fire.randomchat.postDetail.PostDetailFragment;
 import apps.steve.fire.randomchat.postDetail.PostDetailListener;
 import apps.steve.fire.randomchat.postpager.PostPagerFragment;
@@ -76,7 +83,7 @@ import me.originqiu.library.EditTag;
 
 import static android.view.Gravity.TOP;
 
-public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener, PostDetailListener, ProfileListener {
+public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener, PostDetailListener, ProfileListener, Navigator.FragmentChangeListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.fragment_container)
@@ -128,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     private SlidingRootNav navListener;
     private MainPresenter presenter;
+    private Navigator navigator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,11 +148,18 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
             return;
         }
         includeNewPostView.bringToFront();
-        addPostsFragment(savedInstanceState);
         setupNav();
+        initNavigator();
+        addPostsFragment(savedInstanceState);
         initAuth();
         initPresenter();
         hideSplashScreen();
+    }
+
+    private void initNavigator() {
+        navigator = new Navigator(this, getSupportFragmentManager());
+        navigator.setFragmentChangeListener(this);
+        //navigator.restore(new NavigationState(PostPagerFragment.class.getName(), PostPagerFragment.class.getName(), false));
     }
 
     private void initAuth() {
@@ -268,46 +283,79 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @Override
     public void showPostPager() {
-        PostPagerFragment postsFragment = new PostPagerFragment();
-        showOrAddFragment(postsFragment, TAG_POSTS_FRAGMENT);
+        /*PostPagerFragment postsFragment = new PostPagerFragment();
+        showOrAdd(postsFragment, TAG_POSTS_FRAGMENT);*/
+        goTo(PostPagerFragment.class);
+    }
+
+    private void goTo(String tag, boolean keepState, boolean withCustomAnimation, Bundle bundle, BackStrategy.KEEP backStrategy) {
+        navigator.goTo(tag, keepState, withCustomAnimation, bundle, backStrategy);
+    }
+
+    private void goTo(Class clazz) {
+        goTo(clazz.getName(), true, false, Bundle.EMPTY, BackStrategy.KEEP.INSTANCE);
+    }
+
+    private void goTo(Class clazz, Bundle bundle) {
+        goTo(clazz.getName(), true, false, bundle, BackStrategy.KEEP.INSTANCE);
     }
 
     @Override
     public void showPostDetail(Post post) {
-        PostDetailFragment postDetailFragment = PostDetailFragment.newInstance(post);
-        showOrAddFragment(postDetailFragment, "post-detail-fragment");
+        /*PostDetailFragment postDetailFragment = PostDetailFragment.newInstance(post);
+        showOrAdd(postDetailFragment, "post-detail-fragment");*/
+        goTo(PostDetailFragment.class, PostDetailFragment.getBungle(post));
+    }
+
+    @Override
+    public void showMessages() {
+        /*MessagesFragment messagesFragment = new MessagesFragment();
+        showOrAdd(messagesFragment, "messages-fragment");*/
+        goTo(PostDetailFragment.class);
+    }
+
+    @Override
+    public void showAppInfo() {
+        /*AppinfoFragment appinfoFragment = new AppinfoFragment();
+        showOrAdd(appinfoFragment, "appinfo-fragment");*/
+        goTo(AppinfoFragment.class);
     }
 
     @Override
     public void showProfile(User user, boolean editable) {
-        ProfileFragment profileFragment = ProfileFragment.newInstance(user, editable);
-        showOrAddFragment(profileFragment, "profile-fragment");
+        /*ProfileFragment profileFragment = ProfileFragment.newInstance(user, editable);
+        showOrAdd(profileFragment, "profile-fragment");*/
+        goTo(ProfileFragment.class, ProfileFragment.getBundle(user, editable));
     }
 
+    private void showOrAdd(Fragment fragment, String tag) {
+        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragmentByTag == null) {
+            addFragment(fragment, tag);
+        } else {
+            showFragment(fragmentByTag, tag);
+        }
+    }
 
-    private void showOrAddFragment(Fragment fragment, String tag) {
-
+    private void addFragment(Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_start, 0)
+                //.setCustomAnimations(R.anim.slide_in_start, 0)
                 .add(R.id.fragment_container, fragment, tag)
                 .addToBackStack(null)
                 .commit();
-        /*Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(tag);
-        if (fragmentByTag != null) {
+    }
+
+    private void showFragment(Fragment fragment, String tag) {
+        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragmentByTag != null && !fragmentByTag.isVisible()) {
             getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_start, 0)
+                    //.setCustomAnimations(R.anim.slide_in_start, 0)
                     .show(fragmentByTag)
                     .addToBackStack(null)
                     .commit();
-        } else {
-            // Add the fragment to the 'fragment_container' FrameLayout
-            getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_start, 0)
-                    .add(R.id.fragment_container, fragment, tag)
-                    .addToBackStack(null)
-                    .commit();
-        }*/
-
+            return;
+        }
+        Log.d(TAG, "showFragment skipped. Fragment is visible! or null!");
     }
 
     @Override
@@ -435,12 +483,12 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @Override
     public void onBackPressed() {
+        /*presenter.onBackPressed();*/
+        if (navigator.hasBackStack()) {
+            navigator.goBack();
+            return;
+        }
         presenter.onBackPressed();
-        /*if (visible) {
-            toogleNewPostVisibility(false);
-        } else {
-            super.onBackPressed();
-        }*/
     }
 
     @Override
@@ -604,5 +652,10 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     public void onBtnMessageClicked(User user) {
         Log.d(TAG, "onBtnMessageClicked");
         presenter.onSendMessageClicked(user);
+    }
+
+    @Override
+    public void onFragmentChanged(@NotNull String currentTag, @NotNull Fragment currentFragment) {
+        Log.d(TAG, "onFragmentChanged");
     }
 }

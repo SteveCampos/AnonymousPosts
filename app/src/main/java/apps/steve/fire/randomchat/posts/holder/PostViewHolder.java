@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import apps.steve.fire.randomchat.R;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
@@ -52,7 +54,11 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         User user = post.getUser();
         if (user != null) {
             txtName.setText(user.getReadableName(itemView.getResources()));
-            imgProfile.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), user.getAvatarDrawable()));
+            //imgProfile.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), user.getAvatarDrawable()));
+            Glide.with(itemView.getContext())
+                    .asDrawable()
+                    .load(user.getAvatarDrawable())
+                    .into(imgProfile);
         }
         txtContent.setText(contentText);
         long favoriteCount = post.getFavoriteCount();
