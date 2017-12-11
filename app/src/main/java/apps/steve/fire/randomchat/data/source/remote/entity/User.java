@@ -8,6 +8,8 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.HashMap;
 import java.util.Map;
 
+import static apps.steve.fire.randomchat.data.source.remote.firebase.FireUser.PATH_USER;
+
 /**
  * Created by @stevecampos on 22/11/2017.
  */
@@ -93,18 +95,18 @@ public class User {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("id", id);
+        result.put(PATH_USER + id + "/id", id);
         if (!TextUtils.isEmpty(name)) {
-            result.put("name", name);
+            result.put(PATH_USER + id + "/name", name);
         }
         if (!TextUtils.isEmpty(gender)) {
-            result.put("gender", gender);
+            result.put(PATH_USER + id + "/gender", gender);
         }
         if (!TextUtils.isEmpty(description)) {
-            result.put("description", description);
+            result.put(PATH_USER + id + "/description", description);
         }
         if (!TextUtils.isEmpty(avatar)) {
-            result.put("avatar", avatar);
+            result.put(PATH_USER + id + "/avatar", avatar);
         }
         //result.put("coins", coins);
         //result.put("postCount", postCount);

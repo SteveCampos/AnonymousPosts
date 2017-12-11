@@ -76,44 +76,6 @@ public class PostDetailPresenterImpl implements PostDetailPresenter {
         Log.d(TAG, "onCreateView");
     }
 
-    private void getPostComments() {
-        getComments(false);
-    }
-
-    private void getComments(boolean stop) {
-        if (post == null) return;
-        handler.execute(
-                useCaseGetPostComments,
-                new GetPostComments.RequestValues(post, stop),
-                new UseCase.UseCaseCallback<GetPostComments.ResponseValue>() {
-                    @Override
-                    public void onSuccess(GetPostComments.ResponseValue response) {
-                        Comment comment = response.getComment();
-                        if (comment != null) {
-                            addComment(comment);
-                        }
-                    }
-
-                    @Override
-                    public void onError() {
-
-                    }
-                }
-        );
-    }
-
-    private void stopCommentsListener() {
-        getComments(true);
-    }
-
-
-    private void addComment(Comment comment) {
-        if (view != null) {
-            view.hideProgress();
-            view.addComment(comment);
-        }
-    }
-
     @Override
     public void onViewCreated() {
         Log.d(TAG, "onViewCreated");
@@ -208,6 +170,44 @@ public class PostDetailPresenterImpl implements PostDetailPresenter {
             if (!kingPost) {
                 view.hideCrown();
             }
+        }
+    }
+
+    private void getPostComments() {
+        getComments(false);
+    }
+
+    private void getComments(boolean stop) {
+        if (post == null) return;
+        handler.execute(
+                useCaseGetPostComments,
+                new GetPostComments.RequestValues(post, stop),
+                new UseCase.UseCaseCallback<GetPostComments.ResponseValue>() {
+                    @Override
+                    public void onSuccess(GetPostComments.ResponseValue response) {
+                        Comment comment = response.getComment();
+                        if (comment != null) {
+                            addComment(comment);
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                }
+        );
+    }
+
+    private void stopCommentsListener() {
+        getComments(true);
+    }
+
+
+    private void addComment(Comment comment) {
+        if (view != null) {
+            view.hideProgress();
+            view.addComment(comment);
         }
     }
 

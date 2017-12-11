@@ -18,8 +18,6 @@ public interface UserDataSource {
         void onSucess(T object);
     }
 
-    void updateUser(FirebaseUser user, AvatarUi avatar, String gender, Callback<Boolean> callback);
-
     void publishPost(Post post, Callback<Post> callback);
 
     void getPopularPosts(Callback<Post> callback);

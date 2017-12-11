@@ -6,6 +6,7 @@ import apps.steve.fire.randomchat.base.usecase.UseCase;
 import apps.steve.fire.randomchat.data.source.UserDataSource;
 import apps.steve.fire.randomchat.data.source.UserRepository;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
+import apps.steve.fire.randomchat.main.ui.entity.User;
 
 /**
  * Created by @stevecampos on 22/11/2017.
@@ -21,47 +22,39 @@ public class UpdateUser extends UseCase<UpdateUser.RequestValues, UpdateUser.Res
 
     @Override
     protected void executeUseCase(RequestValues requestValues) {
-        repository.updateUser(requestValues.getUser(), requestValues.getAvatar(), requestValues.getGender(), new UserDataSource.Callback<Boolean>() {
+        repository.updateUser(requestValues.getUser(), new UserDataSource.Callback<User>() {
             @Override
-            public void onSucess(Boolean success) {
-                getUseCaseCallback().onSuccess(new ResponseValue(success));
+            public void onSucess(User user) {
+                if (user != null) {
+                    getUseCaseCallback().onSuccess(new ResponseValue(user));
+                } else {
+                    getUseCaseCallback().onError();
+                }
             }
         });
     }
 
     public static final class RequestValues implements UseCase.RequestValues {
-        private final AvatarUi avatar;
-        private final String gender;
-        private final FirebaseUser user;
+        private final User user;
 
-        public RequestValues(AvatarUi avatar, String gender, FirebaseUser user) {
-            this.avatar = avatar;
-            this.gender = gender;
+        public RequestValues(User user) {
             this.user = user;
         }
 
-        public AvatarUi getAvatar() {
-            return avatar;
-        }
-
-        String getGender() {
-            return gender;
-        }
-
-        FirebaseUser getUser() {
+        public User getUser() {
             return user;
         }
     }
 
     public static final class ResponseValue implements UseCase.ResponseValue {
-        private final boolean sucess;
+        private final User user;
 
-        ResponseValue(boolean sucess) {
-            this.sucess = sucess;
+        public ResponseValue(User user) {
+            this.user = user;
         }
 
-        public boolean isSucess() {
-            return sucess;
+        public User getUser() {
+            return user;
         }
     }
 }

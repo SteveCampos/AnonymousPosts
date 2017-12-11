@@ -31,9 +31,9 @@ public class UserRemoteDataSource implements UserDataSource {
         this.firebaseUser = firebaseUser;
     }
 
+    /*
     @Override
     public void updateUser(FirebaseUser firebaseUser, AvatarUi avatar, String gender, final Callback<Boolean> callback) {
-
         User user = new User();
         user.setName(avatar.getAvatarId());
         user.setAvatar(avatar.getAvatarId());
@@ -48,7 +48,7 @@ public class UserRemoteDataSource implements UserDataSource {
                 callback.onSucess(success);
             }
         });
-    }
+    }*/
 
     @Override
     public void publishPost(Post post, final Callback<Post> callback) {
@@ -143,7 +143,7 @@ public class UserRemoteDataSource implements UserDataSource {
             @Override
             public void onSucess(User remoteUser) {
                 if (remoteUser != null) {
-                    callback.onSucess(convertUser(remoteUser));
+                    getUser(remoteUser.getId(), callback);
                 } else {
                     callback.onSucess(null);
                 }
@@ -211,10 +211,12 @@ public class UserRemoteDataSource implements UserDataSource {
 
     private int getGenderDrawable(String gender) {
         @DrawableRes int genderDrawable = R.drawable.boy_casual;
-        switch (gender) {
-            case "WOMAN":
-                genderDrawable = R.drawable.boy_casual;
-                break;
+        if (gender != null) {
+            switch (gender) {
+                case "WOMAN":
+                    genderDrawable = R.drawable.boy_casual;
+                    break;
+            }
         }
         return genderDrawable;
     }
@@ -259,7 +261,7 @@ public class UserRemoteDataSource implements UserDataSource {
         remotePost.setLocation(post.getLocation());
         remotePost.setPopular(post.isPopular());
         remotePost.setTimestamp(post.getTimestamp());
-        remotePost.setUserId(firebaseUser.getUid());
+        remotePost.setUserId(post.getUser().getId());
         return remotePost;
     }
 

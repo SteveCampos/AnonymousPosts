@@ -2,6 +2,7 @@ package apps.steve.fire.randomchat.main.ui.entity;
 
 import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
+import android.text.TextUtils;
 
 import org.parceler.Parcel;
 
@@ -66,8 +67,9 @@ public class User {
 
     public String getReadableName(Resources res) {
         //if the name is by-default the avatar id, get and convert into a readeable name
-        int resName = new AvatarUi(name).getNameId();
-        if (resName != 0) {
+        int resName = 0;
+        if (TextUtils.isEmpty(name) && !TextUtils.isEmpty(avatar)) {
+            resName = new AvatarUi(avatar).getNameId();
             name = res.getString(resName);
         }
         return name;

@@ -283,9 +283,9 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @Override
     public void showPostPager() {
-        /*PostPagerFragment postsFragment = new PostPagerFragment();
-        showOrAdd(postsFragment, TAG_POSTS_FRAGMENT);*/
-        goTo(PostPagerFragment.class);
+        PostPagerFragment postsFragment = new PostPagerFragment();
+        showOrAdd(postsFragment, TAG_POSTS_FRAGMENT);
+        //goTo(PostPagerFragment.class);
     }
 
     private void goTo(String tag, boolean keepState, boolean withCustomAnimation, Bundle bundle, BackStrategy.KEEP backStrategy) {
@@ -302,30 +302,30 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @Override
     public void showPostDetail(Post post) {
-        /*PostDetailFragment postDetailFragment = PostDetailFragment.newInstance(post);
-        showOrAdd(postDetailFragment, "post-detail-fragment");*/
-        goTo(PostDetailFragment.class, PostDetailFragment.getBungle(post));
+        PostDetailFragment postDetailFragment = PostDetailFragment.newInstance(post);
+        showOrAdd(postDetailFragment, "post-detail-fragment-" + post.getId());
+        //goTo(PostDetailFragment.class, PostDetailFragment.getBungle(post));
     }
 
     @Override
     public void showMessages() {
-        /*MessagesFragment messagesFragment = new MessagesFragment();
-        showOrAdd(messagesFragment, "messages-fragment");*/
-        goTo(PostDetailFragment.class);
+        MessagesFragment messagesFragment = new MessagesFragment();
+        showOrAdd(messagesFragment, "messages-fragment");
+        //goTo(MessagesFragment.class);
     }
 
     @Override
     public void showAppInfo() {
-        /*AppinfoFragment appinfoFragment = new AppinfoFragment();
-        showOrAdd(appinfoFragment, "appinfo-fragment");*/
-        goTo(AppinfoFragment.class);
+        AppinfoFragment appinfoFragment = new AppinfoFragment();
+        showOrAdd(appinfoFragment, "appinfo-fragment");
+        //goTo(AppinfoFragment.class);
     }
 
     @Override
     public void showProfile(User user, boolean editable) {
-        /*ProfileFragment profileFragment = ProfileFragment.newInstance(user, editable);
-        showOrAdd(profileFragment, "profile-fragment");*/
-        goTo(ProfileFragment.class, ProfileFragment.getBundle(user, editable));
+        ProfileFragment profileFragment = ProfileFragment.newInstance(user, editable);
+        showOrAdd(profileFragment, "profile-fragment-" + user.getId());
+        //goTo(ProfileFragment.class, ProfileFragment.getBundle(user, editable));
     }
 
     private void showOrAdd(Fragment fragment, String tag) {
@@ -483,12 +483,11 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @Override
     public void onBackPressed() {
-        /*presenter.onBackPressed();*/
-        if (navigator.hasBackStack()) {
+        presenter.onBackPressed();
+        /*if (navigator.hasBackStack()) {
             navigator.goBack();
             return;
-        }
-        presenter.onBackPressed();
+        }*/
     }
 
     @Override

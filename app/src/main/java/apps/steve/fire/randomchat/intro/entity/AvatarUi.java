@@ -21,11 +21,16 @@ public class AvatarUi {
     private @DrawableRes
     int avatarDrawable;
     boolean isSelected;
-    private @StringRes int nameId;
+    private @StringRes
+    int nameId;
     private String avatarName;
 
     public AvatarUi(String avatarId) {
         this.avatarId = avatarId;
+        this.avatarDrawable = R.drawable.boy_casual;
+        this.nameId = R.string.boy_casual;
+
+        if (avatarId == null) return;
         switch (avatarId) {
             case GIRL_CASUAL:
                 avatarDrawable = R.drawable.girl_casual;

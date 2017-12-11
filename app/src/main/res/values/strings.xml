@@ -54,11 +54,12 @@
     <string name="fragment_posts_message_empty">No hay publicaciones</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="error_publish">Error publicando.</string>
+    <string name="error_login">Error.</string>
 
     <string name="fragment_profile_title">Usuario</string>
 
     <string name="user_default_description">Un par de palabras sobre ti, qué música escuchas, cuáles son tus libros favoritos, qué tipos de películas ves.</string>
-    <string name="user_default_location">Android Developer, Uber Inc.</string>
+    <string name="user_default_location">Anonymous User.</string>
     <string name="profile_text_sendmessage">Enviar Mensaje</string>
     <string name="appinfo_item_email">E-mail</string>
     <string name="appinfo_item_instagram">Instagram</string>
@@ -68,6 +69,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profile_title_editname">Cambiar Nombre</string>
+    <string name="global_text_positive">Ok</string>
+    <string name="global_text_negative">Cancelar</string>
+    <string name="profile_title_editdesc">Cambiar Descripción</string>
 
 
 </resources>

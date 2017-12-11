@@ -190,6 +190,7 @@ public class MainPresenterImpl implements MainPresenter {
         post.setHashtags(tagList);
         post.setTimestamp(new Date().getTime());
         post.setPopular(kingPostSelected);
+        post.setUser(currentUser);
 
         hidePublishDialog();
         publishPost(post);
@@ -338,6 +339,7 @@ public class MainPresenterImpl implements MainPresenter {
                 logout();
                 break;
         }
+        hideFab();
         closeNav();
     }
 

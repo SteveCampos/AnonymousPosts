@@ -23,6 +23,7 @@ import apps.steve.fire.randomchat.base.usecase.UseCase;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.intro.usecase.UpdateUser;
+import apps.steve.fire.randomchat.main.ui.entity.User;
 
 /**
  * Created by @stevecampos on 20/11/2017.
@@ -304,25 +305,28 @@ public class IntroPresenterImpl implements IntroPresenter {
         avatarUiList.addAll(AvatarUi.getAvatarManList(resources));
     }
 
-    private void updateUser(FirebaseUser user) {
+    private void updateUser(FirebaseUser firebaseUser) {
+        User user = new User();
+        user.setId(firebaseUser.getUid());
+        user.setGender(genderString);
+        user.setAvatar(avatarSelected.getAvatarId());
+
         useCaseHandler.execute(useCaseUpdateUser,
-                new UpdateUser.RequestValues(avatarSelected, genderString, user),
+                new UpdateUser.RequestValues(user),
                 new UseCase.UseCaseCallback<UpdateUser.ResponseValue>() {
                     @Override
                     public void onSuccess(UpdateUser.ResponseValue response) {
                         hideProgress();
-
-                        boolean success = response.isSucess();
-                        if (success) {
+                        User user = response.getUser();
+                        if (user != null) {
                             startMain();
-                        } else {
-                            showError("Login Error! Try Again!");
                         }
                     }
 
                     @Override
                     public void onError() {
-
+                        hideProgress();
+                        showError(resources.getString(R.string.error_login));
                     }
                 }
         );

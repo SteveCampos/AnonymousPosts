@@ -17,11 +17,6 @@ public class UserLocalDataSource implements UserDataSource {
     }
 
     @Override
-    public void updateUser(FirebaseUser user, AvatarUi avatar, String gender, Callback callback) {
-
-    }
-
-    @Override
     public void publishPost(Post post, Callback<Post> callback) {
 
     }

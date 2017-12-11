@@ -51,14 +51,12 @@ public class FireUser extends Fire implements FireUserContract {
         // /posts/$postid simultaneously
         String userId = user.getId();
         Log.d(TAG, "updateUser: " + userId);
-        Map<String, Object> userValues = user.toMap();
-
+        /*Map<String, Object> userValues = user.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(PATH_USER + userId, userValues);
-        //childUpdates.put("/user-posts/" + userId + "/" + key, userValues);
+        childUpdates.put(PATH_USER + userId, userValues);*/
 
         mDatabase
-                .updateChildren(childUpdates)
+                .updateChildren(user.toMap())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
