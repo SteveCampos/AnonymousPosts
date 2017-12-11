@@ -6,6 +6,7 @@ import java.util.List;
 
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.main.ui.entity.Comment;
+import apps.steve.fire.randomchat.main.ui.entity.Message;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
 
@@ -33,4 +34,14 @@ public interface UserDataSource {
     void getUser(String id, Callback<User> callback);
 
     void updateUser(User user, Callback<User> callback);
+
+    void sendMessage(User sender, User receiver, Message message, Callback<Message> callback);
+
+    void getMessages(String chatId, Callback<Message> callback);
+
+    void removeMessagesListener(String chatId);
+
+    void getMessagesFromInbox(User user, Callback<Message> callback);
+
+    void removeInboxMessageListener(User user);
 }

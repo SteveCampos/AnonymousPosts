@@ -8,6 +8,7 @@ import apps.steve.fire.randomchat.data.source.local.UserLocalDataSource;
 import apps.steve.fire.randomchat.data.source.remote.UserRemoteDataSource;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.main.ui.entity.Comment;
+import apps.steve.fire.randomchat.main.ui.entity.Message;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
 
@@ -78,5 +79,35 @@ public class UserRepository implements UserDataSource {
     public void updateUser(User user, Callback<User> callback) {
         localDataSource.updateUser(user, callback);
         remoteDataSource.updateUser(user, callback);
+    }
+
+    @Override
+    public void sendMessage(User sender, User receiver, Message message, Callback<Message> callback) {
+        localDataSource.sendMessage(sender, receiver, message, callback);
+        remoteDataSource.sendMessage(sender, receiver, message, callback);
+    }
+
+    @Override
+    public void getMessages(String chatId, Callback<Message> callback) {
+        localDataSource.getMessages(chatId, callback);
+        remoteDataSource.getMessages(chatId, callback);
+    }
+
+    @Override
+    public void removeMessagesListener(String chatId) {
+        localDataSource.removeMessagesListener(chatId);
+        remoteDataSource.removeMessagesListener(chatId);
+    }
+
+    @Override
+    public void getMessagesFromInbox(User user, Callback<Message> callback) {
+        localDataSource.getMessagesFromInbox(user, callback);
+        remoteDataSource.getMessagesFromInbox(user, callback);
+    }
+
+    @Override
+    public void removeInboxMessageListener(User user) {
+        localDataSource.removeInboxMessageListener(user);
+        remoteDataSource.removeInboxMessageListener(user);
     }
 }

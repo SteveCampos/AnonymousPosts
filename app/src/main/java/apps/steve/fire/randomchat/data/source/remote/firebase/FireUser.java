@@ -11,12 +11,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.StringBufferInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import apps.steve.fire.randomchat.data.source.remote.callback.Callback;
 import apps.steve.fire.randomchat.data.source.remote.entity.Comment;
+import apps.steve.fire.randomchat.data.source.remote.entity.Message;
 import apps.steve.fire.randomchat.data.source.remote.entity.Post;
 import apps.steve.fire.randomchat.data.source.remote.entity.User;
 
@@ -38,6 +40,11 @@ public class FireUser extends Fire implements FireUserContract {
     public static final String PATH_POST_POPULAR = "/post-popular/";
     public static final String PATH_POST_RECENTS = "/post-recents/";
     public static final String PATH_HASHTAG_POST = "/hashtag-post/";
+
+    public static final String PATH_CHATS = "/chats/";
+    public static final String PATH_USER_CHATS = "/user-chats/";
+    public static final String PATH_CHAT_MESSAGES = "/chat-messages/";
+    public static final String PATH_USER_INBOX = "/user-inbox/";
     private static final String TAG = FireUser.class.getSimpleName();
 
     public FireUser() {
@@ -284,4 +291,152 @@ public class FireUser extends Fire implements FireUserContract {
         }
     }
 
+    public void sendMessage(User sender, User receiver, final Message message, final FirePostsCallback<Message> callback) {
+        String chatId = getId(sender.getId(), receiver.getId());
+        String messageId = mDatabase.child(PATH_CHATS + chatId).push().getKey();
+
+        message.setId(messageId);
+
+        String messageText = message.getMessageText();
+        String senderId = sender.getId();
+        String receiverId = receiver.getId();
+        String contentType = message.getContentType();
+        long timestamp = message.getTimestamp();
+        int messageStatus = message.getMessageStatus();
+        String mediaUrl = message.getMediaUrl();
+
+        Map<String, Object> messageValues = message.toMap();
+
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put(PATH_CHATS + chatId + "/lastMessage", messageValues);
+        childUpdates.put(PATH_USER_CHATS + senderId + "/" + chatId, true);
+        childUpdates.put(PATH_USER_CHATS + receiverId + "/" + chatId, true);
+        childUpdates.put(PATH_CHAT_MESSAGES + chatId + "/" + messageId, messageValues);
+        //childUpdates.put(PATH_USER_INBOX + receiverId + "/" + chatId + "/lastMessage", messageValues);
+        childUpdates.put(PATH_USER_INBOX + receiverId + "/" + chatId, messageValues);
+        mDatabase
+                .updateChildren(childUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(message);
+                        } else {
+                            callback.onSuccess(null);
+                        }
+                    }
+                });
+    }
+
+    public static String[] sortAlphabetical(String key1, String key2) {
+        String temp = null;
+        int compare = key1.compareTo(key2);//Comparing strings by their alphabetical order
+        if (compare > 0) {
+            temp = key2;
+            key2 = key1;
+            key1 = temp;
+        }
+        return new String[]{key1, key2};
+    }
+
+    public static String getId(String id1, String id2) {
+        String[] idsOrdered = sortAlphabetical(id1, id2);
+        return idsOrdered[0] + "-" + idsOrdered[1];
+    }
+
+    public void getMessages(String chatId, FirePostsCallback<Message> callback) {
+        Log.d(TAG, "getMessages");
+        this.messageCallback = callback;
+        mDatabase.child(PATH_CHAT_MESSAGES + chatId)
+                .addChildEventListener(messagesListener);
+    }
+
+    private FirePostsCallback<Message> messageCallback;
+    private ChildEventListener messagesListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            parseMessage(dataSnapshot, messageCallback);
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            parseMessage(dataSnapshot, messageCallback);
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+    private void parseMessage(DataSnapshot dataSnapshot, FirePostsCallback<Message> callback) {
+        Log.d(TAG, "parseMessage dataSnapshot: " + dataSnapshot);
+        Message message = dataSnapshot.getValue(Message.class);
+        if (message != null) {
+            callback.onSuccess(message);
+        }
+    }
+
+    public void removeMessagesListener(String chatId) {
+        Log.d(TAG, "removeMessagesListener");
+        messageCallback = null;
+        mDatabase.child(PATH_CHAT_MESSAGES + chatId)
+                .removeEventListener(messagesListener);
+        messagesListener = null;
+    }
+
+    public void getMessagesFromImbox(User user, FirePostsCallback<Message> callback) {
+        Log.d(TAG, "getMessagesFromImbox");
+        this.inboxCallback = callback;
+        mDatabase.child(PATH_USER_INBOX + user.getId())
+                .addChildEventListener(inboxMessagesListener);
+    }
+
+
+    private FirePostsCallback<Message> inboxCallback;
+    private ChildEventListener inboxMessagesListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            parseMessage(dataSnapshot, inboxCallback);
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            parseMessage(dataSnapshot, inboxCallback);
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+    public void removeInboxMessageListener(User user) {
+        Log.d(TAG, "removeInboxMessageListener");
+        inboxCallback = null;
+        mDatabase.child(PATH_CHAT_MESSAGES + user.getId())
+                .removeEventListener(inboxMessagesListener);
+        inboxMessagesListener = null;
+    }
 }

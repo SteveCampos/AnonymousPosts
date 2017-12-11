@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseUser;
 import apps.steve.fire.randomchat.data.source.UserDataSource;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.main.ui.entity.Comment;
+import apps.steve.fire.randomchat.main.ui.entity.Message;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
 
@@ -53,6 +54,31 @@ public class UserLocalDataSource implements UserDataSource {
 
     @Override
     public void updateUser(User user, Callback<User> callback) {
+
+    }
+
+    @Override
+    public void sendMessage(User sender, User receiver, Message message, Callback<Message> callback) {
+
+    }
+
+    @Override
+    public void getMessages(String chatId, Callback<Message> callback) {
+
+    }
+
+    @Override
+    public void removeMessagesListener(String chatId) {
+
+    }
+
+    @Override
+    public void getMessagesFromInbox(User user, Callback<Message> callback) {
+
+    }
+
+    @Override
+    public void removeInboxMessageListener(User user) {
 
     }
 }

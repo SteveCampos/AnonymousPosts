@@ -17,6 +17,7 @@ import android.support.transition.Slide;
 import android.support.transition.TransitionManager;
 import android.support.transition.TransitionSet;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
@@ -284,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     @Override
     public void showPostPager() {
         PostPagerFragment postsFragment = new PostPagerFragment();
-        showOrAdd(postsFragment, TAG_POSTS_FRAGMENT);
+        showOrAdd(postsFragment, TAG_POSTS_FRAGMENT, false);
         //goTo(PostPagerFragment.class);
     }
 
@@ -303,56 +304,63 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     @Override
     public void showPostDetail(Post post) {
         PostDetailFragment postDetailFragment = PostDetailFragment.newInstance(post);
-        showOrAdd(postDetailFragment, "post-detail-fragment-" + post.getId());
+        showOrAdd(postDetailFragment, "post-detail-fragment-" + post.getId(), true);
         //goTo(PostDetailFragment.class, PostDetailFragment.getBungle(post));
     }
 
     @Override
     public void showMessages() {
         MessagesFragment messagesFragment = new MessagesFragment();
-        showOrAdd(messagesFragment, "messages-fragment");
+        showOrAdd(messagesFragment, "messages-fragment", false);
         //goTo(MessagesFragment.class);
     }
 
     @Override
     public void showAppInfo() {
         AppinfoFragment appinfoFragment = new AppinfoFragment();
-        showOrAdd(appinfoFragment, "appinfo-fragment");
+        showOrAdd(appinfoFragment, "appinfo-fragment", false);
         //goTo(AppinfoFragment.class);
     }
 
     @Override
     public void showProfile(User user, boolean editable) {
         ProfileFragment profileFragment = ProfileFragment.newInstance(user, editable);
-        showOrAdd(profileFragment, "profile-fragment-" + user.getId());
+        String tag = "profile-fragment-" + user.getId();
+        if (editable) {
+            addFragment(profileFragment, tag);
+        } else {
+            showOrAdd(profileFragment, tag, false);
+        }
         //goTo(ProfileFragment.class, ProfileFragment.getBundle(user, editable));
     }
 
-    private void showOrAdd(Fragment fragment, String tag) {
+    private void showOrAdd(Fragment fragment, String tag, boolean animated) {
         Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragmentByTag == null) {
             addFragment(fragment, tag);
         } else {
-            showFragment(fragmentByTag, tag);
+            showFragment(fragmentByTag, tag, animated);
         }
     }
 
     private void addFragment(Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction()
-                //.setCustomAnimations(R.anim.slide_in_start, 0)
                 .add(R.id.fragment_container, fragment, tag)
                 .addToBackStack(null)
                 .commit();
     }
 
-    private void showFragment(Fragment fragment, String tag) {
+    private void showFragment(Fragment fragment, String tag, boolean animated) {
         Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(tag);
+
         if (fragmentByTag != null && !fragmentByTag.isVisible()) {
-            getSupportFragmentManager().beginTransaction()
-                    //.setCustomAnimations(R.anim.slide_in_start, 0)
-                    .show(fragmentByTag)
-                    .addToBackStack(null)
-                    .commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.show(fragmentByTag);
+            if (animated) {
+                transaction.setCustomAnimations(R.anim.slide_in_start, 0);
+            }
+            transaction.addToBackStack(null);
+            transaction.commit();
             return;
         }
         Log.d(TAG, "showFragment skipped. Fragment is visible! or null!");

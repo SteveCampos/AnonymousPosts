@@ -12,6 +12,7 @@ import apps.steve.fire.randomchat.data.source.remote.firebase.FirePostsCallback;
 import apps.steve.fire.randomchat.data.source.remote.firebase.FireUser;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.main.ui.entity.Comment;
+import apps.steve.fire.randomchat.main.ui.entity.Message;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 
 import static apps.steve.fire.randomchat.main.ui.entity.Avatar.*;
@@ -151,6 +152,81 @@ public class UserRemoteDataSource implements UserDataSource {
         });
     }
 
+    @Override
+    public void sendMessage(apps.steve.fire.randomchat.main.ui.entity.User sender, apps.steve.fire.randomchat.main.ui.entity.User receiver, Message message, final Callback<Message> callback) {
+        Log.d(TAG, "sendMessage");
+        fireUser.sendMessage(convertUser(sender), convertUser(receiver), convertMessage(message), new FirePostsCallback<apps.steve.fire.randomchat.data.source.remote.entity.Message>() {
+            @Override
+            public void onSuccess(apps.steve.fire.randomchat.data.source.remote.entity.Message remoteMessage) {
+                if (remoteMessage != null) {
+                    callback.onSucess(convertMessage(remoteMessage));
+                } else {
+                    callback.onSucess(null);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getMessages(String chatId, final Callback<Message> callback) {
+        fireUser.getMessages(chatId, new FirePostsCallback<apps.steve.fire.randomchat.data.source.remote.entity.Message>() {
+            @Override
+            public void onSuccess(apps.steve.fire.randomchat.data.source.remote.entity.Message remoteMessage) {
+                if (remoteMessage != null) {
+                    callback.onSucess(convertMessage(remoteMessage));
+                }
+            }
+        });
+    }
+
+    @Override
+    public void removeMessagesListener(String chatId) {
+        fireUser.removeMessagesListener(chatId);
+    }
+
+    @Override
+    public void getMessagesFromInbox(apps.steve.fire.randomchat.main.ui.entity.User user, final Callback<Message> callback) {
+        fireUser.getMessagesFromImbox(convertUser(user), new FirePostsCallback<apps.steve.fire.randomchat.data.source.remote.entity.Message>() {
+            @Override
+            public void onSuccess(apps.steve.fire.randomchat.data.source.remote.entity.Message remoteMessage) {
+                if (remoteMessage != null) {
+                    getUserByMessage(remoteMessage, callback);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void removeInboxMessageListener(apps.steve.fire.randomchat.main.ui.entity.User user) {
+        fireUser.removeInboxMessageListener(convertUser(user));
+    }
+
+    private Message convertMessage(apps.steve.fire.randomchat.data.source.remote.entity.Message remoteMessage) {
+        Message uiMessage = new Message();
+        uiMessage.setId(remoteMessage.getId());
+        uiMessage.setMessageText(remoteMessage.getMessageText());
+        uiMessage.setContentType(remoteMessage.getContentType());
+        uiMessage.setMediaUrl(remoteMessage.getMediaUrl());
+        uiMessage.setMessageStatus(remoteMessage.getMessageStatus());
+        uiMessage.setTimestamp(remoteMessage.getTimestamp());
+        apps.steve.fire.randomchat.main.ui.entity.User user = new apps.steve.fire.randomchat.main.ui.entity.User();
+        user.setId(remoteMessage.getId());
+        uiMessage.setUser(user);
+        return uiMessage;
+    }
+
+    private apps.steve.fire.randomchat.data.source.remote.entity.Message convertMessage(Message uiMessage) {
+        apps.steve.fire.randomchat.data.source.remote.entity.Message remoteMessage = new apps.steve.fire.randomchat.data.source.remote.entity.Message();
+        remoteMessage.setId(uiMessage.getId());
+        remoteMessage.setMessageText(uiMessage.getMessageText());
+        remoteMessage.setUserId(uiMessage.getUser().getId());
+        remoteMessage.setContentType(uiMessage.getContentType());
+        remoteMessage.setMediaUrl(uiMessage.getMediaUrl());
+        remoteMessage.setMessageStatus(uiMessage.getMessageStatus());
+        remoteMessage.setTimestamp(uiMessage.getTimestamp());
+        return remoteMessage;
+    }
+
     private void getUserByPost(final apps.steve.fire.randomchat.data.source.remote.entity.Post post, final Callback<Post> callback) {
         fireUser.getUser(post.getUserId(), new FirePostsCallback<User>() {
             @Override
@@ -174,6 +250,21 @@ public class UserRemoteDataSource implements UserDataSource {
                     Comment uiComment = convertComment(remoteComment);
                     uiComment.setUser(convertUser(user));
                     callback.onSucess(uiComment);
+                } else {
+                    callback.onSucess(null);
+                }
+            }
+        });
+    }
+
+    private void getUserByMessage(final apps.steve.fire.randomchat.data.source.remote.entity.Message remoteMessage, final Callback<Message> callback) {
+        fireUser.getUser(remoteMessage.getUserId(), new FirePostsCallback<User>() {
+            @Override
+            public void onSuccess(User user) {
+                if (user != null) {
+                    Message uiMessage = convertMessage(remoteMessage);
+                    uiMessage.setUser(convertUser(user));
+                    callback.onSucess(uiMessage);
                 } else {
                     callback.onSucess(null);
                 }
