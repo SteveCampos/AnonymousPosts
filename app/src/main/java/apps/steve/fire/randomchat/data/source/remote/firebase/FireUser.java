@@ -11,7 +11,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.StringBufferInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +95,7 @@ public class FireUser extends Fire implements FireUserContract {
         if (!TextUtils.isEmpty(location)) {
             childUpdates.put(PATH_LOCATION_POST + location + "/" + postId, postValues);
         }
-        List<String> hashtags = post.getHashtags();
+        List<String> hashtags = post.getHashtagList();
         if (!hashtags.isEmpty()) {
             for (String hashtag :
                     hashtags) {
@@ -234,8 +233,10 @@ public class FireUser extends Fire implements FireUserContract {
     }
 
     private void parsePost(DataSnapshot dataSnapshot, FirePostsCallback<Post> callback) {
+        Log.d(TAG, "parsePost dataSnapshot: " + dataSnapshot);
         Post post = dataSnapshot.getValue(Post.class);
         if (post != null) {
+            Log.d(TAG, "post parsed: " + post.toString());
             callback.onSuccess(post);
         }
     }

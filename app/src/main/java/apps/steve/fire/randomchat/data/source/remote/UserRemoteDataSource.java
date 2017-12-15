@@ -348,7 +348,7 @@ public class UserRemoteDataSource implements UserDataSource {
         apps.steve.fire.randomchat.data.source.remote.entity.Post remotePost = new apps.steve.fire.randomchat.data.source.remote.entity.Post();
         remotePost.setId(post.getId());
         remotePost.setContentText(post.getContentText());
-        remotePost.setHashtags(post.getHashtags());
+        remotePost.setHashtagList(post.getHashtags());
         remotePost.setLocation(post.getLocation());
         remotePost.setPopular(post.isPopular());
         remotePost.setTimestamp(post.getTimestamp());
@@ -360,7 +360,7 @@ public class UserRemoteDataSource implements UserDataSource {
         Post post = new Post();
         post.setId(remotePost.getId());
         post.setContentText(remotePost.getContentText());
-        post.setHashtags(remotePost.getHashtags());
+        post.setHashtags(remotePost.getHashtagList());
         post.setLocation(remotePost.getLocation());
         post.setPopular(remotePost.isPopular());
         post.setTimestamp(remotePost.getTimestamp());

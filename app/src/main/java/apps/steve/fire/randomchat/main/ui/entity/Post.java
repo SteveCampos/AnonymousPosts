@@ -131,4 +131,20 @@ public class Post {
     public int hashCode() {
         return id == null ? 0 : id.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id='" + id + '\'' +
+                ", hashtags=" + hashtags +
+                ", contentText='" + contentText + '\'' +
+                ", location='" + location + '\'' +
+                ", user=" + user +
+                ", timestamp=" + timestamp +
+                ", favoriteCount=" + favoriteCount +
+                ", dislikeCount=" + dislikeCount +
+                ", commentCount=" + commentCount +
+                ", popular=" + popular +
+                '}';
+    }
 }

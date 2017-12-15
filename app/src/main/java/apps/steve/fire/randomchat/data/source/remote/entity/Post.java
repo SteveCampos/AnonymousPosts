@@ -15,7 +15,8 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class Post {
     private String id;
-    private List<String> hashtags = new ArrayList<>();
+    @Exclude
+    private List<String> hashtagList = new ArrayList<>();
     private String contentText;
     private String location;
     private String userId;
@@ -24,13 +25,14 @@ public class Post {
     private long dislikeCount;
     private long commentCount;
     private boolean popular;
+    private HashMap<String, Object> hashtags = new HashMap<>();
 
     public Post() {
     }
 
-    public Post(String id, List<String> hashtags, String contentText, String location, String userId, long timestamp, long favoriteCount, long dislikeCount, long commentCount) {
+    public Post(String id, List<String> hashtagList, String contentText, String location, String userId, long timestamp, long favoriteCount, long dislikeCount, long commentCount) {
         this.id = id;
-        this.hashtags = hashtags;
+        this.hashtagList = hashtagList;
         this.contentText = contentText;
         this.location = location;
         this.userId = userId;
@@ -48,12 +50,16 @@ public class Post {
         this.id = id;
     }
 
-    public List<String> getHashtags() {
-        return hashtags;
+    public List<String> getHashtagList() {
+        if (hashtagList.isEmpty() && !hashtags.isEmpty()) {
+            setHashtagList();
+        }
+        return hashtagList;
     }
 
-    public void setHashtags(List<String> hashtags) {
-        this.hashtags = hashtags;
+    public void setHashtagList(List<String> hashtagList) {
+        this.hashtagList = hashtagList;
+        setHashtags();
     }
 
     public String getContentText() {
@@ -116,7 +122,17 @@ public class Post {
         return popular;
     }
 
+    public HashMap<String, Object> getHashtags() {
+        return hashtags;
+    }
+
+    public void setHashtags(HashMap<String, Object> hashtags) {
+        this.hashtags = hashtags;
+    }
+
     public void setPopular(boolean popular) {
+
+
         this.popular = popular;
     }
 
@@ -133,11 +149,42 @@ public class Post {
         result.put("commentCount", commentCount);
         result.put("popular", popular);
         if (!hashtags.isEmpty()) {
-            for (String hashtag :
-                    hashtags) {
-                result.put("hashtag/" + hashtag, true);
-            }
+            result.put("hashstags", hashtags);
         }
         return result;
+    }
+
+    private void setHashtags() {
+        if (hashtagList != null && !hashtagList.isEmpty()) {
+            for (String hashtag :
+                    hashtagList) {
+                hashtags.put(hashtag, true);
+            }
+        }
+    }
+
+    private void setHashtagList() {
+        if (hashtags != null && !hashtags.isEmpty()) {
+            for (Map.Entry<String, Object> entry : hashtags.entrySet()) {
+                hashtagList.add(entry.getKey());
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id='" + id + '\'' +
+                ", hashtagList=" + hashtagList +
+                ", contentText='" + contentText + '\'' +
+                ", location='" + location + '\'' +
+                ", userId='" + userId + '\'' +
+                ", timestamp=" + timestamp +
+                ", favoriteCount=" + favoriteCount +
+                ", dislikeCount=" + dislikeCount +
+                ", commentCount=" + commentCount +
+                ", popular=" + popular +
+                ", hashtags=" + hashtags +
+                '}';
     }
 }

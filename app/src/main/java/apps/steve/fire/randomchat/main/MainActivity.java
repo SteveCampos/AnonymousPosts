@@ -553,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @Override
     public void addPost(Post post) {
-        Log.d(TAG, "addPost");
+        Log.d(TAG, "addPost: " + post.toString());
         PostsFragment fragment = getPostFragment();
         if (fragment != null) {
             fragment.addPost(post);

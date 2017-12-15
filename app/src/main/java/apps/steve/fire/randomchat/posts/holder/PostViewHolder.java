@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.List;
+
 import apps.steve.fire.randomchat.R;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
@@ -17,6 +19,7 @@ import apps.steve.fire.randomchat.main.ui.entity.User;
 import apps.steve.fire.randomchat.posts.PostListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.gujun.android.taggroup.TagGroup;
 
 /**
  * Created by @stevecampos on 29/11/2017.
@@ -42,6 +45,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
     public Button btnChat;
     @BindView(R.id.cardView)
     public CardView cardView;
+    @BindView(R.id.tagGroup)
+    public TagGroup tagView;
 
     public PostViewHolder(View itemView) {
         super(itemView);
@@ -70,6 +75,11 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         } else {
             imgMoreHorizontal.setVisibility(View.GONE);
         }
+        List<String> hashtags = post.getHashtags();
+        if (!hashtags.isEmpty()) {
+            tagView.setTags(hashtags);
+        }
+
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
