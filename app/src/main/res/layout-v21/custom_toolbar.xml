@@ -20,6 +20,7 @@
         android:layout_width="?attr/actionBarSize"
         android:layout_height="36dp"
         android:background="@drawable/bg_burger_icon"
+        android:elevation="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/toolbar" />
@@ -29,6 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@null"
+        android:elevation="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/bgIcon"
         app:layout_constraintEnd_toEndOf="@+id/bgIcon"
         app:layout_constraintStart_toStartOf="@+id/bgIcon"

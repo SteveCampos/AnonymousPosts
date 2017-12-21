@@ -194,11 +194,18 @@ public class FireUser extends Fire implements FireUserContract {
 
 
     public void getPopularPost(FirePostsCallback<Post> callback) {
+        Log.d(TAG, "getPopularPost");
         getPosts(PATH_POST_POPULAR, callback);
     }
 
     public void getRecentPosts(FirePostsCallback<Post> callback) {
+        Log.d(TAG, "getPopularPost");
         getPosts(PATH_POST_RECENTS, callback);
+    }
+
+    public void getPostWithTag(String tag, FirePostsCallback<Post> callback) {
+        Log.d(TAG, "getPostWithTag");
+        getPosts(PATH_HASHTAG_POST + tag, callback);
     }
 
     private void getPosts(String path, final FirePostsCallback<Post> callback) {

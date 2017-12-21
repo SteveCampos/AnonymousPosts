@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.AppCompat.Button.Colored"
     android:layout_width="match_parent"
     android:layout_height="72dp"
@@ -21,7 +20,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_whatshot_white_24dp" />
+            app:srcCompat="@drawable/ic_whatshot_white_24dp"
+            android:contentDescription="@null" />
 
         <TextView
             android:id="@+id/txtTitleReg"
@@ -29,12 +29,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:text="Like a pro"
+            android:text="@string/global_btn_pro_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
-            app:layout_constraintBottom_toTopOf="@+id/txtDes"
+            app:layout_constraintBottom_toTopOf="@+id/txtDesReg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imgIcon"
+            app:layout_constraintStart_toEndOf="@+id/imgIconReg"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
@@ -44,13 +44,13 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:text="Just like a regular human"
+            android:text="@string/global_btn_regular_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imgIcon"
-            app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+            app:layout_constraintStart_toEndOf="@+id/imgIconReg"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitleReg" />
     </android.support.constraint.ConstraintLayout>
 </LinearLayout>

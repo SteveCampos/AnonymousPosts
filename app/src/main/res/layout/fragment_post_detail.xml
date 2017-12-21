@@ -42,7 +42,6 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="Un par de palabras sobre ti, qué música escuchas, cuáles son tus libros favoritos, qué tipos de películas ves."
         android:textAlignment="center"
         android:textColor="@color/md_grey_500"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +57,6 @@
         android:layout_marginTop="32dp"
         android:drawableEnd="@drawable/ic_favorite_primarydark_24dp"
         android:gravity="bottom"
-        android:text="178"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineThirdQuarter"
         app:layout_constraintTop_toTopOf="@+id/imgProfile" />
@@ -72,7 +70,6 @@
         android:layout_marginTop="8dp"
         android:drawableEnd="@drawable/ic_chat_grey_24dp"
         android:drawablePadding="4dp"
-        android:text="32"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineThirdQuarter"
         app:layout_constraintTop_toBottomOf="@+id/txtFavoriteCount" />

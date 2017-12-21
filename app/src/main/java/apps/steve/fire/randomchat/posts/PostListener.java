@@ -8,4 +8,6 @@ import apps.steve.fire.randomchat.main.ui.entity.Post;
 
 public interface PostListener {
     void onPostSelected(Post post);
+
+    void onTagClick(Post post, String tag);
 }

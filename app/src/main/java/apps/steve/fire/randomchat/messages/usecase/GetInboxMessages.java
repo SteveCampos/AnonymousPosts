@@ -1,5 +1,7 @@
 package apps.steve.fire.randomchat.messages.usecase;
 
+import android.util.Log;
+
 import apps.steve.fire.randomchat.base.usecase.UseCase;
 import apps.steve.fire.randomchat.data.source.UserDataSource;
 import apps.steve.fire.randomchat.data.source.UserRepository;
@@ -11,6 +13,7 @@ import apps.steve.fire.randomchat.main.ui.entity.User;
  */
 
 public class GetInboxMessages extends UseCase<GetInboxMessages.RequestValues, GetInboxMessages.ResponseValue> {
+    private static final String TAG = GetInboxMessages.class.getSimpleName();
     private UserRepository repository;
 
     public GetInboxMessages(UserRepository repository) {
@@ -19,7 +22,7 @@ public class GetInboxMessages extends UseCase<GetInboxMessages.RequestValues, Ge
 
     @Override
     protected void executeUseCase(RequestValues requestValues) {
-
+        Log.d(TAG, "executeUseCase");
         boolean stopListener = requestValues.isStopListener();
         User user = requestValues.getUser();
         if (stopListener) {

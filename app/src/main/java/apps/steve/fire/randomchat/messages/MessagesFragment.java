@@ -82,7 +82,7 @@ public class MessagesFragment extends Fragment implements MessageView {
         presenter = new MessagePresenterImpl(
                 new UseCaseHandler(new UseCaseThreadPoolScheduler()),
                 new GetInboxMessages(repository)
-                );
+        );
         setPresenter(presenter);
     }
 
@@ -117,13 +117,13 @@ public class MessagesFragment extends Fragment implements MessageView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "onViewCreated");
         getUser();
         if (presenter != null) {
             presenter.attachView(this);
             presenter.onViewCreated();
             presenter.setUser(mainUser);
         }
-        Log.d(TAG, "onViewCreated");
     }
 
     @Override
@@ -228,7 +228,7 @@ public class MessagesFragment extends Fragment implements MessageView {
 
     @Override
     public void addMessage(Message message) {
-
+        adapter.addMessage(message);
     }
 
     @Override

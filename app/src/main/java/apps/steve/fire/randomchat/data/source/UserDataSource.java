@@ -25,6 +25,8 @@ public interface UserDataSource {
 
     void getRecentPosts(Callback<Post> callback);
 
+    void getPostWithTag(String tag, Callback<Post> callback);
+
     void publishComment(Comment comment, Callback<Comment> callback);
 
     void getPostComments(Post post, Callback<Comment> callback);

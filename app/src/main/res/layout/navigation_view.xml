@@ -13,7 +13,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imgProfile"
+        android:id="@+id/navImgProfile"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:layout_marginEnd="8dp"
@@ -23,34 +23,32 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewTop"
-        app:srcCompat="@drawable/boy_wood_cooter" />
+        app:srcCompat="@drawable/boy_casual" />
 
     <TextView
-        android:id="@+id/txtName"
+        android:id="@+id/navTxtName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Steve"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/navImgProfile" />
 
     <TextView
-        android:id="@+id/txtCity"
+        android:id="@+id/navTxtCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Lima"
         android:textAlignment="center"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtName" />
+        app:layout_constraintTop_toBottomOf="@+id/navTxtName" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler"
@@ -60,7 +58,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCity" />
+        app:layout_constraintTop_toBottomOf="@+id/navTxtCity" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"

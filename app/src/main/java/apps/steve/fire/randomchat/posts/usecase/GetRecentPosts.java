@@ -1,4 +1,4 @@
-package apps.steve.fire.randomchat.main.usecase;
+package apps.steve.fire.randomchat.posts.usecase;
 
 import apps.steve.fire.randomchat.base.usecase.UseCase;
 import apps.steve.fire.randomchat.data.source.UserDataSource;
@@ -6,20 +6,19 @@ import apps.steve.fire.randomchat.data.source.UserRepository;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 
 /**
- * Created by Steve on 3/12/2017.
+ * Created by @stevecampos on 3/12/2017.
  */
 
-public class GetPopularPosts extends UseCase<GetPopularPosts.RequestValues, GetPopularPosts.ResponseValue> {
-
+public class GetRecentPosts extends UseCase<GetRecentPosts.RequestValues, GetRecentPosts.ResponseValue> {
     private UserRepository repository;
 
-    public GetPopularPosts(UserRepository repository) {
+    public GetRecentPosts(UserRepository repository) {
         this.repository = repository;
     }
 
     @Override
     protected void executeUseCase(RequestValues requestValues) {
-        repository.getPopularPosts(new UserDataSource.Callback<Post>() {
+        repository.getRecentPosts(new UserDataSource.Callback<Post>() {
             @Override
             public void onSucess(Post post) {
                 if (post != null) {
@@ -28,7 +27,6 @@ public class GetPopularPosts extends UseCase<GetPopularPosts.RequestValues, GetP
             }
         });
     }
-
 
     public static final class RequestValues implements UseCase.RequestValues {
 

@@ -1,5 +1,7 @@
 package apps.steve.fire.randomchat.data.source;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import apps.steve.fire.randomchat.main.ui.entity.User;
 
 public class UserRepository implements UserDataSource {
 
+    private static final String TAG = UserRepository.class.getSimpleName();
     private UserLocalDataSource localDataSource;
     private UserRemoteDataSource remoteDataSource;
 
@@ -49,6 +52,12 @@ public class UserRepository implements UserDataSource {
     public void getRecentPosts(Callback<Post> callback) {
         localDataSource.getRecentPosts(callback);
         remoteDataSource.getRecentPosts(callback);
+    }
+
+    @Override
+    public void getPostWithTag(String tag, Callback<Post> callback) {
+        localDataSource.getPostWithTag(tag, callback);
+        remoteDataSource.getPostWithTag(tag, callback);
     }
 
     @Override
@@ -101,6 +110,7 @@ public class UserRepository implements UserDataSource {
 
     @Override
     public void getMessagesFromInbox(User user, Callback<Message> callback) {
+        Log.d(TAG, "");
         localDataSource.getMessagesFromInbox(user, callback);
         remoteDataSource.getMessagesFromInbox(user, callback);
     }

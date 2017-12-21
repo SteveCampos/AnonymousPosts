@@ -66,8 +66,8 @@ public class PostPagerFragment extends Fragment {
     private void setupViewPager() {
         Log.d(TAG, "setupViewPager");
         fragmentAdapter = new MyFragmentAdapter(getFragmentManager());
-        fragmentAdapter.addFragment(PostsFragment.newInstance(), getString(R.string.fragment_posts_section_popular));
-        fragmentAdapter.addFragment(PostsFragment.newInstance(), getString(R.string.fragment_posts_section_recent));
+        fragmentAdapter.addFragment(PostsFragment.newInstance(PostsFragment.TYPE_POPULAR), getString(R.string.fragment_posts_section_popular));
+        fragmentAdapter.addFragment(PostsFragment.newInstance(PostsFragment.TYPE_RECENTS), getString(R.string.fragment_posts_section_recent));
         viewpager.setOffscreenPageLimit(2);
         viewpager.setAdapter(fragmentAdapter);
         //viewpager.setCurrentItem(0);

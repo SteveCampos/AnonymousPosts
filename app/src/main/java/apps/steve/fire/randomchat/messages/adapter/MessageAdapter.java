@@ -31,17 +31,26 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_receptor_message, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_item_comment, parent, false);
         return new CommentViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Message message = messages.get(position);
+        Log.d(TAG, "onBindViewHolder message: " + message.toString());
     }
 
     @Override
     public int getItemCount() {
         return messages.size();
+    }
+
+    public void addMessage(Message message) {
+        if (!messages.contains(message)) {
+            int position = 0;
+            messages.add(position, message);
+            notifyItemInserted(position);
+        }
     }
 }

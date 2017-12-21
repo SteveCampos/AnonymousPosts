@@ -78,6 +78,7 @@ public class MessagePresenterImpl implements MessagePresenter {
     @Override
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView");
+        view = null;
     }
 
     @Override
@@ -102,7 +103,7 @@ public class MessagePresenterImpl implements MessagePresenter {
 
     @Override
     public void setUser(User user) {
-        Log.d(TAG, "onCreate");
+        Log.d(TAG, "setUser");
         this.user = user;
         getUserMessages();
     }
@@ -112,6 +113,7 @@ public class MessagePresenterImpl implements MessagePresenter {
     }
 
     private void getMessages(boolean stop) {
+        Log.d(TAG, "getMessages");
         if (user == null) return;
         handler.execute(
                 getInboxMessages,
@@ -119,6 +121,7 @@ public class MessagePresenterImpl implements MessagePresenter {
                 new UseCase.UseCaseCallback<GetInboxMessages.ResponseValue>() {
                     @Override
                     public void onSuccess(GetInboxMessages.ResponseValue response) {
+                        Log.d(TAG, "getMessages onSuccess");
                         Message message = response.getMessage();
                         if (message != null) {
                             addMessage(message);
@@ -139,6 +142,7 @@ public class MessagePresenterImpl implements MessagePresenter {
 
 
     private void addMessage(Message message) {
+        Log.d(TAG, "addMessage");
         if (view != null) {
             view.hideProgress();
             view.addMessage(message);

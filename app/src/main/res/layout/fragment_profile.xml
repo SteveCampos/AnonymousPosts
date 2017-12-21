@@ -56,7 +56,6 @@
         android:layout_marginTop="8dp"
         android:drawablePadding="4dp"
         android:gravity="center"
-        android:text="Steve Campos"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,7 +83,6 @@
         android:drawableEnd="@drawable/ic_crown_1"
         android:drawablePadding="8dp"
         android:gravity="bottom"
-        android:text="178"
         android:textColor="@color/md_blue_grey_500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineThirdQuarter"
@@ -137,7 +135,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Posts"
+        android:text="@string/profile_text_posts"
         app:layout_constraintEnd_toEndOf="@+id/fabPosts"
         app:layout_constraintStart_toStartOf="@+id/fabPosts"
         app:layout_constraintTop_toBottomOf="@+id/fabPosts" />
@@ -147,7 +145,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Love"
+        android:text="@string/profile_text_love"
         app:layout_constraintEnd_toEndOf="@+id/fabLove"
         app:layout_constraintStart_toStartOf="@+id/fabLove"
         app:layout_constraintTop_toBottomOf="@+id/fabLove" />
@@ -157,7 +155,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Comment"
+        android:text="@string/profile_text_comment"
         app:layout_constraintEnd_toEndOf="@+id/fabComments"
         app:layout_constraintStart_toStartOf="@+id/fabComments"
         app:layout_constraintTop_toBottomOf="@+id/fabComments" />

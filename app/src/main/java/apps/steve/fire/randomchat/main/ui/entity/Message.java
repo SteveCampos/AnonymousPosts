@@ -82,4 +82,17 @@ public class Message {
     public void setMessageStatus(int messageStatus) {
         this.messageStatus = messageStatus;
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id='" + id + '\'' +
+                ", messageText='" + messageText + '\'' +
+                ", user=" + user +
+                ", timestamp=" + timestamp +
+                ", contentType='" + contentType + '\'' +
+                ", mediaUrl='" + mediaUrl + '\'' +
+                ", messageStatus=" + messageStatus +
+                '}';
+    }
 }

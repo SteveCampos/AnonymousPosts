@@ -84,6 +84,7 @@ public class PostDetailPresenterImpl implements PostDetailPresenter {
     @Override
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView");
+        view = null;
     }
 
     @Override

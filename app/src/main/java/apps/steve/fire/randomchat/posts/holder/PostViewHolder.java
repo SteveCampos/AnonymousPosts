@@ -80,6 +80,15 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
             tagView.setTags(hashtags);
         }
 
+        tagView.setOnTagClickListener(new TagGroup.OnTagClickListener() {
+            @Override
+            public void onTagClick(String tag) {
+                if (listener != null) {
+                    listener.onTagClick(post, tag);
+                }
+            }
+        });
+
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

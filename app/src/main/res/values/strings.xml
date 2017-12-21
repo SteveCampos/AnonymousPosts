@@ -67,12 +67,21 @@
     <string name="appinfo_item_sourcecode">Source Code</string>
     <string name="appinfo_item_copyright">Publicaciones Anónimas 1.0\nCopyright ©2017\nSteve Campos</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="profile_title_editname">Cambiar Nombre</string>
-    <string name="global_text_positive">Ok</string>
+    <string name="global_text_positive">OK</string>
     <string name="global_text_negative">Cancelar</string>
     <string name="profile_title_editdesc">Cambiar Descripción</string>
+    <string name="global_btn_pro_title">Like a King</string>
+    <string name="global_btn_regular_title">Regular</string>
+    <string name="global_btn_pro_desc">Atrae a muchas más personas</string>
+    <string name="global_btn_regular_desc">Just like a regular human</string>
+
+    <string name="activity_chat_hint_message">Write Something Cool</string>
+    <string name="global_message_hint">Some cool message here!</string>
+    <string name="profile_text_love">Love</string>
+    <string name="profile_text_comment">Comments</string>
+    <string name="profile_text_posts">Posts</string>
 
 
 </resources>

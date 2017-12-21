@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
-import apps.steve.fire.randomchat.main.usecase.GetPopularPosts;
+import apps.steve.fire.randomchat.posts.usecase.GetPopularPosts;
 import apps.steve.fire.randomchat.main.usecase.GetUser;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
 
@@ -60,7 +59,7 @@ public class MainPresenterImpl implements MainPresenter {
         if (!isUserAuth()) {
             return;
         }
-        getPopularPosts();
+        //getPopularPosts();
         getUser();
     }
 
@@ -120,6 +119,7 @@ public class MainPresenterImpl implements MainPresenter {
         openNav();
     }
 
+    /*
     private void getPopularPosts() {
         handler.execute(
                 useCaseGetPopularPosts,
@@ -139,7 +139,7 @@ public class MainPresenterImpl implements MainPresenter {
                     }
                 }
         );
-    }
+    }*/
 
     private boolean isUserAuth() {
         if (firebaseUser == null) {
@@ -330,7 +330,7 @@ public class MainPresenterImpl implements MainPresenter {
             case MENU_USERS:
                 break;
             case MENU_MESSAGES:
-                showMessages();
+                showMessages(currentUser);
                 break;
             case MENU_APPINFO:
                 showAppInfo();
@@ -349,9 +349,9 @@ public class MainPresenterImpl implements MainPresenter {
         }
     }
 
-    private void showMessages() {
+    private void showMessages(User user) {
         if (view != null) {
-            view.showMessages();
+            view.showMessages(user);
         }
     }
 

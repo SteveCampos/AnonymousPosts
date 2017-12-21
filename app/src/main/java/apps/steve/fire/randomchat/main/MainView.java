@@ -70,7 +70,9 @@ public interface MainView extends BaseView<MainPresenter> {
 
     void showPostDetail(Post post);
 
-    void showMessages();
+    void showMessages(User user);
+
+    void showPostsWithTag(Post post, String tag);
 
     void showAppInfo();
 }

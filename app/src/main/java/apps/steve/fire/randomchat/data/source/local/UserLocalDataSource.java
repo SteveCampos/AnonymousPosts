@@ -33,6 +33,11 @@ public class UserLocalDataSource implements UserDataSource {
     }
 
     @Override
+    public void getPostWithTag(String tag, Callback<Post> callback) {
+
+    }
+
+    @Override
     public void publishComment(Comment comment, Callback<Comment> callback) {
 
     }

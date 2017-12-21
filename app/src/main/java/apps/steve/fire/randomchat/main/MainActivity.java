@@ -49,7 +49,6 @@ import apps.steve.fire.randomchat.BuildConfig;
 import apps.steve.fire.randomchat.R;
 import apps.steve.fire.randomchat.appinfo.AppinfoFragment;
 import apps.steve.fire.randomchat.base.navigation.BackStrategy;
-import apps.steve.fire.randomchat.base.navigation.NavigationState;
 import apps.steve.fire.randomchat.base.navigation.Navigator;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.base.usecase.UseCaseThreadPoolScheduler;
@@ -66,10 +65,11 @@ import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
-import apps.steve.fire.randomchat.main.usecase.GetPopularPosts;
+import apps.steve.fire.randomchat.posts.usecase.GetPopularPosts;
 import apps.steve.fire.randomchat.main.usecase.GetUser;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
 import apps.steve.fire.randomchat.messages.MessagesFragment;
+import apps.steve.fire.randomchat.messages.listener.MessagesListener;
 import apps.steve.fire.randomchat.postDetail.PostDetailFragment;
 import apps.steve.fire.randomchat.postDetail.PostDetailListener;
 import apps.steve.fire.randomchat.postpager.PostPagerFragment;
@@ -84,7 +84,8 @@ import me.originqiu.library.EditTag;
 
 import static android.view.Gravity.TOP;
 
-public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener, PostDetailListener, ProfileListener, Navigator.FragmentChangeListener {
+public class
+MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener, PostDetailListener, ProfileListener, Navigator.FragmentChangeListener, MessagesListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.fragment_container)
@@ -249,6 +250,9 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     private ItemAdapter itemAdapter;
 
+    public ImageView navImgProfile;
+    public TextView navTxtName;
+
     private void setupNav() {
         navListener = new SlidingRootNavBuilder(this)
                 .withMenuLayout(R.layout.navigation_view)
@@ -258,6 +262,8 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
                 .inject();
 
         RecyclerView recycler = findViewById(R.id.recycler);
+        navImgProfile = findViewById(R.id.navImgProfile);
+        navTxtName = findViewById(R.id.navTxtName);
         recycler.setLayoutManager(new LinearLayoutManager(this));
         itemAdapter = new ItemAdapter(Item.getMenuList(getResources()), this);
         recycler.setAdapter(itemAdapter);
@@ -309,10 +315,16 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     }
 
     @Override
-    public void showMessages() {
-        MessagesFragment messagesFragment = new MessagesFragment();
+    public void showMessages(User user) {
+        MessagesFragment messagesFragment = MessagesFragment.newInstance(user);
         showOrAdd(messagesFragment, "messages-fragment", false);
         //goTo(MessagesFragment.class);
+    }
+
+    @Override
+    public void showPostsWithTag(Post post, String tag) {
+        PostsFragment fragment = PostsFragment.newInstance(PostsFragment.TYPE_HASHTAG, tag);
+        showOrAdd(fragment, "posts-hashtag-" + tag, false);
     }
 
     @Override
@@ -425,6 +437,7 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     @Override
     public void showName(String name) {
         txtName.setText(name);
+        navTxtName.setText(name);
     }
 
     @Override
@@ -435,12 +448,13 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     @Override
     public void showAvatar(int avatar) {
         imgProfile.setImageDrawable(ContextCompat.getDrawable(this, avatar));
+        navImgProfile.setImageDrawable(ContextCompat.getDrawable(this, avatar));
     }
 
     @Override
     public void showSplashScreen() {
-        //splashScreen.setVisibility(View.VISIBLE);
         splashScreen.bringToFront();
+        splashScreen.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -641,6 +655,12 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         hideFab();
         changeTitle(post.getUser().getReadableName(getResources()));
         showPostDetailFragment(post);*/
+    }
+
+    @Override
+    public void onTagClick(Post post, String tag) {
+        Log.d(TAG, "onTagClick tag: " + tag);
+        showPostsWithTag(post, tag);
     }
 
     @Override

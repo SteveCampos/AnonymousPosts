@@ -94,6 +94,19 @@ public class UserRemoteDataSource implements UserDataSource {
     }
 
     @Override
+    public void getPostWithTag(String tag, final Callback<Post> callback) {
+        Log.d(TAG, "getPostWithTag");
+        fireUser.getPostWithTag(tag, new FirePostsCallback<apps.steve.fire.randomchat.data.source.remote.entity.Post>() {
+            @Override
+            public void onSuccess(apps.steve.fire.randomchat.data.source.remote.entity.Post post) {
+                if (post != null) {
+                    getUserByPost(post, callback);
+                }
+            }
+        });
+    }
+
+    @Override
     public void publishComment(Comment comment, final Callback<Comment> callback) {
         fireUser.commentPost(convertComment(comment), new apps.steve.fire.randomchat.data.source.remote.callback.Callback<apps.steve.fire.randomchat.data.source.remote.entity.Comment>() {
             @Override
@@ -186,6 +199,7 @@ public class UserRemoteDataSource implements UserDataSource {
 
     @Override
     public void getMessagesFromInbox(apps.steve.fire.randomchat.main.ui.entity.User user, final Callback<Message> callback) {
+        Log.d(TAG, "getMessagesFromInbox");
         fireUser.getMessagesFromImbox(convertUser(user), new FirePostsCallback<apps.steve.fire.randomchat.data.source.remote.entity.Message>() {
             @Override
             public void onSuccess(apps.steve.fire.randomchat.data.source.remote.entity.Message remoteMessage) {
