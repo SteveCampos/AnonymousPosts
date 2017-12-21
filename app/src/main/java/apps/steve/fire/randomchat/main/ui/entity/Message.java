@@ -13,6 +13,7 @@ public class Message {
     private String contentType;
     private String mediaUrl;
     private int messageStatus;
+    private boolean mainUser;
 
     public Message() {
     }
@@ -95,4 +96,30 @@ public class Message {
                 ", messageStatus=" + messageStatus +
                 '}';
     }
+
+    public boolean isMainUser() {
+        return mainUser;
+    }
+
+    public void setMainUser(boolean mainUser) {
+        this.mainUser = mainUser;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean success = false;
+        if (obj instanceof Message) {
+            Message message = (Message) obj;
+            if (message.getId() != null && message.getId().equals(id)) {
+                success = true;
+            }
+        }
+        return success;
+    }
+
+    @Override
+    public int hashCode() {
+        return id == null ? 0 : id.hashCode();
+    }
+
 }

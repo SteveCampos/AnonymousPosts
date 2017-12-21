@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import apps.steve.fire.randomchat.Utils;
 import apps.steve.fire.randomchat.data.source.remote.callback.Callback;
 import apps.steve.fire.randomchat.data.source.remote.entity.Comment;
 import apps.steve.fire.randomchat.data.source.remote.entity.Message;
@@ -300,7 +301,7 @@ public class FireUser extends Fire implements FireUserContract {
     }
 
     public void sendMessage(User sender, User receiver, final Message message, final FirePostsCallback<Message> callback) {
-        String chatId = getId(sender.getId(), receiver.getId());
+        String chatId = Utils.getId(sender.getId(), receiver.getId());
         String messageId = mDatabase.child(PATH_CHATS + chatId).push().getKey();
 
         message.setId(messageId);
@@ -335,22 +336,6 @@ public class FireUser extends Fire implements FireUserContract {
                         }
                     }
                 });
-    }
-
-    public static String[] sortAlphabetical(String key1, String key2) {
-        String temp = null;
-        int compare = key1.compareTo(key2);//Comparing strings by their alphabetical order
-        if (compare > 0) {
-            temp = key2;
-            key2 = key1;
-            key1 = temp;
-        }
-        return new String[]{key1, key2};
-    }
-
-    public static String getId(String id1, String id2) {
-        String[] idsOrdered = sortAlphabetical(id1, id2);
-        return idsOrdered[0] + "-" + idsOrdered[1];
     }
 
     public void getMessages(String chatId, FirePostsCallback<Message> callback) {

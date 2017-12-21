@@ -224,7 +224,7 @@ public class UserRemoteDataSource implements UserDataSource {
         uiMessage.setMessageStatus(remoteMessage.getMessageStatus());
         uiMessage.setTimestamp(remoteMessage.getTimestamp());
         apps.steve.fire.randomchat.main.ui.entity.User user = new apps.steve.fire.randomchat.main.ui.entity.User();
-        user.setId(remoteMessage.getId());
+        user.setId(remoteMessage.getUserId());
         uiMessage.setUser(user);
         return uiMessage;
     }

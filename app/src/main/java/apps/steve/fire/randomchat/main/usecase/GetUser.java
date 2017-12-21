@@ -1,5 +1,7 @@
 package apps.steve.fire.randomchat.main.usecase;
 
+import android.util.Log;
+
 import apps.steve.fire.randomchat.base.usecase.UseCase;
 import apps.steve.fire.randomchat.data.source.UserDataSource;
 import apps.steve.fire.randomchat.data.source.UserRepository;
@@ -10,6 +12,7 @@ import apps.steve.fire.randomchat.main.ui.entity.User;
  */
 
 public class GetUser extends UseCase<GetUser.RequestValues, GetUser.ResponseValue> {
+    private static final String TAG = GetUser.class.getSimpleName();
     private UserRepository repository;
 
     public GetUser(UserRepository repository) {
@@ -18,6 +21,7 @@ public class GetUser extends UseCase<GetUser.RequestValues, GetUser.ResponseValu
 
     @Override
     protected void executeUseCase(RequestValues requestValues) {
+        Log.d(TAG, "executeUseCase");
         repository.getUser(requestValues.getUserId(), new UserDataSource.Callback<User>() {
             @Override
             public void onSucess(User user) {
