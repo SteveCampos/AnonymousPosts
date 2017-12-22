@@ -9,6 +9,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -45,6 +47,7 @@ public class FireUser extends Fire implements FireUserContract {
     public static final String PATH_USER_CHATS = "/user-chats/";
     public static final String PATH_CHAT_MESSAGES = "/chat-messages/";
     public static final String PATH_USER_INBOX = "/user-inbox/";
+    public static final String PATH_USER_INCOMMING_MESSAGES = "/user-incomming-messages/";
     private static final String TAG = FireUser.class.getSimpleName();
 
     public FireUser() {
@@ -53,15 +56,8 @@ public class FireUser extends Fire implements FireUserContract {
 
     @Override
     public void updateUser(final User user, final Callback<User> callback) {
-
-        // Create new post at /user-posts/$userid/$postid and at
-        // /posts/$postid simultaneously
         String userId = user.getId();
         Log.d(TAG, "updateUser: " + userId);
-        /*Map<String, Object> userValues = user.toMap();
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(PATH_USER + userId, userValues);*/
-
         mDatabase
                 .updateChildren(user.toMap())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -86,21 +82,22 @@ public class FireUser extends Fire implements FireUserContract {
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put(PATH_POST + postId, postValues);
-        childUpdates.put(PATH_USER_POST + postId, postValues);
-        childUpdates.put(PATH_POST_RECENTS + postId, postValues);
+        childUpdates.put(PATH_USER_POST + postId, true);
+        childUpdates.put(PATH_POST_RECENTS + postId, true);
 
         if (post.isPopular()) {
-            childUpdates.put(PATH_POST_POPULAR + postId, postValues);
+            childUpdates.put(PATH_POST_POPULAR + postId, true);
+            decrementUserCoin(post.getUserId());
         }
         String location = post.getLocation();
         if (!TextUtils.isEmpty(location)) {
-            childUpdates.put(PATH_LOCATION_POST + location + "/" + postId, postValues);
+            childUpdates.put(PATH_LOCATION_POST + location + "/" + postId, true);
         }
         List<String> hashtags = post.getHashtagList();
         if (!hashtags.isEmpty()) {
             for (String hashtag :
                     hashtags) {
-                childUpdates.put(PATH_HASHTAG_POST + hashtag + "/" + postId, postValues);
+                childUpdates.put(PATH_HASHTAG_POST + hashtag + "/" + postId, true);
             }
         }
 
@@ -118,6 +115,13 @@ public class FireUser extends Fire implements FireUserContract {
                 });
     }
 
+    private void decrementUserCoin(String userId) {
+        User user = new User();
+        user.setId(userId);
+        updateUserCoins(user, -1, null);
+    }
+
+
     @Override
     public void commentPost(Comment comment, final Callback<Comment> callback) {
         // Create new comment by post
@@ -134,6 +138,7 @@ public class FireUser extends Fire implements FireUserContract {
         childUpdates.put(PATH_POST_COMMENTS + postId + "/" + commentId, commentValues);
         childUpdates.put(PATH_USER_COMMENT + userId + "/" + commentId, commentValues);
 
+        updatePostCommentCount(postId);
 
         final Comment comment1 = comment;
         mDatabase
@@ -145,6 +150,84 @@ public class FireUser extends Fire implements FireUserContract {
                             callback.onSucess(comment1);
                         } else {
                             callback.onSucess(null);
+                        }
+                    }
+                });
+    }
+
+    private void updatePostCommentCount(String postId) {
+        mDatabase.child(PATH_POST + postId)
+                .runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        Log.d(TAG, "doTransaction");
+                        Post p = mutableData.getValue(Post.class);
+                        if (p == null) {
+                            return Transaction.success(mutableData);
+                        }
+                        p.setCommentCount(p.getCommentCount() + 1);
+                        // Set value and report transaction success
+                        mutableData.setValue(p);
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(DatabaseError databaseError, boolean b,
+                                           DataSnapshot dataSnapshot) {
+                        // Transaction completed
+                        Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+                    }
+                });
+    }
+
+    public void updatePostFavCount(String postId) {
+        mDatabase.child(PATH_POST + postId)
+                .runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        Log.d(TAG, "doTransaction");
+                        Post p = mutableData.getValue(Post.class);
+                        if (p == null) {
+                            return Transaction.success(mutableData);
+                        }
+                        p.setFavoriteCount(p.getFavoriteCount() + 1);
+                        // Set value and report transaction success
+                        mutableData.setValue(p);
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(DatabaseError databaseError, boolean b,
+                                           DataSnapshot dataSnapshot) {
+                        // Transaction completed
+                        Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+                    }
+                });
+    }
+
+    public void updateUserCoins(final User user, final long coins, final Callback<User> callback) {
+        mDatabase.child(PATH_USER + user.getId())
+                .runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        Log.d(TAG, "doTransaction");
+                        User user = mutableData.getValue(User.class);
+                        if (user == null) {
+                            return Transaction.success(mutableData);
+                        }
+                        user.setCoins(user.getCoins() + coins);
+                        // Set value and report transaction success
+                        mutableData.setValue(user);
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(DatabaseError databaseError, boolean b,
+                                           DataSnapshot dataSnapshot) {
+                        // Transaction completed
+                        Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+                        if (databaseError == null && callback != null) {
+                            callback.onSucess(user);
                         }
                     }
                 });
@@ -209,18 +292,37 @@ public class FireUser extends Fire implements FireUserContract {
         getPosts(PATH_HASHTAG_POST + tag, callback);
     }
 
+    private void getPost(String id, final FirePostsCallback<Post> callback) {
+        mDatabase.child(PATH_POST + id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "getPost onDataChange dataSnapshot: " + dataSnapshot);
+                parsePost(dataSnapshot, callback);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "databaseError: " + databaseError);
+            }
+        });
+    }
+
     private void getPosts(String path, final FirePostsCallback<Post> callback) {
+        Log.d(TAG, "getPost path: " + path);
         mDatabase.child(path).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildAdded dataSnapshot");
-                parsePost(dataSnapshot, callback);
+                Log.d(TAG, "getPosts onChildAdded dataSnapshot: " + dataSnapshot);
+                if (dataSnapshot == null) return;
+                String postId = dataSnapshot.getKey();
+                getPost(postId, callback);
+
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildChanged dataSnapshot");
-                parsePost(dataSnapshot, callback);
+                //parsePost(dataSnapshot, callback);
             }
 
             @Override
@@ -300,6 +402,16 @@ public class FireUser extends Fire implements FireUserContract {
         }
     }
 
+    public void resetUserInboxIncommingMessagesState(String userId) {
+        mDatabase.child(PATH_USER_INCOMMING_MESSAGES + userId).setValue(false);
+    }
+
+    public void resetUserChatIncomingMessagesState(User mainUser, User receiver) {
+        String mainUserId = mainUser.getId();
+        String chatId = Utils.getId(mainUserId, receiver.getId());
+        mDatabase.child(PATH_USER_INBOX + mainUserId + "/" + chatId).setValue(false);
+    }
+
     public void sendMessage(User sender, User receiver, final Message message, final FirePostsCallback<Message> callback) {
         String chatId = Utils.getId(sender.getId(), receiver.getId());
         String messageId = mDatabase.child(PATH_CHATS + chatId).push().getKey();
@@ -322,8 +434,8 @@ public class FireUser extends Fire implements FireUserContract {
         childUpdates.put(PATH_USER_CHATS + senderId + "/" + chatId, true);
         childUpdates.put(PATH_USER_CHATS + receiverId + "/" + chatId, true);
         childUpdates.put(PATH_CHAT_MESSAGES + chatId + "/" + messageId, messageValues);
-        //childUpdates.put(PATH_USER_INBOX + receiverId + "/" + chatId + "/lastMessage", messageValues);
-        childUpdates.put(PATH_USER_INBOX + receiverId + "/" + chatId, messageValues);
+        childUpdates.put(PATH_USER_INBOX + receiverId + "/" + chatId + "/", true);//Agregar este chat, al inbox del usuario
+        childUpdates.put(PATH_USER_INCOMMING_MESSAGES + receiverId + "/", true);
         mDatabase
                 .updateChildren(childUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -373,12 +485,17 @@ public class FireUser extends Fire implements FireUserContract {
         }
     };
 
-    private void parseMessage(DataSnapshot dataSnapshot, FirePostsCallback<Message> callback) {
+    private void parseMessage(DataSnapshot dataSnapshot, boolean incommingMessage, FirePostsCallback<Message> callback) {
         Log.d(TAG, "parseMessage dataSnapshot: " + dataSnapshot);
         Message message = dataSnapshot.getValue(Message.class);
         if (message != null) {
+            message.setIncommingMessage(incommingMessage);
             callback.onSuccess(message);
         }
+    }
+
+    private void parseMessage(DataSnapshot dataSnapshot, FirePostsCallback<Message> callback) {
+        parseMessage(dataSnapshot, false, callback);
     }
 
     public void removeMessagesListener(String chatId) {
@@ -396,17 +513,36 @@ public class FireUser extends Fire implements FireUserContract {
                 .addChildEventListener(inboxMessagesListener);
     }
 
+    private void getLastMessage(String chatId, final Boolean incommingMessage, final FirePostsCallback<Message> callback) {
+        mDatabase.child(PATH_CHATS + chatId + "/lastMessage").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "getLastMessage onDataChange dataSnapshot: " + dataSnapshot);
+                parseMessage(dataSnapshot, incommingMessage, callback);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "databaseError: " + databaseError);
+            }
+        });
+    }
 
     private FirePostsCallback<Message> inboxCallback;
     private ChildEventListener inboxMessagesListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            parseMessage(dataSnapshot, inboxCallback);
+            Log.d(TAG, "inboxMessageListener dataSnapshot: " + dataSnapshot);
+            if (dataSnapshot == null) return;
+            String chatId = dataSnapshot.getKey();
+            Boolean incommingMessage = dataSnapshot.getValue(Boolean.class);
+            getLastMessage(chatId, incommingMessage, inboxCallback);
+            //parseMessage(dataSnapshot, inboxCallback);
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            parseMessage(dataSnapshot, inboxCallback);
+            //parseMessage(dataSnapshot, inboxCallback);
         }
 
         @Override
@@ -428,7 +564,7 @@ public class FireUser extends Fire implements FireUserContract {
     public void removeInboxMessageListener(User user) {
         Log.d(TAG, "removeInboxMessageListener");
         inboxCallback = null;
-        mDatabase.child(PATH_CHAT_MESSAGES + user.getId())
+        mDatabase.child(PATH_USER_INBOX + user.getId())
                 .removeEventListener(inboxMessagesListener);
         inboxMessagesListener = null;
     }

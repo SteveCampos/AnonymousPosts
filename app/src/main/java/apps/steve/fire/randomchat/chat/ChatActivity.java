@@ -14,8 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.google.firebase.auth.FirebaseUser;
-
 import apps.steve.fire.randomchat.R;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.base.usecase.UseCaseThreadPoolScheduler;
@@ -26,12 +24,8 @@ import apps.steve.fire.randomchat.data.source.UserRepository;
 import apps.steve.fire.randomchat.data.source.local.UserLocalDataSource;
 import apps.steve.fire.randomchat.data.source.remote.UserRemoteDataSource;
 import apps.steve.fire.randomchat.data.source.remote.firebase.FireUser;
-import apps.steve.fire.randomchat.main.MainPresenter;
-import apps.steve.fire.randomchat.main.MainPresenterImpl;
 import apps.steve.fire.randomchat.main.ui.entity.Message;
-import apps.steve.fire.randomchat.main.usecase.GetPopularPosts;
 import apps.steve.fire.randomchat.main.usecase.GetUser;
-import apps.steve.fire.randomchat.main.usecase.PublishPost;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

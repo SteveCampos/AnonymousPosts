@@ -63,6 +63,11 @@ public class UserLocalDataSource implements UserDataSource {
     }
 
     @Override
+    public void updateUserCoins(User user, long coins, Callback<User> callback) {
+
+    }
+
+    @Override
     public void sendMessage(User sender, User receiver, Message message, Callback<Message> callback) {
 
     }

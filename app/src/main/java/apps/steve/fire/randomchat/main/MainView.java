@@ -27,6 +27,10 @@ public interface MainView extends BaseView<MainPresenter> {
 
     void hideSplashScreen();
 
+    void showPublishKingImg();
+
+    void hidePublishKingImg();
+
     void showPublishDialog();
 
     void hidePublishDialog();
@@ -46,9 +50,9 @@ public interface MainView extends BaseView<MainPresenter> {
 
     void changeTitle(String title);
 
-    void showFabExtras();
+    void showPostBtns();
 
-    void hideFabExtras();
+    void hidePostBtns();
 
     void addPost(Post post);
 
@@ -75,4 +79,10 @@ public interface MainView extends BaseView<MainPresenter> {
     void showPostsWithTag(Post post, String tag);
 
     void showAppInfo();
+
+    void showCoins(long coins);
+
+    void showRewardVideo();
+
+    void showConfirmDialogToSeeRewardVideo();
 }

@@ -1,5 +1,7 @@
 package apps.steve.fire.randomchat.main;
 
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+
 import java.util.List;
 
 import apps.steve.fire.randomchat.base.BasePresenter;
@@ -12,7 +14,7 @@ import apps.steve.fire.randomchat.main.ui.entity.User;
  * Created by @stevecampos on 23/11/2017.
  */
 
-public interface MainPresenter extends BasePresenter<MainView> {
+public interface MainPresenter extends BasePresenter<MainView>, RewardedVideoAdListener {
     void onBurgerIconClicked();
     void onSubmitPost(String content, List<String> tagList);
     void onFabClicked();
@@ -31,4 +33,8 @@ public interface MainPresenter extends BasePresenter<MainView> {
     void onCommentSelected(Comment comment);
 
     void onSendMessageClicked(User user);
+
+    void coinsRewardClicked();
+
+    void onConfirmedToShowRewardVideo();
 }

@@ -29,13 +29,6 @@ public class UserRepository implements UserDataSource {
         this.remoteDataSource = remoteDataSource;
     }
 
-    /*
-    @Override
-    public void updateUser(FirebaseUser user, AvatarUi avatar, String gender, Callback<Boolean> callback) {
-        localDataSource.updateUser(user, avatar, gender, callback);
-        remoteDataSource.updateUser(user, avatar, gender, callback);
-    }*/
-
     @Override
     public void publishPost(Post post, Callback<Post> callback) {
         localDataSource.publishPost(post, callback);
@@ -86,8 +79,17 @@ public class UserRepository implements UserDataSource {
 
     @Override
     public void updateUser(User user, Callback<User> callback) {
+        Log.d(TAG, "updateUser");
         localDataSource.updateUser(user, callback);
         remoteDataSource.updateUser(user, callback);
+    }
+
+    @Override
+    public void updateUserCoins(User user, long coins, Callback<User> callback) {
+        Log.d(TAG, "updateUserCoins");
+        localDataSource.updateUserCoins(user, coins, callback);
+        remoteDataSource.updateUserCoins(user, coins, callback);
+
     }
 
     @Override

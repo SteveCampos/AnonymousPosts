@@ -34,7 +34,7 @@ public class EmisorMessageHolder extends RecyclerView.ViewHolder {
         Glide.
                 with(itemView.getContext())
                 .asDrawable()
-                .load(new AvatarUi(message.getUser().getAvatar()).getAvatarDrawable())
+                .load(message.getUser().getAvatarDrawable())
                 .into(imgProfile);
     }
 }

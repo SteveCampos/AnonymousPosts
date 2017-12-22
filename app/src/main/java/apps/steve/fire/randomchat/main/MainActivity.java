@@ -1,6 +1,7 @@
 package apps.steve.fire.randomchat.main;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -20,6 +21,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +33,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -65,7 +70,7 @@ import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
-import apps.steve.fire.randomchat.posts.usecase.GetPopularPosts;
+import apps.steve.fire.randomchat.main.usecase.UpdateUserCoins;
 import apps.steve.fire.randomchat.main.usecase.GetUser;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
 import apps.steve.fire.randomchat.messages.MessagesFragment;
@@ -84,8 +89,7 @@ import me.originqiu.library.EditTag;
 
 import static android.view.Gravity.TOP;
 
-public class
-MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener, PostDetailListener, ProfileListener, Navigator.FragmentChangeListener, MessagesListener {
+public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener, PostDetailListener, ProfileListener, Navigator.FragmentChangeListener, MessagesListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.fragment_container)
@@ -122,10 +126,14 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
     ImageView imgIconToolbar;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    @BindView(R.id.txtCoinReward)
+    TextView txtCoinReward;
+
 
     /*Auth*/
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
+    private RewardedVideoAd mRewardedVideoAd;
 
     public static void startMainActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -156,6 +164,42 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
         initAuth();
         initPresenter();
         hideSplashScreen();
+        setupRewardVideo();
+        loadRewardedVideoAd();
+    }
+
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().build());
+    }
+
+    @Override
+    public void showRewardVideo() {
+        if (mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.show();
+        }
+    }
+
+    @Override
+    public void showConfirmDialogToSeeRewardVideo() {
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.activity_main_dialog_reward_video_title)
+                .setMessage(R.string.activity_main_dialog_reward_video_desc)
+                .setPositiveButton(R.string.global_text_positive, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        presenter.onConfirmedToShowRewardVideo();
+                    }
+                }).create();
+        dialog.show();
+    }
+
+
+    private void setupRewardVideo() {
+        // Use an activity context to get the rewarded video instance.
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(presenter);
     }
 
     private void initNavigator() {
@@ -187,6 +231,7 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
 
     @Override
     protected void onResume() {
+        mRewardedVideoAd.resume(this);
         super.onResume();
         if (presenter != null) {
             presenter.onResume();
@@ -195,6 +240,7 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
 
     @Override
     protected void onPause() {
+        mRewardedVideoAd.pause(this);
         super.onPause();
         if (presenter != null) {
             presenter.onPause();
@@ -211,6 +257,7 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
 
     @Override
     protected void onDestroy() {
+        mRewardedVideoAd.destroy(this);
         navListener = null;
         super.onDestroy();
         if (presenter != null) {
@@ -236,8 +283,8 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
                     getResources(),
                     new UseCaseHandler(new UseCaseThreadPoolScheduler()),
                     new PublishPost(repository),
-                    new GetPopularPosts(repository),
-                    new GetUser(repository)
+                    new GetUser(repository),
+                    new UpdateUserCoins(repository)
             );
         }
         setPresenter(presenter);
@@ -329,9 +376,15 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
 
     @Override
     public void showAppInfo() {
-        AppinfoFragment appinfoFragment = new AppinfoFragment();
+        AppinfoFragment appinfoFragment = AppinfoFragment.newInstance();
         showOrAdd(appinfoFragment, "appinfo-fragment", false);
         //goTo(AppinfoFragment.class);
+    }
+
+    @Override
+    public void showCoins(long coins) {
+        Log.d(TAG, "showCoins");
+        txtCoinReward.setText(String.valueOf(coins));
     }
 
     @Override
@@ -351,7 +404,7 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
         if (fragmentByTag == null) {
             addFragment(fragment, tag);
         } else {
-            showFragment(fragmentByTag, tag, animated);
+            showFragment(tag, animated);
         }
     }
 
@@ -362,7 +415,7 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
                 .commit();
     }
 
-    private void showFragment(Fragment fragment, String tag, boolean animated) {
+    private void showFragment(String tag, boolean animated) {
         Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(tag);
 
         if (fragmentByTag != null && !fragmentByTag.isVisible()) {
@@ -463,6 +516,16 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
     }
 
     @Override
+    public void showPublishKingImg() {
+        txtPrice.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_crown_1, 0);
+    }
+
+    @Override
+    public void hidePublishKingImg() {
+        txtPrice.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    }
+
+    @Override
     public void showPublishDialog() {
         toogleNewPostVisibility(true);
     }
@@ -544,7 +607,7 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
     }
 
     @Override
-    public void showFabExtras() {
+    public void showPostBtns() {
         TransitionManager.beginDelayedTransition(rootView,
                 new TransitionSet()
                         .addTransition(new ChangeBounds())
@@ -558,7 +621,7 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
     }
 
     @Override
-    public void hideFabExtras() {
+    public void hidePostBtns() {
         @DrawableRes int drawableRes = R.drawable.ic_whatshot_white_24dp;
         fab.setImageResource(drawableRes);
         fabPro.setVisibility(View.GONE);
@@ -685,4 +748,10 @@ MainActivity extends AppCompatActivity implements GenderListener, MainView, Item
     public void onFragmentChanged(@NotNull String currentTag, @NotNull Fragment currentFragment) {
         Log.d(TAG, "onFragmentChanged");
     }
+
+    @OnClick(R.id.txtCoinReward)
+    public void onCoinRewardClick() {
+        presenter.coinsRewardClicked();
+    }
+
 }

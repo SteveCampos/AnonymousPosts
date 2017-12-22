@@ -62,8 +62,8 @@
     <string name="user_default_location">Anonymous User.</string>
     <string name="profile_text_sendmessage">Enviar Mensaje</string>
     <string name="appinfo_item_email">E-mail</string>
-    <string name="appinfo_item_instagram">Instagram</string>
-    <string name="appinfo_item_facebook">Facebook</string>
+    <string name="appinfo_item_instagram">Dev Instagram</string>
+    <string name="appinfo_item_facebook">Dev Facebook</string>
     <string name="appinfo_item_sourcecode">Source Code</string>
     <string name="appinfo_item_copyright">Publicaciones Anónimas 1.0\nCopyright ©2017\nSteve Campos</string>
 
@@ -82,6 +82,26 @@
     <string name="profile_text_love">Love</string>
     <string name="profile_text_comment">Comments</string>
     <string name="profile_text_posts">Posts</string>
+
+    <string name="last_connection">últ. vez hace %1$d %2$s</string>
+    <string name="last_message_time">Hace %1$d %2$s</string>
+    <string name="time_seconds">segundos</string>
+    <string name="time_minutes">minutos</string>
+    <string name="time_hours">horas</string>
+    <string name="time_days">días</string>
+
+
+    <string name="global_time_today">Hoy</string>
+    <string name="global_time_yersterday">Ayer</string>
+    <string name="global_mssg_sendemail">Enviar Mensaje</string>
+    <string name="dev_email">js7campos@gmail.com</string>
+    <string name="dev_instagram">https://www.instagram.com/stevecamposvega/</string>
+    <string name="dev_facebook">https://www.facebook.com/jairsteve.camposvega</string>
+    <string name="appinfo_app_cvs_url">https://github.com/SteveCampos/AnonymousPosts</string>
+    <string name="appinfo_item_credits">Créditos</string>
+    <string name="appinfo_item_credits_description">Icons designed by\nflaticon https://www.flaticon.com/</string>
+    <string name="activity_main_dialog_reward_video_title">Recompensa</string>
+    <string name="activity_main_dialog_reward_video_desc">Mirar el siguiente para obtener una nueva moneda.</string>
 
 
 </resources>

@@ -15,6 +15,7 @@ import apps.steve.fire.randomchat.main.ui.entity.User;
  */
 
 public interface UserDataSource {
+
     interface Callback<T> {
         void onSucess(T object);
     }
@@ -36,6 +37,8 @@ public interface UserDataSource {
     void getUser(String id, Callback<User> callback);
 
     void updateUser(User user, Callback<User> callback);
+
+    void updateUserCoins(User user, long coins, Callback<User> callback);
 
     void sendMessage(User sender, User receiver, Message message, Callback<Message> callback);
 

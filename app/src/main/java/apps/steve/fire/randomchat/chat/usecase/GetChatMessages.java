@@ -38,6 +38,7 @@ public class GetChatMessages extends UseCase<GetChatMessages.RequestValues, GetC
                     String messageUserId = message.getUser().getId();
                     if (messageUserId.equals(mainUserId)) {
                         message.setUser(mainUser);
+                        message.setMainUser(true);
                     } else {
                         message.setUser(receptor);
                     }

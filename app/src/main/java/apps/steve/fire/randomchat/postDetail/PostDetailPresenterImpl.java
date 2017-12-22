@@ -127,6 +127,10 @@ public class PostDetailPresenterImpl implements PostDetailPresenter {
                         if (commentResponse != null) {
                             Log.d(TAG, "publishComment: " + commentResponse);
                             addComment(commentResponse);
+
+
+                            long commentCount = post.getCommentCount();
+                            showCommentCount(commentCount + 1);
                         }
                     }
 
@@ -148,6 +152,12 @@ public class PostDetailPresenterImpl implements PostDetailPresenter {
         if (view != null) {
             view.hideProgress();
             view.showError(error);
+        }
+    }
+
+    private void showCommentCount(long count) {
+        if (view != null) {
+            view.showCommentCount(count);
         }
     }
 

@@ -127,6 +127,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
     @Override
     public void onEditDescriptionClicked() {
+        Log.d(TAG, "onEditDescriptionClicked");
         showDialogEditDescription();
     }
 
@@ -138,6 +139,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
     @Override
     public void onEditDescriptionSubmit(String description) {
+        Log.d(TAG, "onEditDescriptionSubmit");
         if (TextUtils.isEmpty(description)) return;
 
         User userEdited = new User();
@@ -147,12 +149,14 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     }
 
     private void updateUser(User userEdited) {
+        Log.d(TAG, "updateUser");
         handler.execute(
                 useCaseUpdateUser,
                 new UpdateUser.RequestValues(userEdited),
                 new UseCase.UseCaseCallback<UpdateUser.ResponseValue>() {
                     @Override
                     public void onSuccess(UpdateUser.ResponseValue response) {
+                        Log.d(TAG, "updateUser onSuccess");
                         if (user != null) {
                             user = response.getUser();
                             paintUser();
@@ -161,12 +165,14 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
                     @Override
                     public void onError() {
+                        Log.d(TAG, "updateUser onError");
                     }
                 }
         );
     }
 
     private void paintUser() {
+        Log.d(TAG, "paintUser");
         if (user == null) return;
         @DrawableRes int avatarDrawable = 0;
         String userName = "";

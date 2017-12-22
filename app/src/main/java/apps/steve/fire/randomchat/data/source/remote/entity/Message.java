@@ -19,6 +19,7 @@ public class Message {
     private String contentType;
     private String mediaUrl;
     private int messageStatus;
+    private boolean incommingMessage;
 
     public Message() {
     }
@@ -87,6 +88,14 @@ public class Message {
 
     public void setMessageStatus(int messageStatus) {
         this.messageStatus = messageStatus;
+    }
+
+    public boolean isIncommingMessage() {
+        return incommingMessage;
+    }
+
+    public void setIncommingMessage(boolean incommingMessage) {
+        this.incommingMessage = incommingMessage;
     }
 
     @Exclude

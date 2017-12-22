@@ -21,7 +21,7 @@ public class User {
     public String gender;
     public String description;
     public String avatar;
-    public int coins;
+    public long coins;
     public long postCount;
     public long commentCount;
 
@@ -68,11 +68,11 @@ public class User {
         this.avatar = avatar;
     }
 
-    public int getCoins() {
+    public long getCoins() {
         return coins;
     }
 
-    public void setCoins(int coins) {
+    public void setCoins(long coins) {
         this.coins = coins;
     }
 

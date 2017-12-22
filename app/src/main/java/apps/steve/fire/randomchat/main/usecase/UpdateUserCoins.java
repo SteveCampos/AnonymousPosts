@@ -1,52 +1,51 @@
-package apps.steve.fire.randomchat.intro.usecase;
+package apps.steve.fire.randomchat.main.usecase;
 
 import android.util.Log;
-
-import com.google.firebase.auth.FirebaseUser;
 
 import apps.steve.fire.randomchat.base.usecase.UseCase;
 import apps.steve.fire.randomchat.data.source.UserDataSource;
 import apps.steve.fire.randomchat.data.source.UserRepository;
-import apps.steve.fire.randomchat.intro.entity.AvatarUi;
+import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
 
 /**
- * Created by @stevecampos on 22/11/2017.
+ * Created by @stevecampos on 21/12/2017.
  */
 
-public class UpdateUser extends UseCase<UpdateUser.RequestValues, UpdateUser.ResponseValue> {
-
-    private static final String TAG = UpdateUser.class.getSimpleName();
+public class UpdateUserCoins extends UseCase<UpdateUserCoins.RequestValues, UpdateUserCoins.ResponseValue> {
+    public static final String TAG = UpdateUserCoins.class.getSimpleName();
     private UserRepository repository;
 
-    public UpdateUser(UserRepository repository) {
+    public UpdateUserCoins(UserRepository repository) {
         this.repository = repository;
     }
 
     @Override
     protected void executeUseCase(RequestValues requestValues) {
-        Log.d(TAG, "executeUseCase");
-        repository.updateUser(requestValues.getUser(), new UserDataSource.Callback<User>() {
+        Log.d(TAG, "updateUserCoins onSuccess");
+        repository.updateUserCoins(requestValues.getUser(), requestValues.getCoins(), new UserDataSource.Callback<User>() {
             @Override
             public void onSucess(User user) {
-                if (user != null) {
-                    getUseCaseCallback().onSuccess(new ResponseValue(user));
-                } else {
-                    getUseCaseCallback().onError();
-                }
+                getUseCaseCallback().onSuccess(new ResponseValue(user));
             }
         });
     }
 
     public static final class RequestValues implements UseCase.RequestValues {
         private final User user;
+        private final long coins;
 
-        public RequestValues(User user) {
+        public RequestValues(User user, long coins) {
             this.user = user;
+            this.coins = coins;
         }
 
         public User getUser() {
             return user;
+        }
+
+        public long getCoins() {
+            return coins;
         }
     }
 

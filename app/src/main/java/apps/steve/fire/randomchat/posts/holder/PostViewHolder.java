@@ -10,9 +10,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.Date;
 import java.util.List;
 
 import apps.steve.fire.randomchat.R;
+import apps.steve.fire.randomchat.Utils;
 import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
@@ -55,6 +57,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
 
 
     public void bind(final Post post, final PostListener listener) {
+        long postTimestamp = post.getTimestamp();
+        long now = new Date().getTime();
         String contentText = post.getContentText();
         User user = post.getUser();
         if (user != null) {
@@ -68,6 +72,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         txtContent.setText(contentText);
         long favoriteCount = post.getFavoriteCount();
         long commentCount = post.getCommentCount();
+        txtTime.setText(Utils.calculateTimePassed(postTimestamp, now, itemView.getResources()));
         txtLikesCount.setText(String.valueOf(favoriteCount));
         txtCommentsCount.setText(String.valueOf(commentCount));
         if (post.isPopular()) {

@@ -293,13 +293,15 @@ public class ProfileFragment extends Fragment implements ProfileView {
     public void onEditNameClicked() {
         presenter.onEditNameClicked();
     }
+
     @OnClick(R.id.txtDescription)
-    public void onEditDescClicked(){
+    public void onEditDescClicked() {
         presenter.onEditDescriptionClicked();
     }
 
     @Override
     public void showDialogEditDescription() {
+        Log.d(TAG, "showDialogEditDescription");
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_edittext, root, false);
         final TextInputEditText editText = view.findViewById(R.id.editext);
         final AlertDialog dialog = new AlertDialog.Builder(getContext())

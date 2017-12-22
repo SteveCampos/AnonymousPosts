@@ -32,25 +32,6 @@ public class UserRemoteDataSource implements UserDataSource {
         this.firebaseUser = firebaseUser;
     }
 
-    /*
-    @Override
-    public void updateUser(FirebaseUser firebaseUser, AvatarUi avatar, String gender, final Callback<Boolean> callback) {
-        User user = new User();
-        user.setName(avatar.getAvatarId());
-        user.setAvatar(avatar.getAvatarId());
-        user.setGender(gender);
-        user.setDescription("");
-        user.setId(firebaseUser.getUid());
-
-        fireUser.updateUser(user, new apps.steve.fire.randomchat.data.source.remote.callback.Callback<User>() {
-            @Override
-            public void onSucess(User object) {
-                boolean success = object != null;
-                callback.onSucess(success);
-            }
-        });
-    }*/
-
     @Override
     public void publishPost(Post post, final Callback<Post> callback) {
         fireUser.publishPost(convertPost(post), new apps.steve.fire.randomchat.data.source.remote.callback.Callback<apps.steve.fire.randomchat.data.source.remote.entity.Post>() {
@@ -166,6 +147,21 @@ public class UserRemoteDataSource implements UserDataSource {
     }
 
     @Override
+    public void updateUserCoins(apps.steve.fire.randomchat.main.ui.entity.User user, long coins, final Callback<apps.steve.fire.randomchat.main.ui.entity.User> callback) {
+        Log.d(TAG, "updateUserCoins");
+        fireUser.updateUserCoins(convertUser(user), coins, new apps.steve.fire.randomchat.data.source.remote.callback.Callback<User>() {
+            @Override
+            public void onSucess(User remoteUser) {
+                if (remoteUser != null) {
+                    getUser(remoteUser.getId(), callback);
+                } else {
+                    callback.onSucess(null);
+                }
+            }
+        });
+    }
+
+    @Override
     public void sendMessage(apps.steve.fire.randomchat.main.ui.entity.User sender, apps.steve.fire.randomchat.main.ui.entity.User receiver, Message message, final Callback<Message> callback) {
         Log.d(TAG, "sendMessage");
         fireUser.sendMessage(convertUser(sender), convertUser(receiver), convertMessage(message), new FirePostsCallback<apps.steve.fire.randomchat.data.source.remote.entity.Message>() {
@@ -223,6 +219,7 @@ public class UserRemoteDataSource implements UserDataSource {
         uiMessage.setMediaUrl(remoteMessage.getMediaUrl());
         uiMessage.setMessageStatus(remoteMessage.getMessageStatus());
         uiMessage.setTimestamp(remoteMessage.getTimestamp());
+        uiMessage.setIncommingMessage(remoteMessage.isIncommingMessage());
         apps.steve.fire.randomchat.main.ui.entity.User user = new apps.steve.fire.randomchat.main.ui.entity.User();
         user.setId(remoteMessage.getUserId());
         uiMessage.setUser(user);
@@ -296,6 +293,7 @@ public class UserRemoteDataSource implements UserDataSource {
         @DrawableRes int avatarDrawable = new AvatarUi(avatar).getAvatarDrawable();
         @DrawableRes int genderDrawable = getGenderDrawable(gender);
 
+        userUi.setDescription(user.getDescription());
         userUi.setAvatarDrawable(avatarDrawable);
         userUi.setGenderDrawable(genderDrawable);
         userUi.setCoins(user.getCoins());
@@ -367,6 +365,9 @@ public class UserRemoteDataSource implements UserDataSource {
         remotePost.setPopular(post.isPopular());
         remotePost.setTimestamp(post.getTimestamp());
         remotePost.setUserId(post.getUser().getId());
+        remotePost.setCommentCount(post.getCommentCount());
+        remotePost.setFavoriteCount(post.getFavoriteCount());
+        remotePost.setDislikeCount(post.getDislikeCount());
         return remotePost;
     }
 
@@ -377,6 +378,9 @@ public class UserRemoteDataSource implements UserDataSource {
         post.setHashtags(remotePost.getHashtagList());
         post.setLocation(remotePost.getLocation());
         post.setPopular(remotePost.isPopular());
+        post.setCommentCount(remotePost.getCommentCount());
+        post.setFavoriteCount(remotePost.getFavoriteCount());
+        post.setDislikeCount(remotePost.getDislikeCount());
         post.setTimestamp(remotePost.getTimestamp());
         return post;
     }

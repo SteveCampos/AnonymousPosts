@@ -5,9 +5,11 @@ import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.ads.reward.RewardItem;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Date;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import apps.steve.fire.randomchat.R;
@@ -17,6 +19,7 @@ import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
+import apps.steve.fire.randomchat.main.usecase.UpdateUserCoins;
 import apps.steve.fire.randomchat.posts.usecase.GetPopularPosts;
 import apps.steve.fire.randomchat.main.usecase.GetUser;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
@@ -33,18 +36,18 @@ public class MainPresenterImpl implements MainPresenter {
     private UseCaseHandler handler;
     private PublishPost useCasePublishPost;
     private FirebaseUser firebaseUser;
-    private GetPopularPosts useCaseGetPopularPosts;
     private GetUser useCaseGetUser;
+    private UpdateUserCoins updateUserCoins;
 
     private MainView view;
 
-    public MainPresenterImpl(FirebaseUser firebaseUser, Resources res, UseCaseHandler handler, PublishPost publishPost, GetPopularPosts popularPosts, GetUser useCaseGetUser) {
+    public MainPresenterImpl(FirebaseUser firebaseUser, Resources res, UseCaseHandler handler, PublishPost publishPost, GetUser useCaseGetUser, UpdateUserCoins updateUserCoins) {
         this.firebaseUser = firebaseUser;
         this.res = res;
         this.handler = handler;
         this.useCasePublishPost = publishPost;
-        this.useCaseGetPopularPosts = popularPosts;
         this.useCaseGetUser = useCaseGetUser;
+        this.updateUserCoins = updateUserCoins;
     }
 
     @Override
@@ -74,6 +77,7 @@ public class MainPresenterImpl implements MainPresenter {
                     public void onSuccess(GetUser.ResponseValue response) {
                         currentUser = response.getUser();
                         if (currentUser != null) {
+                            showCoins();
                             showName(currentUser.getReadableName(res));
                             showAvatarDrawable(currentUser.getAvatarDrawable());
                         }
@@ -85,6 +89,38 @@ public class MainPresenterImpl implements MainPresenter {
                     }
                 }
         );
+    }
+
+    private void updateUserCoins(long coins) {
+        Log.d(TAG, "updateUserCoins");
+        if (currentUser == null) return;
+        handler.execute(
+                updateUserCoins,
+                new UpdateUserCoins.RequestValues(currentUser, coins),
+                new UseCase.UseCaseCallback<UpdateUserCoins.ResponseValue>() {
+                    @Override
+                    public void onSuccess(UpdateUserCoins.ResponseValue response) {
+                        Log.d(TAG, "updateUserCoins onSuccess");
+                        currentUser = response.getUser();
+                        if (currentUser != null) {
+                            showCoins();
+                            showName(currentUser.getReadableName(res));
+                            showAvatarDrawable(currentUser.getAvatarDrawable());
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+                        showError("updateUserCoins Error Getting User!");
+                    }
+                }
+        );
+    }
+
+    private void showCoins() {
+        if (view != null) {
+            view.showCoins(currentUser.getCoins());
+        }
     }
 
     @Override
@@ -196,7 +232,7 @@ public class MainPresenterImpl implements MainPresenter {
         publishPost(post);
     }
 
-    private void publishPost(Post post) {
+    private void publishPost(final Post post) {
         Log.d(TAG, "publishPost");
         handler.execute(
                 useCasePublishPost,
@@ -205,6 +241,9 @@ public class MainPresenterImpl implements MainPresenter {
                     @Override
                     public void onSuccess(PublishPost.ResponseValue response) {
                         addPost(response.getPost());
+                        if (post.isPopular()){
+                            getUser();
+                        }
                     }
 
                     @Override
@@ -233,6 +272,8 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void onFabClicked() {
+        if (isPublishDialogVisible) return;
+
         if (!isFabExtrasVisible) {
             showFabs();
         } else {
@@ -242,14 +283,14 @@ public class MainPresenterImpl implements MainPresenter {
 
     private void showFabs() {
         if (view != null) {
-            view.showFabExtras();
+            view.showPostBtns();
         }
         isFabExtrasVisible = true;
     }
 
     private void hideFabs() {
         if (view != null) {
-            view.hideFabExtras();
+            view.hidePostBtns();
         }
         isFabExtrasVisible = false;
     }
@@ -376,16 +417,48 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void onFabProClicked() {
+        if (currentUser.getCoins() <= 0) {
+            showConfirmDialogToSeeRewardVideo();
+            return;
+        }
+
+        showPostDialog();
+    }
+
+    private void showPostDialog() {
         kingPostSelected = true;
         hideFabs();
         tooglePostDialog();
     }
 
+    private void showConfirmDialogToSeeRewardVideo() {
+        if (view != null) {
+            view.showConfirmDialogToSeeRewardVideo();
+        }
+    }
+
     private void tooglePostDialog() {
         if (!isPublishDialogVisible) {
+            if (kingPostSelected) {
+                showPublishKingImg();
+            } else {
+                hidePublishKingImg();
+            }
             showPublishDialog();
         } else {
             hidePublishDialog();
+        }
+    }
+
+    private void hidePublishKingImg() {
+        if (view != null) {
+            view.hidePublishKingImg();
+        }
+    }
+
+    private void showPublishKingImg() {
+        if (view != null) {
+            view.showPublishKingImg();
         }
     }
 
@@ -420,6 +493,24 @@ public class MainPresenterImpl implements MainPresenter {
         startChat(currentUser.getId(), user.getId());
     }
 
+    @Override
+    public void coinsRewardClicked() {
+        Log.d(TAG, "coinsRewardClicked");
+        showRewardVideo();
+    }
+
+    @Override
+    public void onConfirmedToShowRewardVideo() {
+        Log.d(TAG, "");
+        showRewardVideo();
+    }
+
+    private void showRewardVideo() {
+        if (view != null) {
+            view.showRewardVideo();
+        }
+    }
+
     private void hideFab() {
         if (view != null) {
             view.hideFab();
@@ -451,5 +542,41 @@ public class MainPresenterImpl implements MainPresenter {
             view.toogleMenuItems(old, selected);
         }
         itemSelected = selected;
+    }
+
+    @Override
+    public void onRewardedVideoAdLoaded() {
+        Log.d(TAG, "onRewardedVideoAdLoaded");
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+        Log.d(TAG, "onRewardedVideoAdOpened");
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+        Log.d(TAG, "onRewardedVideoStarted");
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+        Log.d(TAG, "onRewardedVideoAdClosed");
+    }
+
+    @Override
+    public void onRewarded(RewardItem rewardItem) {
+        Log.d(TAG, "onRewarded rewardItem amount: " + rewardItem.getAmount() + ", type: " + rewardItem.getType());
+        updateUserCoins(rewardItem.getAmount());
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+        Log.d(TAG, "onRewardedVideoAdLeftApplication");
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int i) {
+        Log.d(TAG, "onRewardedVideoAdFailedToLoad");
     }
 }

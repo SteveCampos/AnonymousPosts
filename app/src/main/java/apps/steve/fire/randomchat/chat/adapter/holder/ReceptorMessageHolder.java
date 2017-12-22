@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import apps.steve.fire.randomchat.R;
-import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.main.ui.entity.Message;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +21,9 @@ public class ReceptorMessageHolder extends RecyclerView.ViewHolder {
     ImageView imgProfile;
     @BindView(R.id.txtMessage)
     TextView txtMessage;
+    @BindView(R.id.imgAlert)
+    ImageView imgAlert;
+
     public ReceptorMessageHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
@@ -32,7 +34,12 @@ public class ReceptorMessageHolder extends RecyclerView.ViewHolder {
         Glide.
                 with(itemView.getContext())
                 .asDrawable()
-                .load(new AvatarUi(message.getUser().getAvatar()).getAvatarDrawable())
+                .load(message.getUser().getAvatarDrawable())
                 .into(imgProfile);
+        if (message.isIncommingMessage()) {
+            imgAlert.setVisibility(View.VISIBLE);
+        } else {
+            imgAlert.setVisibility(View.GONE);
+        }
     }
 }

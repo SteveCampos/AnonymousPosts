@@ -55,6 +55,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.google.firebase:firebase-database:11.6.0'
     implementation 'com.google.firebase:firebase-auth:11.6.0'
+    implementation 'com.google.android.gms:play-services-ads:11.6.0'
     implementation 'com.google.android.gms:play-services-auth:11.6.0'
     implementation 'com.android.support:cardview-v7:26.1.0'
     implementation 'com.github.qiugang:EditTag:v1.2.4-beta2'

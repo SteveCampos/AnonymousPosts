@@ -97,6 +97,21 @@
             app:layout_constraintTop_toBottomOf="@+id/txtFacebook" />
 
         <TextView
+            android:id="@+id/txtCredits"
+            style="@style/AppInfoMenuItem"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
+            android:drawableStart="@drawable/ic_medal"
+            android:linksClickable="true"
+            android:text="@string/appinfo_item_credits"
+            android:textColorLink="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtSourceCode" />
+
+        <TextView
             android:id="@+id/txtCopyright"
             style="@style/MenuItemCustom"
             android:layout_width="0dp"
@@ -109,7 +124,7 @@
             android:textAllCaps="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtSourceCode" />
+            app:layout_constraintTop_toBottomOf="@+id/txtCredits" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
