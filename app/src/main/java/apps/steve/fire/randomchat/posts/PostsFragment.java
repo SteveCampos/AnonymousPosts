@@ -233,12 +233,12 @@ public class PostsFragment extends Fragment implements PostView {
     public void addPost(Post post) {
         hideProgress();
         hideEmptyView();
-        adapter.addPost(post);
+        adapter.addOrUpdatePost(post);
     }
 
     @Override
     public void changePost(Post post) {
-        adapter.changePost(post);
+        adapter.updatePost(post);
     }
 
     @Override

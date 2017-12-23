@@ -18,6 +18,7 @@ import android.support.transition.Slide;
 import android.support.transition.TransitionManager;
 import android.support.transition.TransitionSet;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -29,6 +30,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,13 +50,12 @@ import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import apps.steve.fire.randomchat.BuildConfig;
 import apps.steve.fire.randomchat.R;
 import apps.steve.fire.randomchat.appinfo.AppinfoFragment;
-import apps.steve.fire.randomchat.base.navigation.BackStrategy;
-import apps.steve.fire.randomchat.base.navigation.Navigator;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.base.usecase.UseCaseThreadPoolScheduler;
 import apps.steve.fire.randomchat.chat.ChatActivity;
@@ -94,7 +95,7 @@ import me.originqiu.library.EditTag;
 
 import static android.view.Gravity.TOP;
 
-public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener, PostDetailListener, ProfileListener, Navigator.FragmentChangeListener, MessagesListener, CoinFragmentListener {
+public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener, PostDetailListener, ProfileListener, MessagesListener, CoinFragmentListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.fragment_container)
@@ -150,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     private SlidingRootNav navListener;
     private MainPresenter presenter;
-    private Navigator navigator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         }
         includeNewPostView.bringToFront();
         setupNav();
-        initNavigator();
         addPostsFragment(savedInstanceState);
         initAuth();
         initPresenter();
@@ -205,12 +204,6 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         // Use an activity context to get the rewarded video instance.
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         mRewardedVideoAd.setRewardedVideoAdListener(presenter);
-    }
-
-    private void initNavigator() {
-        navigator = new Navigator(this, getSupportFragmentManager());
-        navigator.setFragmentChangeListener(this);
-        //navigator.restore(new NavigationState(PostPagerFragment.class.getName(), PostPagerFragment.class.getName(), false));
     }
 
     private void initAuth() {
@@ -333,65 +326,54 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         if (savedInstanceState != null) {
             return;
         }
+        getSupportFragmentManager().addOnBackStackChangedListener(backStackChangeListener);
         showPostPager();
-        // Add the fragment to the 'fragment_container' FrameLayout
-        /*getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, postsFragment, TAG_POSTS_FRAGMENT)
-                .addToBackStack(null)
-                .commit();*/
     }
 
+    FragmentManager.OnBackStackChangedListener backStackChangeListener = new FragmentManager.OnBackStackChangedListener() {
+        @Override
+        public void onBackStackChanged() {
+            Log.d(TAG, "onBackStackChanged");
+            int entryCount = getBackStackEntryCount();
+            String title = getSupportFragmentManager().getBackStackEntryAt(entryCount - 1).getBreadCrumbTitle().toString();
+            changeTitle(title);
+        }
+    };
 
     @Override
     public void showPostPager() {
         PostPagerFragment postsFragment = new PostPagerFragment();
-        showOrAdd(postsFragment, TAG_POSTS_FRAGMENT, false);
-        //goTo(PostPagerFragment.class);
-    }
-
-    private void goTo(String tag, boolean keepState, boolean withCustomAnimation, Bundle bundle, BackStrategy.KEEP backStrategy) {
-        navigator.goTo(tag, keepState, withCustomAnimation, bundle, backStrategy);
-    }
-
-    private void goTo(Class clazz) {
-        goTo(clazz.getName(), true, false, Bundle.EMPTY, BackStrategy.KEEP.INSTANCE);
-    }
-
-    private void goTo(Class clazz, Bundle bundle) {
-        goTo(clazz.getName(), true, false, bundle, BackStrategy.KEEP.INSTANCE);
+        showOrAdd(postsFragment, getString(R.string.fragment_posts_title), false);
     }
 
     @Override
     public void showPostDetail(Post post) {
         PostDetailFragment postDetailFragment = PostDetailFragment.newInstance(post);
-        showOrAdd(postDetailFragment, "post-detail-fragment-" + post.getId(), true);
-        //goTo(PostDetailFragment.class, PostDetailFragment.getBungle(post));
+        showOrAdd(postDetailFragment, post.getUser().getReadableName(getResources()), true);
     }
 
     @Override
     public void showMessages(User user) {
         MessagesFragment messagesFragment = MessagesFragment.newInstance(user);
-        showOrAdd(messagesFragment, "messages-fragment", false);
-        //goTo(MessagesFragment.class);
+        showOrAdd(messagesFragment, getString(R.string.fragment_messages_title), false);
     }
 
     @Override
     public void showPostsWithTag(Post post, String tag) {
         PostsFragment fragment = PostsFragment.newInstance(PostsFragment.TYPE_HASHTAG, tag);
-        showOrAdd(fragment, "posts-hashtag-" + tag, false);
+        showOrAdd(fragment, "#" + tag, false);
     }
 
     @Override
     public void showAppInfo() {
         AppinfoFragment appinfoFragment = AppinfoFragment.newInstance();
-        showOrAdd(appinfoFragment, "appinfo-fragment", false);
-        //goTo(AppinfoFragment.class);
+        showOrAdd(appinfoFragment, getString(R.string.fragment_appinfo_title), false);
     }
 
     @Override
     public void showCoinFragment() {
         CoinFragment coinFragment = CoinFragment.newInstance();
-        showOrAdd(coinFragment, "coin-fragment", false);
+        showOrAdd(coinFragment, getString(R.string.fragment_coins_title), false);
     }
 
     @Override
@@ -403,11 +385,14 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     @Override
     public void showProfile(User user, boolean editable) {
         ProfileFragment profileFragment = ProfileFragment.newInstance(user, editable);
-        String tag = "profile-fragment-" + user.getId();
+        String profileTitle = String.format(getString(R.string.fragment_profileowner_title), user.getReadableName(getResources()));
         if (editable) {
-            addFragment(profileFragment, tag);
+            profileTitle = getString(R.string.fragment_profile_title_myprofile);
+        }
+        if (editable) {
+            addFragment(profileFragment, profileTitle);
         } else {
-            showOrAdd(profileFragment, tag, false);
+            showOrAdd(profileFragment, profileTitle, false);
         }
         //goTo(ProfileFragment.class, ProfileFragment.getBundle(user, editable));
     }
@@ -421,15 +406,16 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         }
     }
 
-    private void addFragment(Fragment fragment, String tag) {
+    private void addFragment(Fragment fragment, String tagTitle) {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, fragment, tag)
+                .add(R.id.fragment_container, fragment, tagTitle)
                 .addToBackStack(null)
+                .setBreadCrumbTitle(tagTitle)
                 .commit();
     }
 
-    private void showFragment(String tag, boolean animated) {
-        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(tag);
+    private void showFragment(String tagTitle, boolean animated) {
+        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(tagTitle);
 
         if (fragmentByTag != null && !fragmentByTag.isVisible()) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -437,6 +423,7 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
             if (animated) {
                 transaction.setCustomAnimations(R.anim.slide_in_start, 0);
             }
+            transaction.setBreadCrumbTitle(tagTitle);
             transaction.addToBackStack(null);
             transaction.commit();
             return;
@@ -576,7 +563,20 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
 
     @OnClick(R.id.btnPost)
     public void onBtnPostClicked() {
-        presenter.onSubmitPost(edtContent.getText().toString(), editTagView.getTagList());
+        String contentText = edtContent.getText().toString();
+        List<String> tagList = editTagView.getTagList();
+        edtContent.setText("");
+        hideSoftboard();
+        presenter.onSubmitPost(contentText, tagList);
+    }
+
+    public void hideSoftboard() {
+        if (getCurrentFocus() != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (inputMethodManager != null) {
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+        }
     }
 
     @Override
@@ -649,10 +649,10 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     @Override
     public void addPost(Post post) {
         Log.d(TAG, "addPost: " + post.toString());
-        PostsFragment fragment = getPostFragment();
+        /*PostsFragment fragment = getPostFragment();
         if (fragment != null) {
             fragment.addPost(post);
-        }
+        }*/
     }
 
     @OnClick(R.id.imgProfile)
@@ -760,11 +760,6 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     public void onBtnMessageClicked(User user) {
         Log.d(TAG, "onBtnMessageClicked");
         presenter.onSendMessageClicked(user);
-    }
-
-    @Override
-    public void onFragmentChanged(@NotNull String currentTag, @NotNull Fragment currentFragment) {
-        Log.d(TAG, "onFragmentChanged");
     }
 
     @Override

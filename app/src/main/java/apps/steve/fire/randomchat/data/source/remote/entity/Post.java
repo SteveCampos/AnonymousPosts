@@ -51,7 +51,7 @@ public class Post {
     }
 
     public List<String> getHashtagList() {
-        if (!hashtags.isEmpty()) {
+        if (hashtags != null && !hashtags.isEmpty()) {
             setHashtagList();
         }
         return hashtagList;
@@ -148,8 +148,8 @@ public class Post {
         result.put("dislikeCount", dislikeCount);
         result.put("commentCount", commentCount);
         result.put("popular", popular);
-        if (!hashtags.isEmpty()) {
-            result.put("hashstags", hashtags);
+        if (hashtags != null && !hashtags.isEmpty()) {
+            result.put("hashtags", hashtags);
         }
         return result;
     }
@@ -175,7 +175,6 @@ public class Post {
     public String toString() {
         return "Post{" +
                 "id='" + id + '\'' +
-                ", hashtagList=" + hashtagList +
                 ", contentText='" + contentText + '\'' +
                 ", location='" + location + '\'' +
                 ", userId='" + userId + '\'' +

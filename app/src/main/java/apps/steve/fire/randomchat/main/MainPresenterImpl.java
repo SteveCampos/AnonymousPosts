@@ -405,11 +405,9 @@ public class MainPresenterImpl implements MainPresenter {
                 if (backStackCount > 1) {
                     for (int i = 0; i < backStackCount - 1; i++) {
                         view.popBackStack();
-                        if (i == (backStackCount - 2)) {
-                            showFab();
-                        }
                     }
                 }
+                showFab();
                 break;
             case MENU_PROFILE:
                 showProfile(currentUser, true);

@@ -404,7 +404,9 @@ public class UserRemoteDataSource implements UserDataSource {
         Post post = new Post();
         post.setId(remotePost.getId());
         post.setContentText(remotePost.getContentText());
+
         post.setHashtags(remotePost.getHashtagList());
+
         post.setLocation(remotePost.getLocation());
         post.setPopular(remotePost.isPopular());
         post.setCommentCount(remotePost.getCommentCount());

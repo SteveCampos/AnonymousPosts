@@ -52,22 +52,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
         }
     }
 
-    public void addPost(Post post) {
+    public void addOrUpdatePost(Post post) {
         boolean contains = postList.contains(post);
-        if (!contains) {
-            int position = getItemCount();
-            postList.add(position, post);
-            notifyItemInserted(position);
-            //scrollTo(position);
+        if (contains) {
+            updatePost(post);
+        } else {
+            addPost(post);
         }
     }
 
-    public void changePost(Post post) {
+    public void addPost(Post post) {
+        int position = 0;
+        postList.add(position, post);
+        notifyItemInserted(position);
+        //scrollTo(position);
+    }
+
+    public void updatePost(Post post) {
         int position = postList.indexOf(post);
         if (position != -1) {
             postList.set(position, post);
             notifyItemChanged(position);
         }
+
     }
 
     public void deletePost(Post post) {

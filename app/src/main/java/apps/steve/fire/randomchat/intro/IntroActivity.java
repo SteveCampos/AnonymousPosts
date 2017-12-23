@@ -96,7 +96,7 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
         super.onCreate(savedInstanceState);
 
         SliderPage slideWelcome = newSlider(
-                R.string.intro_slidewelcome_title,
+                R.string.app_name,
                 R.string.intro_slidewelcome_description,
                 R.drawable.ic_tinder,
                 android.R.color.white,
