@@ -48,6 +48,7 @@
     <string name="fragment_posts_section_recent">Recientes</string>
     <string name="fragment_users_title">Usuarios</string>
     <string name="fragment_messages_title">Mensajes</string>
+    <string name="fragment_coins_title">Monedas</string>
     <string name="menuitem_myprofile_title">Mi perfil</string>
     <string name="menuitem_appinfo_title">App Info</string>
     <string name="menuitem_logout_title">Cerrar Sesión</string>
@@ -102,6 +103,10 @@
     <string name="appinfo_item_credits_description">Icons designed by\nflaticon https://www.flaticon.com/</string>
     <string name="activity_main_dialog_reward_video_title">Recompensa</string>
     <string name="activity_main_dialog_reward_video_desc">Mirar el siguiente para obtener una nueva moneda.</string>
+    <string name="global_mssg_newmessages">Nuevos mensajes</string>
+    <string name="fragment_coin_desc">Consigue una moneada mirando un video.</string>
+    <string name="fragment_coin_btn_video">Mirar el video</string>
+    <string name="global_mssg_getcoins">Conseguir</string>
 
 
 </resources>

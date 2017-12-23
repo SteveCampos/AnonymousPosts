@@ -42,6 +42,8 @@ public interface MainView extends BaseView<MainPresenter> {
 
     void close();
 
+    void updateMenuItem(Item item);
+
     void toogleMenuItems(Item old, Item selected);
 
     void showFab();
@@ -79,6 +81,8 @@ public interface MainView extends BaseView<MainPresenter> {
     void showPostsWithTag(Post post, String tag);
 
     void showAppInfo();
+
+    void showCoinFragment();
 
     void showCoins(long coins);
 

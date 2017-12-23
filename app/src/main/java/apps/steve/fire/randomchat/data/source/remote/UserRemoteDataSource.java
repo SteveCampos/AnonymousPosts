@@ -119,6 +119,23 @@ public class UserRemoteDataSource implements UserDataSource {
     }
 
     @Override
+    public void listenUserInboxState(apps.steve.fire.randomchat.main.ui.entity.User user, final Callback<Boolean> callback) {
+        Log.d(TAG, "listenUserInboxState");
+        fireUser.listenUserInboxState(convertUser(user), new apps.steve.fire.randomchat.data.source.remote.callback.Callback<Boolean>() {
+            @Override
+            public void onSucess(Boolean state) {
+                callback.onSucess(state);
+            }
+        });
+    }
+
+    @Override
+    public void removeUserInboxStateListener(apps.steve.fire.randomchat.main.ui.entity.User user) {
+        Log.d(TAG, "removeUserInboxStateListener");
+        fireUser.removetUserInboxStateListener(convertUser(user));
+    }
+
+    @Override
     public void getUser(String id, final Callback<apps.steve.fire.randomchat.main.ui.entity.User> callback) {
         fireUser.getUser(id, new FirePostsCallback<User>() {
             @Override
@@ -159,6 +176,18 @@ public class UserRemoteDataSource implements UserDataSource {
                 }
             }
         });
+    }
+
+    @Override
+    public void updateUserInboxState(apps.steve.fire.randomchat.main.ui.entity.User user, boolean state) {
+        Log.d(TAG, "updateUserInboxState");
+        fireUser.updateUserInboxState(convertUser(user), state);
+    }
+
+    @Override
+    public void updateUserChatInboxState(apps.steve.fire.randomchat.main.ui.entity.User user, apps.steve.fire.randomchat.main.ui.entity.User receiver, boolean state) {
+        Log.d(TAG, "updateUserChatInboxState");
+        fireUser.updateUserChatInboxState(convertUser(user), convertUser(receiver), state);
     }
 
     @Override

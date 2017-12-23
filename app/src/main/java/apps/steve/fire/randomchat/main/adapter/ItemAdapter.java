@@ -2,8 +2,10 @@ package apps.steve.fire.randomchat.main.adapter;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +65,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public static final class ItemViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txtItem)
         TextView txtItem;
+        @BindView(R.id.txtAlert)
+        TextView txtAlert;
+        @BindView(R.id.root)
+        ConstraintLayout root;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
@@ -72,7 +78,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         public void bind(final Item item, final ItemListener listener) {
             txtItem.setText(item.getName());
             txtItem.setCompoundDrawablesWithIntrinsicBounds(item.getIcon(), 0, 0, 0);
-            txtItem.setOnClickListener(new View.OnClickListener() {
+            root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     listener.onItemSelected(item);
@@ -83,6 +89,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 textColor = R.color.colorAccent;
             }
             txtItem.setTextColor(ContextCompat.getColor(itemView.getContext(), textColor));
+            String notificationText = item.getNotificationText();
+            if (TextUtils.isEmpty(notificationText)) {
+                txtAlert.setVisibility(View.GONE);
+            } else {
+                txtAlert.setText(notificationText);
+                txtAlert.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

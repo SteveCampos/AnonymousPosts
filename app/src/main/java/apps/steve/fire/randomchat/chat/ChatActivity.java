@@ -26,6 +26,7 @@ import apps.steve.fire.randomchat.data.source.remote.UserRemoteDataSource;
 import apps.steve.fire.randomchat.data.source.remote.firebase.FireUser;
 import apps.steve.fire.randomchat.main.ui.entity.Message;
 import apps.steve.fire.randomchat.main.usecase.GetUser;
+import apps.steve.fire.randomchat.main.usecase.UpdateUserChatInboxState;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -152,7 +153,8 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
                     new GetUser(repository),
                     new GetUser(repository),
                     new SendMessage(repository),
-                    new GetChatMessages(repository)
+                    new GetChatMessages(repository),
+                    new UpdateUserChatInboxState(repository)
             );
         }
         setPresenter(presenter);

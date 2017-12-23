@@ -27,15 +27,4 @@
         app:layout_constraintStart_toEndOf="@+id/imgProfile"
         app:layout_constraintTop_toTopOf="@+id/imgProfile" />
 
-    <ImageView
-        android:id="@+id/imgAlert"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:contentDescription="@null"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/imgProfile"
-        app:layout_constraintEnd_toEndOf="@+id/imgProfile"
-        app:layout_constraintStart_toEndOf="@+id/imgProfile"
-        app:layout_constraintTop_toTopOf="@+id/imgProfile"
-        app:srcCompat="@drawable/ic_hdr_strong_black_24dp" />
 </android.support.constraint.ConstraintLayout>

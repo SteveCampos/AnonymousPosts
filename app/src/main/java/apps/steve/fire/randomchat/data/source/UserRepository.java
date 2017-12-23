@@ -2,13 +2,8 @@ package apps.steve.fire.randomchat.data.source;
 
 import android.util.Log;
 
-import com.google.firebase.auth.FirebaseUser;
-
-import java.util.List;
-
 import apps.steve.fire.randomchat.data.source.local.UserLocalDataSource;
 import apps.steve.fire.randomchat.data.source.remote.UserRemoteDataSource;
-import apps.steve.fire.randomchat.intro.entity.AvatarUi;
 import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Message;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
@@ -72,6 +67,18 @@ public class UserRepository implements UserDataSource {
     }
 
     @Override
+    public void listenUserInboxState(User user, Callback<Boolean> callback) {
+        Log.d(TAG, "listenUserInboxState");
+        remoteDataSource.listenUserInboxState(user, callback);
+    }
+
+    @Override
+    public void removeUserInboxStateListener(User user) {
+        Log.d(TAG, "removeUserInboxStateListener");
+        remoteDataSource.removeUserInboxStateListener(user);
+    }
+
+    @Override
     public void getUser(String id, Callback<User> callback) {
         localDataSource.getUser(id, callback);
         remoteDataSource.getUser(id, callback);
@@ -89,6 +96,19 @@ public class UserRepository implements UserDataSource {
         Log.d(TAG, "updateUserCoins");
         localDataSource.updateUserCoins(user, coins, callback);
         remoteDataSource.updateUserCoins(user, coins, callback);
+
+    }
+
+    @Override
+    public void updateUserInboxState(User user, boolean state) {
+        Log.d(TAG, "updateUserInboxState");
+        remoteDataSource.updateUserInboxState(user, state);
+    }
+
+    @Override
+    public void updateUserChatInboxState(User user, User receiver, boolean state) {
+        Log.d(TAG, "updateUserChatInboxState");
+        remoteDataSource.updateUserChatInboxState(user, receiver, state);
 
     }
 

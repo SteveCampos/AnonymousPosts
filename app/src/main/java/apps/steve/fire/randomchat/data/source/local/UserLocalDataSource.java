@@ -53,6 +53,16 @@ public class UserLocalDataSource implements UserDataSource {
     }
 
     @Override
+    public void listenUserInboxState(User user, Callback<Boolean> callback) {
+
+    }
+
+    @Override
+    public void removeUserInboxStateListener(User user) {
+
+    }
+
+    @Override
     public void getUser(String id, Callback<User> callback) {
 
     }
@@ -64,6 +74,16 @@ public class UserLocalDataSource implements UserDataSource {
 
     @Override
     public void updateUserCoins(User user, long coins, Callback<User> callback) {
+
+    }
+
+    @Override
+    public void updateUserInboxState(User user, boolean state) {
+
+    }
+
+    @Override
+    public void updateUserChatInboxState(User user, User receiver, boolean state) {
 
     }
 

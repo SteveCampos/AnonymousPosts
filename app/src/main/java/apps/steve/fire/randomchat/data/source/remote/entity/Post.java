@@ -51,7 +51,7 @@ public class Post {
     }
 
     public List<String> getHashtagList() {
-        if (hashtagList.isEmpty() && !hashtags.isEmpty()) {
+        if (!hashtags.isEmpty()) {
             setHashtagList();
         }
         return hashtagList;

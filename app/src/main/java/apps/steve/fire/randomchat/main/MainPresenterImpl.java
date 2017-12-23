@@ -9,7 +9,6 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Date;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import apps.steve.fire.randomchat.R;
@@ -17,12 +16,14 @@ import apps.steve.fire.randomchat.base.usecase.UseCase;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
+import apps.steve.fire.randomchat.main.ui.entity.Message;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
+import apps.steve.fire.randomchat.main.usecase.GetUserInboxState;
 import apps.steve.fire.randomchat.main.usecase.UpdateUserCoins;
-import apps.steve.fire.randomchat.posts.usecase.GetPopularPosts;
 import apps.steve.fire.randomchat.main.usecase.GetUser;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
+import apps.steve.fire.randomchat.main.usecase.UpdateUserInboxState;
 
 import static apps.steve.fire.randomchat.main.ui.entity.Item.*;
 
@@ -38,16 +39,20 @@ public class MainPresenterImpl implements MainPresenter {
     private FirebaseUser firebaseUser;
     private GetUser useCaseGetUser;
     private UpdateUserCoins updateUserCoins;
+    private GetUserInboxState getUserInboxState;
+    private UpdateUserInboxState updateUserInboxState;
 
     private MainView view;
 
-    public MainPresenterImpl(FirebaseUser firebaseUser, Resources res, UseCaseHandler handler, PublishPost publishPost, GetUser useCaseGetUser, UpdateUserCoins updateUserCoins) {
+    public MainPresenterImpl(FirebaseUser firebaseUser, Resources res, UseCaseHandler handler, PublishPost publishPost, GetUser useCaseGetUser, UpdateUserCoins updateUserCoins, GetUserInboxState getUserInboxState, UpdateUserInboxState updateUserInboxState) {
         this.firebaseUser = firebaseUser;
         this.res = res;
         this.handler = handler;
         this.useCasePublishPost = publishPost;
         this.useCaseGetUser = useCaseGetUser;
         this.updateUserCoins = updateUserCoins;
+        this.getUserInboxState = getUserInboxState;
+        this.updateUserInboxState = updateUserInboxState;
     }
 
     @Override
@@ -64,7 +69,9 @@ public class MainPresenterImpl implements MainPresenter {
         }
         //getPopularPosts();
         getUser();
+        listenUserMessagesState(true);
     }
+
 
     private User currentUser;
 
@@ -89,6 +96,44 @@ public class MainPresenterImpl implements MainPresenter {
                     }
                 }
         );
+    }
+
+    private void listenUserMessagesState(boolean listen) {
+        Log.d(TAG, "listenUserMessagesState");
+        if (firebaseUser == null) return;
+        User user = new User();
+        user.setId(firebaseUser.getUid());
+
+        handler.execute(
+                getUserInboxState,
+                new GetUserInboxState.RequestValues(user, listen),
+                new UseCase.UseCaseCallback<GetUserInboxState.ResponseValue>() {
+                    @Override
+                    public void onSuccess(GetUserInboxState.ResponseValue response) {
+                        boolean state = response.isIncommingState();
+                        Log.d(TAG, "listenUserInboxState onSuccess state: " + state);
+                        if (state) showError(res.getString(R.string.global_mssg_newmessages));
+                        updateMenuMessage(state);
+                    }
+
+                    @Override
+                    public void onError() {
+                        Log.d(TAG, "listenUserInboxState onError");
+
+                    }
+                }
+        );
+    }
+
+    private void updateMenuMessage(boolean state) {
+        if (view != null) {
+            @DrawableRes int drawable = R.drawable.ic_chat_teal_24dp;
+            String notificationText = "";
+            if (state) {
+                notificationText = res.getString(R.string.global_mssg_newmessages);
+            }
+            view.updateMenuItem(new Item(MENU_MESSAGES, drawable, res.getString(R.string.fragment_messages_title), false, notificationText));
+        }
     }
 
     private void updateUserCoins(long coins) {
@@ -146,6 +191,7 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
+        listenUserMessagesState(false);
         view = null;
     }
 
@@ -241,7 +287,7 @@ public class MainPresenterImpl implements MainPresenter {
                     @Override
                     public void onSuccess(PublishPost.ResponseValue response) {
                         addPost(response.getPost());
-                        if (post.isPopular()){
+                        if (post.isPopular()) {
                             getUser();
                         }
                     }
@@ -368,9 +414,13 @@ public class MainPresenterImpl implements MainPresenter {
             case MENU_PROFILE:
                 showProfile(currentUser, true);
                 break;
+            case MENU_COINS:
+                showCoinFragment();
+                break;
             case MENU_USERS:
                 break;
             case MENU_MESSAGES:
+                updateUserInboxState();
                 showMessages(currentUser);
                 break;
             case MENU_APPINFO:
@@ -382,6 +432,21 @@ public class MainPresenterImpl implements MainPresenter {
         }
         hideFab();
         closeNav();
+    }
+
+    private void showCoinFragment() {
+        if (view != null) {
+            view.showCoinFragment();
+        }
+    }
+
+    private void updateUserInboxState() {
+        Log.d(TAG, "updateUserInboxState");
+        if (currentUser == null) return;
+        handler.execute(
+                updateUserInboxState,
+                new UpdateUserInboxState.RequestValues(currentUser, false),
+                null);
     }
 
     private void showPostPager() {
@@ -418,10 +483,9 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onFabProClicked() {
         if (currentUser.getCoins() <= 0) {
-            showConfirmDialogToSeeRewardVideo();
+            showCoinFragment();
             return;
         }
-
         showPostDialog();
     }
 
@@ -503,6 +567,12 @@ public class MainPresenterImpl implements MainPresenter {
     public void onConfirmedToShowRewardVideo() {
         Log.d(TAG, "");
         showRewardVideo();
+    }
+
+    @Override
+    public void onInboxMessageClicked(Message message) {
+        Log.d(TAG, "onInboxMessageClicked: " + message.toString());
+        startChat(currentUser.getId(), message.getUser().getId());
     }
 
     private void showRewardVideo() {

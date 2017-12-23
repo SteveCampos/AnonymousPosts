@@ -13,6 +13,7 @@ import apps.steve.fire.randomchat.chat.usecase.SendMessage;
 import apps.steve.fire.randomchat.main.ui.entity.Message;
 import apps.steve.fire.randomchat.main.ui.entity.User;
 import apps.steve.fire.randomchat.main.usecase.GetUser;
+import apps.steve.fire.randomchat.main.usecase.UpdateUserChatInboxState;
 
 /**
  * Created by Steve on 16/12/2017.
@@ -27,14 +28,16 @@ public class ChatPresenterImpl implements ChatPresenter {
     private GetUser useCaseGetUserReceptor;
     private SendMessage useCaseSendMessage;
     private GetChatMessages useCaseGetChatMessages;
+    private UpdateUserChatInboxState updateUserChatInboxState;
 
-    public ChatPresenterImpl(Resources res, UseCaseHandler handler, GetUser useCaseGetMainUser, GetUser useCaseGetUserReceptor, SendMessage useCaseSendMessage, GetChatMessages useCaseGetChatMessages) {
+    public ChatPresenterImpl(Resources res, UseCaseHandler handler, GetUser useCaseGetMainUser, GetUser useCaseGetUserReceptor, SendMessage useCaseSendMessage, GetChatMessages useCaseGetChatMessages, UpdateUserChatInboxState updateUserChatInboxState) {
         this.res = res;
         this.handler = handler;
         this.useCaseGetMainUser = useCaseGetMainUser;
         this.useCaseGetUserReceptor = useCaseGetUserReceptor;
         this.useCaseSendMessage = useCaseSendMessage;
         this.useCaseGetChatMessages = useCaseGetChatMessages;
+        this.updateUserChatInboxState = updateUserChatInboxState;
     }
 
     @Override
@@ -63,6 +66,7 @@ public class ChatPresenterImpl implements ChatPresenter {
                         Log.d(TAG, "getMainUser onSuccess");
                         mainUser = response.getUser();
                         getMessages(false);
+                        updateUserChatInboxState();
                     }
 
                     @Override
@@ -77,6 +81,7 @@ public class ChatPresenterImpl implements ChatPresenter {
     private void getMessages(boolean stop) {
         Log.d(TAG, "getMessages");
         if (mainUser == null || receptor == null) return;
+
         handler.execute(
                 useCaseGetChatMessages,
                 new GetChatMessages.RequestValues(mainUser, receptor, stop),
@@ -94,6 +99,14 @@ public class ChatPresenterImpl implements ChatPresenter {
                     }
                 }
         );
+    }
+
+    private void updateUserChatInboxState() {
+        Log.d(TAG, "updaterUserChatInboxState");
+        if (mainUser == null || receptor == null) return;
+        handler.execute(updateUserChatInboxState,
+                new UpdateUserChatInboxState.RequestValues(mainUser, receptor, false),
+                null);
     }
 
     private void addMessage(Message message) {
@@ -118,6 +131,7 @@ public class ChatPresenterImpl implements ChatPresenter {
                         Log.d(TAG, "getReceptor onSuccess");
                         receptor = response.getUser();
                         getMessages(false);
+                        updateUserChatInboxState();
                     }
 
                     @Override

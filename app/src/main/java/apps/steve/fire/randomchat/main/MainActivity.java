@@ -58,6 +58,8 @@ import apps.steve.fire.randomchat.base.navigation.Navigator;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.base.usecase.UseCaseThreadPoolScheduler;
 import apps.steve.fire.randomchat.chat.ChatActivity;
+import apps.steve.fire.randomchat.coin.CoinFragment;
+import apps.steve.fire.randomchat.coin.CoinFragmentListener;
 import apps.steve.fire.randomchat.data.source.UserRepository;
 import apps.steve.fire.randomchat.data.source.local.UserLocalDataSource;
 import apps.steve.fire.randomchat.data.source.remote.UserRemoteDataSource;
@@ -68,11 +70,14 @@ import apps.steve.fire.randomchat.main.adapter.ItemAdapter;
 import apps.steve.fire.randomchat.main.listener.ItemListener;
 import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
+import apps.steve.fire.randomchat.main.ui.entity.Message;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
+import apps.steve.fire.randomchat.main.usecase.GetUserInboxState;
 import apps.steve.fire.randomchat.main.usecase.UpdateUserCoins;
 import apps.steve.fire.randomchat.main.usecase.GetUser;
 import apps.steve.fire.randomchat.main.usecase.PublishPost;
+import apps.steve.fire.randomchat.main.usecase.UpdateUserInboxState;
 import apps.steve.fire.randomchat.messages.MessagesFragment;
 import apps.steve.fire.randomchat.messages.listener.MessagesListener;
 import apps.steve.fire.randomchat.postDetail.PostDetailFragment;
@@ -89,7 +94,7 @@ import me.originqiu.library.EditTag;
 
 import static android.view.Gravity.TOP;
 
-public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener, PostDetailListener, ProfileListener, Navigator.FragmentChangeListener, MessagesListener {
+public class MainActivity extends AppCompatActivity implements GenderListener, MainView, ItemListener, PostListener, PostDetailListener, ProfileListener, Navigator.FragmentChangeListener, MessagesListener, CoinFragmentListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.fragment_container)
@@ -284,7 +289,9 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
                     new UseCaseHandler(new UseCaseThreadPoolScheduler()),
                     new PublishPost(repository),
                     new GetUser(repository),
-                    new UpdateUserCoins(repository)
+                    new UpdateUserCoins(repository),
+                    new GetUserInboxState(repository),
+                    new UpdateUserInboxState(repository)
             );
         }
         setPresenter(presenter);
@@ -379,6 +386,12 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         AppinfoFragment appinfoFragment = AppinfoFragment.newInstance();
         showOrAdd(appinfoFragment, "appinfo-fragment", false);
         //goTo(AppinfoFragment.class);
+    }
+
+    @Override
+    public void showCoinFragment() {
+        CoinFragment coinFragment = CoinFragment.newInstance();
+        showOrAdd(coinFragment, "coin-fragment", false);
     }
 
     @Override
@@ -581,6 +594,11 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
     }
 
     @Override
+    public void updateMenuItem(Item item) {
+        itemAdapter.changeItem(item);
+    }
+
+    @Override
     public void toogleMenuItems(Item old, Item selected) {
         itemAdapter.toogleItem(old, selected);
     }
@@ -749,9 +767,15 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
         Log.d(TAG, "onFragmentChanged");
     }
 
-    @OnClick(R.id.txtCoinReward)
-    public void onCoinRewardClick() {
-        presenter.coinsRewardClicked();
+    @Override
+    public void onMessageClicked(Message message) {
+        Log.d(TAG, "onMessageClicked");
+        presenter.onInboxMessageClicked(message);
     }
 
+    @Override
+    public void onRewardVideoClicked() {
+        Log.d(TAG, "onRewardVideoClicked");
+        presenter.coinsRewardClicked();
+    }
 }

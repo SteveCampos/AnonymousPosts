@@ -21,8 +21,6 @@ public class ReceptorMessageHolder extends RecyclerView.ViewHolder {
     ImageView imgProfile;
     @BindView(R.id.txtMessage)
     TextView txtMessage;
-    @BindView(R.id.imgAlert)
-    ImageView imgAlert;
 
     public ReceptorMessageHolder(View itemView) {
         super(itemView);
@@ -36,10 +34,5 @@ public class ReceptorMessageHolder extends RecyclerView.ViewHolder {
                 .asDrawable()
                 .load(message.getUser().getAvatarDrawable())
                 .into(imgProfile);
-        if (message.isIncommingMessage()) {
-            imgAlert.setVisibility(View.VISIBLE);
-        } else {
-            imgAlert.setVisibility(View.GONE);
-        }
     }
 }

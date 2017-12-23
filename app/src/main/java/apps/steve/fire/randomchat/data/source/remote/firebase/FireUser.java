@@ -47,7 +47,7 @@ public class FireUser extends Fire implements FireUserContract {
     public static final String PATH_USER_CHATS = "/user-chats/";
     public static final String PATH_CHAT_MESSAGES = "/chat-messages/";
     public static final String PATH_USER_INBOX = "/user-inbox/";
-    public static final String PATH_USER_INCOMMING_MESSAGES = "/user-incomming-messages/";
+    public static final String PATH_USER_INBOX_STATE = "/user-inbox-state/";
     private static final String TAG = FireUser.class.getSimpleName();
 
     public FireUser() {
@@ -402,14 +402,14 @@ public class FireUser extends Fire implements FireUserContract {
         }
     }
 
-    public void resetUserInboxIncommingMessagesState(String userId) {
-        mDatabase.child(PATH_USER_INCOMMING_MESSAGES + userId).setValue(false);
+    public void updateUserInboxState(User user, boolean state) {
+        mDatabase.child(PATH_USER_INBOX_STATE + user.getId()).setValue(state);
     }
 
-    public void resetUserChatIncomingMessagesState(User mainUser, User receiver) {
+    public void updateUserChatInboxState(User mainUser, User receiver, boolean state) {
         String mainUserId = mainUser.getId();
         String chatId = Utils.getId(mainUserId, receiver.getId());
-        mDatabase.child(PATH_USER_INBOX + mainUserId + "/" + chatId).setValue(false);
+        mDatabase.child(PATH_USER_INBOX + mainUserId + "/" + chatId).setValue(state);
     }
 
     public void sendMessage(User sender, User receiver, final Message message, final FirePostsCallback<Message> callback) {
@@ -435,7 +435,7 @@ public class FireUser extends Fire implements FireUserContract {
         childUpdates.put(PATH_USER_CHATS + receiverId + "/" + chatId, true);
         childUpdates.put(PATH_CHAT_MESSAGES + chatId + "/" + messageId, messageValues);
         childUpdates.put(PATH_USER_INBOX + receiverId + "/" + chatId + "/", true);//Agregar este chat, al inbox del usuario
-        childUpdates.put(PATH_USER_INCOMMING_MESSAGES + receiverId + "/", true);
+        childUpdates.put(PATH_USER_INBOX_STATE + receiverId + "/", true);
         mDatabase
                 .updateChildren(childUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -537,12 +537,10 @@ public class FireUser extends Fire implements FireUserContract {
             String chatId = dataSnapshot.getKey();
             Boolean incommingMessage = dataSnapshot.getValue(Boolean.class);
             getLastMessage(chatId, incommingMessage, inboxCallback);
-            //parseMessage(dataSnapshot, inboxCallback);
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            //parseMessage(dataSnapshot, inboxCallback);
         }
 
         @Override
@@ -568,4 +566,38 @@ public class FireUser extends Fire implements FireUserContract {
                 .removeEventListener(inboxMessagesListener);
         inboxMessagesListener = null;
     }
+
+    private Callback<Boolean> userIncommingStateCallback;
+    private ValueEventListener userIncommingMessageStateListener =
+            new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "listenUserInboxState dataSnapshot: " + dataSnapshot);
+                    if (dataSnapshot == null) return;
+                    Boolean state = dataSnapshot.getValue(Boolean.class);
+                    if (userIncommingStateCallback != null) {
+                        userIncommingStateCallback.onSucess(state);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d(TAG, "listenUserInboxState onCancelled databaseError: " + databaseError);
+                }
+            };
+
+    public void listenUserInboxState(User user, final Callback<Boolean> callback) {
+        Log.d(TAG, "listenUserInboxState");
+        this.userIncommingStateCallback = callback;
+        mDatabase.child(PATH_USER_INBOX_STATE + user.getId())
+                .addValueEventListener(userIncommingMessageStateListener);
+    }
+
+    public void removetUserInboxStateListener(User user) {
+        mDatabase.child(PATH_USER_INBOX_STATE + user.getId())
+                .removeEventListener(userIncommingMessageStateListener);
+        userIncommingStateCallback = null;
+        userIncommingStateCallback = null;
+    }
+
 }

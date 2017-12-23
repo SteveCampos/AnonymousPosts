@@ -110,6 +110,7 @@ public class MessagesFragment extends Fragment implements MessageView {
     private void initMessageAdapter() {
         adapter = new MessageAdapter();
         adapter.setRecyclerView(recyclerMessages);
+        adapter.setListener(listener);
         recyclerMessages.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerMessages.setAdapter(adapter);
     }

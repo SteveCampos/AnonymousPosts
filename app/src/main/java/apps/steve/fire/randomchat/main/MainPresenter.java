@@ -7,6 +7,7 @@ import java.util.List;
 import apps.steve.fire.randomchat.base.BasePresenter;
 import apps.steve.fire.randomchat.main.ui.entity.Comment;
 import apps.steve.fire.randomchat.main.ui.entity.Item;
+import apps.steve.fire.randomchat.main.ui.entity.Message;
 import apps.steve.fire.randomchat.main.ui.entity.Post;
 import apps.steve.fire.randomchat.main.ui.entity.User;
 
@@ -37,4 +38,6 @@ public interface MainPresenter extends BasePresenter<MainView>, RewardedVideoAdL
     void coinsRewardClicked();
 
     void onConfirmedToShowRewardVideo();
+
+    void onInboxMessageClicked(Message message);
 }
