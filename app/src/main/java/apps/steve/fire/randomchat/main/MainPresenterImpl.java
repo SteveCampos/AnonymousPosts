@@ -8,10 +8,12 @@ import android.util.Log;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import apps.steve.fire.randomchat.R;
+import apps.steve.fire.randomchat.Utils;
 import apps.steve.fire.randomchat.base.usecase.UseCase;
 import apps.steve.fire.randomchat.base.usecase.UseCaseHandler;
 import apps.steve.fire.randomchat.main.ui.entity.Comment;
@@ -267,15 +269,30 @@ public class MainPresenterImpl implements MainPresenter {
         if (TextUtils.isEmpty(content)) {
             return;
         }
+
         Post post = new Post();
         post.setContentText(content);
-        post.setHashtags(tagList);
+        post.setHashtags(normalizeTags(tagList));
         post.setTimestamp(new Date().getTime());
         post.setPopular(kingPostSelected);
         post.setUser(currentUser);
 
         hidePublishDialog();
         publishPost(post);
+    }
+
+    private List<String> normalizeTags(List<String> tagList) {
+        List<String> normalizedTags = new ArrayList<>();
+        if (tagList != null && !tagList.isEmpty()) {
+            for (String tag :
+                    tagList) {
+                String normalizedTag = Utils.normalizeTag(tag);
+                if (!TextUtils.isEmpty(normalizedTag)) {
+                    normalizedTags.add(normalizedTag);
+                }
+            }
+        }
+        return normalizedTags;
     }
 
     private void publishPost(final Post post) {
@@ -399,6 +416,8 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onMenuItemSelected(Item item) {
         toogleItems(itemSelected, item);
+        hideFab();
+        hideFabs();
         switch (item.getId()) {
             case MENU_POSTS:
                 int backStackCount = view.getBackStackEntryCount();
@@ -428,7 +447,6 @@ public class MainPresenterImpl implements MainPresenter {
                 logout();
                 break;
         }
-        hideFab();
         closeNav();
     }
 
@@ -481,6 +499,9 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onFabProClicked() {
         if (currentUser.getCoins() <= 0) {
+            showError(res.getString(R.string.fragment_coin_needed));
+            hideFabs();
+            hideFabs();
             showCoinFragment();
             return;
         }
@@ -535,6 +556,7 @@ public class MainPresenterImpl implements MainPresenter {
     public void onPostSelected(Post post) {
         changeTitle(post.getUser().getReadableName(res));
         hideFab();
+        hideFabs();
         showPostDetail(post);
     }
 
@@ -571,6 +593,11 @@ public class MainPresenterImpl implements MainPresenter {
     public void onInboxMessageClicked(Message message) {
         Log.d(TAG, "onInboxMessageClicked: " + message.toString());
         startChat(currentUser.getId(), message.getUser().getId());
+    }
+
+    @Override
+    public void onNavDragEnd(boolean isMenuOpened) {
+        isNavOpen = isMenuOpened;
     }
 
     private void showRewardVideo() {

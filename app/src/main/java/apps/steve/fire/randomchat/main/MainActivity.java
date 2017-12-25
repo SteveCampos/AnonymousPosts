@@ -47,6 +47,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
+import com.yarolegovich.slidingrootnav.callback.DragListener;
+import com.yarolegovich.slidingrootnav.callback.DragStateListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -305,6 +307,19 @@ public class MainActivity extends AppCompatActivity implements GenderListener, M
                 .withMenuLayout(R.layout.navigation_view)
                 .withMenuOpened(false)
                 .withContentClickableWhenMenuOpened(false)
+                .addDragStateListener(new DragStateListener() {
+                    @Override
+                    public void onDragStart() {
+
+                    }
+
+                    @Override
+                    public void onDragEnd(boolean isMenuOpened) {
+                        if (presenter !=  null){
+                            presenter.onNavDragEnd(isMenuOpened);
+                        }
+                    }
+                })
                 //.withSavedState(savedInstanceState)
                 .inject();
 

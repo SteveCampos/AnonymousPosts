@@ -83,10 +83,10 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         List<String> hashtags = post.getHashtags();
         if (!hashtags.isEmpty()) {
             tagView.setTags(hashtags);
-            tagView.setVisibility(View.VISIBLE);
+            //          tagView.setVisibility(View.VISIBLE);
         } else {
-            tagView.setTags("");
-            tagView.setVisibility(View.GONE);
+            tagView.setTags(itemView.getResources().getString(R.string.fragment_posts_mssg_notags));
+//            tagView.setVisibility(View.GONE);
         }
 
         tagView.setOnTagClickListener(new TagGroup.OnTagClickListener() {

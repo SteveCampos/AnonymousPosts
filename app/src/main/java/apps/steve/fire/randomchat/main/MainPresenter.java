@@ -40,4 +40,6 @@ public interface MainPresenter extends BasePresenter<MainView>, RewardedVideoAdL
     void onConfirmedToShowRewardVideo();
 
     void onInboxMessageClicked(Message message);
+
+    void onNavDragEnd(boolean isMenuOpened);
 }

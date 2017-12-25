@@ -35,7 +35,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
         android:gravity="bottom"
-        android:text="@string/intro_slideavatar_avatar_notselected"
+
         android:textAlignment="center"
         android:textAppearance="@style/AppIntroDefaultText"
         android:textColor="@color/md_grey_500"

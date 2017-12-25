@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Created by Steve on 17/12/2017.
@@ -14,6 +15,20 @@ import java.util.Locale;
 
 public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
+
+    private static final String FIREBASEKEY_INVALID_CHARACTERS = ".$#[]/";
+
+    public static String normalizeTag(String tag) {
+        String normalizedTag = tag.replaceAll(Pattern.quote(FIREBASEKEY_INVALID_CHARACTERS), "");
+        if (isNumeric(normalizedTag)) {
+            normalizedTag = null;
+        }
+        return normalizedTag;
+    }
+
+    public static boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+    }
 
     private static String[] sortAlphabetical(String key1, String key2) {
         String temp = null;

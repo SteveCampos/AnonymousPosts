@@ -106,7 +106,7 @@ public class IntroActivity extends AppIntro2 implements IntroView, GenderListene
         SliderPage slideAnonymousProfile = newSlider(
                 R.string.intro_slideanonymous_title,
                 R.string.intro_slideanonymous_description,
-                R.drawable.ic_incognito,
+                R.drawable.boy_knight,
                 android.R.color.white,
                 R.color.md_blue_grey_900,
                 R.color.md_blue_grey_300

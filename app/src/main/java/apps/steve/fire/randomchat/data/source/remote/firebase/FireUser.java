@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
@@ -49,6 +50,7 @@ public class FireUser extends Fire implements FireUserContract {
     public static final String PATH_USER_INBOX = "/user-inbox/";
     public static final String PATH_USER_INBOX_STATE = "/user-inbox-state/";
     private static final String TAG = FireUser.class.getSimpleName();
+    private static final int MAX_QUERY = 50;
 
     public FireUser() {
         super();
@@ -309,7 +311,7 @@ public class FireUser extends Fire implements FireUserContract {
 
     private void getPosts(String path, final FirePostsCallback<Post> callback) {
         Log.d(TAG, "getPost path: " + path);
-        mDatabase.child(path).addChildEventListener(new ChildEventListener() {
+        mDatabase.child(path).limitToLast(MAX_QUERY).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "getPosts onChildAdded dataSnapshot: " + dataSnapshot);
@@ -344,10 +346,14 @@ public class FireUser extends Fire implements FireUserContract {
 
     private void parsePost(DataSnapshot dataSnapshot, FirePostsCallback<Post> callback) {
         Log.d(TAG, "parsePost dataSnapshot: " + dataSnapshot);
-        Post post = dataSnapshot.getValue(Post.class);
-        if (post != null) {
-            Log.d(TAG, "post parsed: " + post.toString());
-            callback.onSuccess(post);
+        try {
+            Post post = dataSnapshot.getValue(Post.class);
+            if (post != null) {
+                Log.d(TAG, "post parsed: " + post.toString());
+                callback.onSuccess(post);
+            }
+        } catch (DatabaseException ex) {
+            Log.e(TAG, ex.toString());
         }
     }
 
@@ -355,6 +361,7 @@ public class FireUser extends Fire implements FireUserContract {
         Log.d(TAG, "getPostComments");
         this.commentsCallback = commentsCallback;
         mDatabase.child(PATH_POST_COMMENTS + postId)
+                .limitToLast(MAX_QUERY)
                 .addChildEventListener(postCommentsListener);
     }
 
@@ -454,6 +461,7 @@ public class FireUser extends Fire implements FireUserContract {
         Log.d(TAG, "getMessages");
         this.messageCallback = callback;
         mDatabase.child(PATH_CHAT_MESSAGES + chatId)
+                .limitToLast(MAX_QUERY)
                 .addChildEventListener(messagesListener);
     }
 
@@ -510,6 +518,7 @@ public class FireUser extends Fire implements FireUserContract {
         Log.d(TAG, "getMessagesFromImbox");
         this.inboxCallback = callback;
         mDatabase.child(PATH_USER_INBOX + user.getId())
+                .limitToLast(MAX_QUERY)
                 .addChildEventListener(inboxMessagesListener);
     }
 

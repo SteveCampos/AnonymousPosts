@@ -124,9 +124,9 @@ public class AvatarUi {
 
     public static List<AvatarUi> getAvatarManList(Resources res) {
         List<AvatarUi> avatarUiList = new ArrayList<>();
-        avatarUiList.add(new AvatarUi(Avatar.BOY_KNIGHT));
-        avatarUiList.add(new AvatarUi(Avatar.BOY_JAPANESE));
         avatarUiList.add(new AvatarUi(Avatar.BOY_CASUAL));
+        avatarUiList.add(new AvatarUi(Avatar.BOY_JAPANESE));
+        avatarUiList.add(new AvatarUi(Avatar.BOY_KNIGHT));
         avatarUiList.add(new AvatarUi(Avatar.BOY_NAPOLEON));
         return avatarUiList;
     }

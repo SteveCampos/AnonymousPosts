@@ -25,7 +25,7 @@ public class Post {
     private long dislikeCount;
     private long commentCount;
     private boolean popular;
-    private HashMap<String, Object> hashtags = new HashMap<>();
+    private HashMap<String, Boolean> hashtags = new HashMap<>();
 
     public Post() {
     }
@@ -122,11 +122,11 @@ public class Post {
         return popular;
     }
 
-    public HashMap<String, Object> getHashtags() {
+    public HashMap<String, Boolean> getHashtags() {
         return hashtags;
     }
 
-    public void setHashtags(HashMap<String, Object> hashtags) {
+    public void setHashtags(HashMap<String, Boolean> hashtags) {
         this.hashtags = hashtags;
     }
 
@@ -165,7 +165,7 @@ public class Post {
 
     private void setHashtagList() {
         if (hashtags != null && !hashtags.isEmpty()) {
-            for (Map.Entry<String, Object> entry : hashtags.entrySet()) {
+            for (Map.Entry<String, Boolean> entry : hashtags.entrySet()) {
                 hashtagList.add(entry.getKey());
             }
         }

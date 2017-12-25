@@ -1,80 +1,78 @@
 <resources>
     <string name="app_name">Publicaciones Anónimas</string>
     <string name="action_settings">Settings</string>
-    <string name="intro_slidewelcome_description">!Bienvenido! Publica post anónimos, y conoce nuevas personas.</string>
-    <string name="intro_slidepost_title">Post Anónimos</string>
-    <string name="intro_slidepost_description">Postea, comenta y conecta con muchas personas.</string>
-    <string name="intro_slideconversation_title">Conversaciones</string>
-    <string name="intro_slideconversation_description">Inicia nuevas conversaciones, te notificaremos cuando tengas un nueve mensaje.</string>
-    <string name="intro_slideconversations_title">¡Inicia conversaciones!</string>
-    <string name="intro_slideconversations_description">Iniciarás nuevas conversaciones con otros usuarios anónimos!</string>
-    <string name="intro_slideanonymous_title">¡Perfiles anónimos!</string>
-    <string name="intro_slideanonymous_description">Fotos de perfil no permitidas. Todos los usuarios tendrán perfiles anónimos.</string>
+    <string name="intro_slidewelcome_description">!Welcome! Post something amazing, and connect with many people.</string>
+    <string name="intro_slidepost_title">Post</string>
+    <string name="intro_slidepost_description">Post, comment and connect with many people.</string>
+    <string name="intro_slideconversation_title">Talk!</string>
+    <string name="intro_slideconversation_description">Start new conversations, we will notify you when you have a new message.</string>
+    <string name="intro_slideanonymous_title">¡Profile with Avatars!</string>
+    <string name="intro_slideanonymous_description">Profile photos not allowed. All users will have avatars instead of photos.</string>
     <string name="intro_slidehashtags_title">Hashtags</string>
-    <string name="intro_slidehashtags_description">Podrás filtrar posts por temas que te encanten, usando nuestros hashtags.</string>
-    <string name="intro_slidelocations_title">¡Cerca a ti!</string>
-    <string name="intro_slidelocations_description">Navegarás a través de los posts más destacados de tu ciudad.</string>
-    <string name="intro_slidegender_title">Elige tu Género</string>
-    <string name="intro_slidegender_description">Tap en la imagen para cambiar</string>
-    <string name="intro_slideavatar_title">Elige tu Avatar</string>
-    <string name="intro_slideavatar_avatar_notselected">No Seleccionado</string>
+    <string name="intro_slidehashtags_description">You can filter posts by topics that you love, using our hashtags.</string>
+    <string name="intro_slidelocations_title">Close to you!</string>
+    <string name="intro_slidelocations_description">You will browse through the most prominent posts of your city.</string>
+    <string name="intro_slidegender_title">Choose your Gender</string>
+    <string name="intro_slidegender_description">Tap on the image to change</string>
+    <string name="intro_slideavatar_title">Choose your Avatar</string>
+    <string name="intro_slideavatar_avatar_notselected">Not selected</string>
 
 
-    <string name="global_gender_masculine">Masculino</string>
-    <string name="global_gender_man">Hombre</string>
-    <string name="global_gender_woman">Mujer</string>
-    <string name="global_gender_nonbinary">No Binario</string>
+    <string name="global_gender_masculine">Male</string>
+    <string name="global_gender_man">Man</string>
+    <string name="global_gender_woman">Woman</string>
+    <string name="global_gender_nonbinary">No-Binary</string>
 
 
-    <string name="posts_text_post">Publicar</string>
-    <string name="posts_text_contenthint">Increíble post aquí.</string>
-    <string name="comment_text_hint_message">Escribe un mensaje increíble</string>
+    <string name="posts_text_post">Post</string>
+    <string name="posts_text_contenthint">Amazing post here.</string>
+    <string name="comment_text_hint_message">Write something cool!</string>
 
-    <string name="girl_casual">Chica Casual</string>
-    <string name="girl_cat">Gata</string>
-    <string name="girl_cute">Chica Linda</string>
-    <string name="girl_dark">Oscura</string>
-    <string name="boy_knight">Caballero de la Edad Media</string>
-    <string name="boy_japanese">Chico Japonés</string>
-    <string name="boy_casual">Chico Casual</string>
-    <string name="boy_napoleon">Napoleón</string>
-    <string name="nb_young">Joven</string>
+    <string name="girl_casual">Casual Girl</string>
+    <string name="girl_cat">Cat Girl</string>
+    <string name="girl_cute">Cute Girl</string>
+    <string name="girl_dark">Dark Girl</string>
+    <string name="boy_knight">Knight of the middle age.</string>
+    <string name="boy_japanese">Japanese Boy</string>
+    <string name="boy_casual">Casual Boy</string>
+    <string name="boy_napoleon">Napoleon</string>
+    <string name="nb_young">Young</string>
     <string name="nb_samurai">Samurai</string>
 
 
-    <string name="fragment_posts_title">Publicaciones</string>
-    <string name="fragment_posts_section_popular">Populares</string>
-    <string name="fragment_posts_section_recent">Recientes</string>
-    <string name="fragment_users_title">Usuarios</string>
+    <string name="fragment_posts_title">Posts</string>
+    <string name="fragment_posts_section_popular">Populars</string>
+    <string name="fragment_posts_section_recent">Recents</string>
+    <string name="fragment_posts_mssg_notags">No tags</string>
+    <string name="fragment_users_title">Users</string>
     <string name="fragment_messages_title">Inbox</string>
-    <string name="fragment_coins_title">Monedas</string>
-    <string name="menuitem_myprofile_title">Mi perfil</string>
+    <string name="fragment_coins_title">Coins</string>
+    <string name="menuitem_myprofile_title">My profile</string>
     <string name="menuitem_appinfo_title">App Info</string>
-    <string name="menuitem_logout_title">Cerrar Sesión</string>
-    <string name="fragment_posts_message_empty">No hay publicaciones</string>
-    <string name="title_activity_chat">ChatActivity</string>
-    <string name="error_publish">Error publicando.</string>
-    <string name="error_login">Error.</string>
+    <string name="menuitem_logout_title">Sign off</string>
+    <string name="fragment_posts_message_empty">There are no posts.</string>
+    <string name="title_activity_chat">Chat</string>
+    <string name="error_publish">Error posting.</string>
+    <string name="error_login">Error</string>
 
-    <string name="fragment_profile_title">Usuario</string>
+    <string name="fragment_profile_title">User</string>
 
-    <string name="user_default_description">Un par de palabras sobre ti, qué música escuchas, cuáles son tus libros favoritos, qué tipos de películas ves.</string>
+    <string name="user_default_description">Tell us about yourself, what music you listen to, what your favorite books are, what types of movies you see.</string>
     <string name="user_default_location">Anonymous User.</string>
-    <string name="profile_text_sendmessage">Enviar Mensaje</string>
+    <string name="profile_text_sendmessage">Send Message</string>
     <string name="appinfo_item_email">E-mail</string>
     <string name="appinfo_item_instagram">Dev Instagram</string>
     <string name="appinfo_item_facebook">Dev Facebook</string>
     <string name="appinfo_item_sourcecode">Source Code</string>
-    <string name="appinfo_item_copyright">Publicaciones Anónimas 1.0\nCopyright ©2017\nSteve Campos</string>
+    <string name="appinfo_item_copyright">Anonymous Posts 1.0\nCopyright ©2017\nSteve Campos</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="profile_title_editname">Cambiar Nombre</string>
+    <string name="profile_title_editname">Change Name</string>
     <string name="global_text_positive">OK</string>
-    <string name="global_text_negative">Cancelar</string>
-    <string name="profile_title_editdesc">Cambiar Descripción</string>
+    <string name="global_text_negative">Cancel</string>
+    <string name="profile_title_editdesc">Change Description</string>
     <string name="global_btn_pro_title">Like a King</string>
     <string name="global_btn_regular_title">Regular</string>
-    <string name="global_btn_pro_desc">Atrae a muchas más personas</string>
+    <string name="global_btn_pro_desc">You will attract many more people.</string>
     <string name="global_btn_regular_desc">Just like a regular human</string>
 
     <string name="activity_chat_hint_message">Write Something Cool</string>
@@ -83,30 +81,31 @@
     <string name="profile_text_comment">Comments</string>
     <string name="profile_text_posts">Posts</string>
 
-    <string name="last_connection">últ. vez hace %1$d %2$s</string>
-    <string name="last_message_time">Hace %1$d %2$s</string>
-    <string name="time_seconds">segundos</string>
-    <string name="time_minutes">minutos</string>
-    <string name="time_hours">horas</string>
-    <string name="time_days">días</string>
+    <string name="last_connection">Last time ago %1$d %2$s</string>
+    <string name="last_message_time">Ago %1$d %2$s</string>
+    <string name="time_seconds">seconds</string>
+    <string name="time_minutes">minutes</string>
+    <string name="time_hours">hours</string>
+    <string name="time_days">days</string>
 
 
-    <string name="global_time_today">Hoy</string>
-    <string name="global_time_yersterday">Ayer</string>
-    <string name="global_mssg_sendemail">Enviar Mensaje</string>
+    <string name="global_time_today">Tidat</string>
+    <string name="global_time_yersterday">Yesterday</string>
+    <string name="global_mssg_sendemail">Send Message</string>
     <string name="dev_email">js7campos@gmail.com</string>
     <string name="dev_instagram">https://www.instagram.com/stevecamposvega/</string>
     <string name="dev_facebook">https://www.facebook.com/jairsteve.camposvega</string>
     <string name="appinfo_app_cvs_url">https://github.com/SteveCampos/AnonymousPosts</string>
-    <string name="appinfo_item_credits">Créditos</string>
+    <string name="appinfo_item_credits">Credits</string>
     <string name="appinfo_item_credits_description">Icons designed by\nflaticon https://www.flaticon.com/</string>
-    <string name="activity_main_dialog_reward_video_title">Recompensa</string>
-    <string name="activity_main_dialog_reward_video_desc">Mirar el siguiente para obtener una nueva moneda.</string>
-    <string name="global_mssg_newmessages">Nuevos mensajes</string>
-    <string name="fragment_coin_desc">Consigue una moneada mirando un video.</string>
-    <string name="fragment_coin_btn_video">Mirar el video</string>
-    <string name="global_mssg_getcoins">Conseguir</string>
+    <string name="activity_main_dialog_reward_video_title">Reward</string>
+    <string name="activity_main_dialog_reward_video_desc">Watch the video to get a coin.</string>
+    <string name="global_mssg_newmessages">New Messages</string>
+    <string name="fragment_coin_desc">Get a coin watching a video.</string>
+    <string name="fragment_coin_btn_video">Watch video</string>
+    <string name="global_mssg_getcoins">Get</string>
     <string name="fragment_appinfo_title">App Info</string>
-    <string name="fragment_profileowner_title">Perfil de %s</string>
-    <string name="fragment_profile_title_myprofile">Mi perfil</string>
+    <string name="fragment_profileowner_title">%s\'s Profile</string>
+    <string name="fragment_profile_title_myprofile">My profile</string>
+    <string name="fragment_coin_needed">You need coins to publish like a king.</string>
 </resources>
