@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Publicaciones Anónimas</string>
+    <string name="app_name">iPosts</string>
     <string name="action_settings">Settings</string>
-    <string name="intro_slidewelcome_description">!Welcome! Post something amazing, and connect with many people.</string>
+    <string name="intro_slidewelcome_description">Welcome! Post something amazing, and connect with many people.</string>
     <string name="intro_slidepost_title">Post</string>
     <string name="intro_slidepost_description">Post, comment and connect with many people.</string>
     <string name="intro_slideconversation_title">Talk!</string>
@@ -64,7 +64,7 @@
     <string name="appinfo_item_instagram">Dev Instagram</string>
     <string name="appinfo_item_facebook">Dev Facebook</string>
     <string name="appinfo_item_sourcecode">Source Code</string>
-    <string name="appinfo_item_copyright">Anonymous Posts 1.0\nCopyright ©2017\nSteve Campos</string>
+    <string name="appinfo_item_copyright">iPosts 1.0\nCopyright ©2017\nSteve Campos</string>
 
     <string name="profile_title_editname">Change Name</string>
     <string name="global_text_positive">OK</string>

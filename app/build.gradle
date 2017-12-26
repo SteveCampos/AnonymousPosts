@@ -5,11 +5,11 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
     defaultConfig {
-        applicationId "apps.steve.fire.randomchat"
+        applicationId "apps.stevecampos.fire.anonymouschat"
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -19,11 +19,15 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "default_web_client_id", project.property('DEFAULT_WEB_CLIENT_ID')
+            buildConfigField "String", "admob_app_id", project.property('ADMOB_APP_ID')
+            buildConfigField "String", "reward_video_id", project.property('REWARD_VIDEO_ID')
         }
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "default_web_client_id", project.property('DEFAULT_WEB_CLIENT_ID')
+            buildConfigField "String", "admob_app_id", project.property('ADMOB_APP_ID')
+            buildConfigField "String", "reward_video_id", project.property('REWARD_VIDEO_ID')
         }
 
         packagingOptions {

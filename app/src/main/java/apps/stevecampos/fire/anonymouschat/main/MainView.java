@@ -1,0 +1,91 @@
+package apps.stevecampos.fire.anonymouschat.main;
+
+import android.support.annotation.DrawableRes;
+
+import apps.stevecampos.fire.anonymouschat.base.BaseView;
+import apps.stevecampos.fire.anonymouschat.main.ui.entity.Item;
+import apps.stevecampos.fire.anonymouschat.main.ui.entity.Post;
+import apps.stevecampos.fire.anonymouschat.main.ui.entity.User;
+
+/**
+ * Created by Steve on 11/11/2017.
+ */
+
+public interface MainView extends BaseView<MainPresenter> {
+    /**/
+    boolean checkPlayServicesAvaliability();
+
+    /*Profile Views*/
+    void showName(String name);
+
+    void showCity(String city);
+
+    void showAvatar(@DrawableRes int avatar);
+
+    void showSplashScreen();
+
+    void hideSplashScreen();
+
+    void showPublishKingImg();
+
+    void hidePublishKingImg();
+
+    void showPublishDialog();
+
+    void hidePublishDialog();
+
+    void openNavigation();
+
+    void closeNavigation();
+
+
+    void close();
+
+    void updateMenuItem(Item item);
+
+    void toogleMenuItems(Item old, Item selected);
+
+    void showFab();
+
+    void hideFab();
+
+    void changeTitle(String title);
+
+    void showPostBtns();
+
+    void hidePostBtns();
+
+    void addPost(Post post);
+
+    void startChat(String userId, String receptorId);
+
+    void startIntro();
+
+    void logout();
+
+    void showError(String error);
+
+    int getBackStackEntryCount();
+
+    void popBackStack();
+
+    void showPostPager();
+
+    void showProfile(User user, boolean editable);
+
+    void showPostDetail(Post post);
+
+    void showMessages(User user);
+
+    void showPostsWithTag(Post post, String tag);
+
+    void showAppInfo();
+
+    void showCoinFragment();
+
+    void showCoins(long coins);
+
+    void showRewardVideo();
+
+    void showConfirmDialogToSeeRewardVideo();
+}

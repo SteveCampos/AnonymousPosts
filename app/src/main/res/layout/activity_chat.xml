@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="apps.steve.fire.randomchat.chat.ChatActivity">
+    tools:context="apps.stevecampos.fire.anonymouschat.chat.ChatActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             android:background="?attr/colorPrimary"
             app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Steve Campos" />
+            app:title="" />
 
     </android.support.design.widget.AppBarLayout>
 
